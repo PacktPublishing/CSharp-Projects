@@ -5,4 +5,3 @@ Adventure adventure = new SampleAdventure();
 
 SpectreConsoleAdventureRenderer renderer = new();
 adventure.Run(renderer);
-
