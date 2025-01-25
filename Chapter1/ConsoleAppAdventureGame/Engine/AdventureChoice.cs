@@ -2,7 +2,7 @@ namespace ConsoleAppAdventureGame;
 
 public class AdventureChoice
 {
-    public string Text { get; set; }
-    public string[] TextWhenChosen { get; set; }
-    public string? NextNodeId { get; set; }
+    public required string Text { get; init; }
+    public string[] TextWhenChosen { get; init; } = [];
+    public string? NextNodeId { get; init; }
 }

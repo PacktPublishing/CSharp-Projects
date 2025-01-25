@@ -53,4 +53,9 @@ public class SimpleConsoleAdventureRenderer : IAdventureRenderer
             Console.WriteLine();
         }
     }
+
+    public void RenderError(Exception exception)
+    {
+        Console.WriteLine($"An {exception.GetType().Name} error occurred: {exception.Message}");
+    }
 }

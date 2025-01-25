@@ -2,7 +2,7 @@ namespace ConsoleAppAdventureGame.Engine;
 
 public class Adventure
 {
-    public const string StartNodeId = "Start";
+    protected const string StartNodeId = "Start";
     private readonly Dictionary<string, AdventureNode> _nodes = new(StringComparer.OrdinalIgnoreCase);
     
     public AdventureNode? CurrentNode { get; private set; }
@@ -10,20 +10,30 @@ public class Adventure
     public void AddNode(AdventureNode node) 
         => _nodes[node.Id] = node;
 
-    public AdventureNode? GetNode(string id) 
-        => _nodes.GetValueOrDefault(id);
+    public AdventureNode GetNode(string id)
+    {
+        AdventureNode? node = _nodes.GetValueOrDefault(id);
+        if (node == null)
+        {
+            throw new InvalidOperationException($"Could not find node with ID '{id}'");
+        }
+        return node;
+    }
 
     public void Run(IAdventureRenderer renderer)
     {
-        CurrentNode = GetNode(StartNodeId);
-        if (CurrentNode == null)
+        try
         {
-            throw new InvalidOperationException($"Node with ID '{StartNodeId}' not found. Ensure your adventure contains this node");
+            CurrentNode = GetNode(StartNodeId);
+
+            while (CurrentNode is not null)
+            {
+                ExecuteNodeAndGetChoice(renderer);
+            }
         }
-        
-        while (CurrentNode is not null)
+        catch (InvalidOperationException ex)
         {
-            ExecuteNodeAndGetChoice(renderer);
+            renderer.RenderError(ex);
         }
     }
 
@@ -35,10 +45,20 @@ public class Adventure
         }
         
         renderer.Render(CurrentNode);
-            
-        var choice = renderer.GetChoice(CurrentNode);
-            
+
+        // Some nodes may have zero choices. These represent the end of a branch in the adventure.
+        if (CurrentNode.Choices.Length == 0)
+        {
+            CurrentNode = null;
+            return;
+        }
+        
+        // Get the choice and show any custom text for that choice
+        // Custom text helps with transitions when there are multiple ways of getting to a story node
+        AdventureChoice choice = renderer.GetChoice(CurrentNode);
         renderer.RenderChoiceAction(choice);
+        
+        // Move to the next node based on the player's choice
         if (string.IsNullOrWhiteSpace(choice.NextNodeId))
         {
             CurrentNode = null;

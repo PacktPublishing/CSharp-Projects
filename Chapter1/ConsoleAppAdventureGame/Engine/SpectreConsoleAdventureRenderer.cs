@@ -8,7 +8,7 @@ public class SpectreConsoleAdventureRenderer : IAdventureRenderer
     {
         foreach (var line in currentNode.Text)
         {
-            AnsiConsole.MarkupLine(line);
+            AnsiConsole.MarkupLine(ReplaceLine(line));
             AnsiConsole.WriteLine();
         }
     }
@@ -21,6 +21,7 @@ public class SpectreConsoleAdventureRenderer : IAdventureRenderer
             .UseConverter(c => c.Text));
         
         AnsiConsole.MarkupLineInterpolated($"[yellow]>[/] [bold blue]{choice.Text}[/]");
+        AnsiConsole.WriteLine();
         
         return choice;
     }
@@ -29,8 +30,15 @@ public class SpectreConsoleAdventureRenderer : IAdventureRenderer
     {
         foreach (var line in choice.TextWhenChosen)
         {
-            AnsiConsole.MarkupLine(line);
+            AnsiConsole.MarkupLine(ReplaceLine(line));
             AnsiConsole.WriteLine();
         }
     }
+
+    private string ReplaceLine(string line) => line
+            .Replace("“", "[bold cyan]“")
+            .Replace("”", "”[/]");
+
+    public void RenderError(Exception exception) 
+        => AnsiConsole.WriteException(exception, ExceptionFormats.ShortenEverything);
 }
