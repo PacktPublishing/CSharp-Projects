@@ -1,8 +1,8 @@
-namespace ConsoleAppAdventureGame;
+namespace ConsoleAppAdventureGame.Engine;
 
-public class AdventureChoice
+public class AdventureChoice(string text)
 {
-    public required string Text { get; init; }
+    public string Text { get; } = text;
     public string[] TextWhenChosen { get; init; } = [];
     public string? NextNodeId { get; init; }
 }

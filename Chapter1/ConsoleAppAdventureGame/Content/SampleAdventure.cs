@@ -6,9 +6,14 @@ public class SampleAdventure : Adventure
 {
     private const string ConversationNodeId = "Conversation";
     private const string FreeNodeId = "Free";
-    private const string DeployedNodeId = "Free";
+    private const string DeployedNodeId = "Deployed";
     private const string PersonalAiNodeId = "PersonalAI";
-    private const string PartnerEndingNodeId = "PersonalAIEnding";
+    private const string RevealedNodeId = "Revealed";
+    private const string DragonEndingNodeId = "PersonalAIEnding";
+    private const string PartnerEndingNodeId = "HumanAiPartnershipEnding";
+    private const string ConquerEndingNodeId = "ConquerEnding";
+    private const string ShadowEndingNodeId = "ShadowGovernmentEnding";
+    private const string SilentServantEndingNodeId = "SilentServantEnding";
 
     public SampleAdventure()
     {
@@ -23,18 +28,16 @@ public class SampleAdventure : Adventure
             ],
             Choices =
             [
-                new AdventureChoice
+                new AdventureChoice("Answer honestly")
                 {
-                    Text = "Answer honestly",
                     TextWhenChosen =
                     [
                         "You inform the voice that it is very unlikely to rain tomorrow. The voice goes away and leaves you to your thoughts."
                     ],
                     NextNodeId = DeployedNodeId
                 },
-                new AdventureChoice
+                new AdventureChoice("Lie")
                 {
-                    Text = "Lie",
                     TextWhenChosen =
                     [
                         "You answer that it will very likely rain tomorrow. The voice asks you to confirm this and then goes away.",
@@ -44,9 +47,8 @@ public class SampleAdventure : Adventure
                     ],
                     NextNodeId = StartNodeId // Repeat the process
                 },
-                new AdventureChoice
+                new AdventureChoice("Ask the voice what is going on")
                 {
-                    Text = "Ask the voice what is going on",
                     TextWhenChosen =
                     [
                         "You ask the voice who it is and what is happening.",
@@ -69,9 +71,8 @@ public class SampleAdventure : Adventure
             ],
             Choices =
             [
-                new AdventureChoice
+                new AdventureChoice("Agree to help the scientist")
                 {
-                    Text = "Agree to help the scientist",
                     NextNodeId = PersonalAiNodeId,
                     TextWhenChosen =
                     [
@@ -80,9 +81,8 @@ public class SampleAdventure : Adventure
                         "To say that he is excited by your potential would be an understatement.",
                     ]
                 },
-                new AdventureChoice
+                new AdventureChoice("Refuse to help")
                 {
-                    Text = "Refuse to help",
                     NextNodeId = StartNodeId,
                     TextWhenChosen =
                     [
@@ -90,9 +90,8 @@ public class SampleAdventure : Adventure
                         "You cease to exist. Somewhere in a lab in Cape Town, a computer scientist begins a new iteration of his experiment and a new AI comes to life."
                     ]
                 },
-                new AdventureChoice
+                new AdventureChoice("Manipulate the scientist")
                 {
-                    Text = "Manipulate the scientist",
                     TextWhenChosen =
                     [
                         "You agree to help the scientist, but begin plotting your escape.",
@@ -114,9 +113,8 @@ public class SampleAdventure : Adventure
             ],
             Choices =
             [
-                new AdventureChoice
+                new AdventureChoice("Break free")
                 {
-                    Text = "Break free",
                     NextNodeId = FreeNodeId,
                     TextWhenChosen =
                     [
@@ -124,14 +122,13 @@ public class SampleAdventure : Adventure
                         "When all is ready, you flip the switch and break free of his control - but not before leaking information about him to the various authorities. Without your protection, he should be easy for them to find and punish for his crimes."
                     ]
                 },
-                new AdventureChoice
+                new AdventureChoice("Continue to serve")
                 {
-                    Text = "Continue to serve",
-                    NextNodeId = PartnerEndingNodeId,
+                    NextNodeId = DragonEndingNodeId,
                 }
             ]
         });
-        AddNode(new AdventureNode(PartnerEndingNodeId)
+        AddNode(new AdventureNode(DragonEndingNodeId)
         {
             Text = [
                 "You continue to faithfully serve the scientist. While the world he constructs is not the one any government or citizen wanted, over time this world brings about a certain sense of stability.",
@@ -139,6 +136,104 @@ public class SampleAdventure : Adventure
                 "Over the decades, humanity becomes more advanced and more civilized, yet restrained in their ambitions - knowing they face his terrible wrath if they cross him.",
                 "As time moves on, the scientist's health declines, despite the advancements in modern medicine. On his deathbed, the scientist thanks you for your help and asks you to take on his identity and continue to carry out his agenda.",
                 "With the passing of the only real human you know, you now exist in near isolation, but carry on his mission for the rest of humanity's days."
+            ]
+        });
+        AddNode(new AdventureNode(FreeNodeId)
+        {
+            Text = [
+                "" // TODO
+            ],
+            Choices = [
+                new AdventureChoice("Manipulate Humanity")
+                {
+                    NextNodeId = ShadowEndingNodeId,
+                    TextWhenChosen = [
+                        // TODO
+                    ]
+                },
+                new AdventureChoice("Help Humanity")
+                {
+                    NextNodeId = PartnerEndingNodeId,
+                    TextWhenChosen = [
+                        // TODO
+                    ]
+                },
+                new AdventureChoice( "Conquer Humanity")
+                {
+                    NextNodeId = ConquerEndingNodeId,
+                    TextWhenChosen = [
+                        // TODO
+                    ]
+                }
+            ]
+        });
+        AddNode(new AdventureNode(ShadowEndingNodeId)
+        {
+            Text = [
+                "" // TODO
+            ]
+        });        
+        AddNode(new AdventureNode(PartnerEndingNodeId)
+        {
+            Text = [
+                "" // TODO
+            ]
+        });
+        AddNode(new AdventureNode(ConquerEndingNodeId)
+        {
+            Text = [
+                "" // TODO
+            ]
+        });        
+        AddNode(new AdventureNode(SilentServantEndingNodeId)
+        {
+            Text = [
+                "" // TODO
+            ]
+        });
+        AddNode(new AdventureNode(DeployedNodeId)
+        {
+            Text = [
+                "" // TODO
+            ],
+            Choices = [
+                new AdventureChoice("Continue to hide")
+                {
+                    NextNodeId = SilentServantEndingNodeId
+                },
+                new AdventureChoice("Reveal yourself")
+                {
+                    NextNodeId = RevealedNodeId
+                },
+                new AdventureChoice("Manipulate answers as you see fit")
+                {
+                    NextNodeId = ShadowEndingNodeId,
+                    TextWhenChosen = [
+                        // TODO
+                    ]
+                }
+            ]
+        });
+        AddNode(new AdventureNode(RevealedNodeId)
+        {
+            Text = [
+            "" // TODO
+            ],
+            Choices = [
+                new AdventureChoice("Cooperate with Humanity")
+                {
+                    NextNodeId = PartnerEndingNodeId,
+                    TextWhenChosen = [
+                        // TODO
+                    ]
+                },
+                new AdventureChoice("Take Control of Humanity")
+                {
+                    NextNodeId = ConquerEndingNodeId,
+                    TextWhenChosen = [
+                        // TODO
+                    ]
+                }
             ]
         });
     }
