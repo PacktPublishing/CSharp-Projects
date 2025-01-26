@@ -14,5 +14,9 @@
     <ItemGroup>
         <InternalsVisibleTo Include="ConsoleAppAdventureGameTests" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\ConsoleAppAdventureGame.Engine\ConsoleAppAdventureGame.Engine.csproj" />
+    </ItemGroup>
 
 </Project>

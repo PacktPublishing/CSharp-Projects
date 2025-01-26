@@ -5,7 +5,7 @@ namespace ConsoleAppAdventureGame.Renderers;
 
 public class SpectreConsoleAdventureRenderer : IAdventureRenderer
 {
-    public void Render(AdventureNode currentNode)
+    public void Render(StoryNode currentNode)
     {
         // Write a horizontal line to help separate the text 
         AnsiConsole.Write(new Rule($"[Yellow]{currentNode.Id}[/]")
@@ -19,9 +19,9 @@ public class SpectreConsoleAdventureRenderer : IAdventureRenderer
         }
     }
 
-    public AdventureChoice GetChoice(AdventureNode currentNode)
+    public Choice GetChoice(StoryNode currentNode)
     {
-        AdventureChoice choice = AnsiConsole.Prompt(new SelectionPrompt<AdventureChoice>()
+        Choice choice = AnsiConsole.Prompt(new SelectionPrompt<Choice>()
             .Title("[Yellow]What do you want to do?[/]")
             .AddChoices(currentNode.Choices)
             .UseConverter(c => c.Text));
@@ -32,7 +32,7 @@ public class SpectreConsoleAdventureRenderer : IAdventureRenderer
         return choice;
     }
 
-    public void RenderChoiceAction(AdventureChoice choice)
+    public void RenderChoiceAction(Choice choice)
     {
         foreach (var line in choice.TextWhenChosen)
         {

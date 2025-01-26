@@ -1,20 +1,20 @@
-using ConsoleAppAdventureGame.Engine;
-
-namespace ConsoleAppAdventureGame.Builder;
+namespace ConsoleAppAdventureGame.Engine.Builder;
 
 public class ChoiceBuilder(string text)
 {
     private readonly List<string> _lines = new();
     private string? _target;
+    public string? NextNodeId => _target;
+    public string Text => text;
 
-    public AdventureChoice Build()
+    public Choice Build()
     {
         if (string.IsNullOrWhiteSpace(_target))
         {
             throw new InvalidOperationException("Must specify a target node for the choice");
         }
         
-        return new AdventureChoice(text)
+        return new Choice(text)
         {
             TextWhenChosen = _lines.ToArray(),
             NextNodeId = _target

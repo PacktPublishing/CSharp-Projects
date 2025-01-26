@@ -1,7 +1,7 @@
-using ConsoleAppAdventureGame.Builder;
 using ConsoleAppAdventureGame.Engine;
+using ConsoleAppAdventureGame.Engine.Builder;
 
-namespace ConsoleAppAdventureGame.Content;
+namespace ConsoleAppAdventureGame;
 
 public static class SampleAdventureBuilder
 {

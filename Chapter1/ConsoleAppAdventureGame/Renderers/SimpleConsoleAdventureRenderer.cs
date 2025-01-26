@@ -4,7 +4,7 @@ namespace ConsoleAppAdventureGame.Renderers;
 
 public class SimpleConsoleAdventureRenderer : IAdventureRenderer
 {
-    public void Render(AdventureNode currentNode)
+    public void Render(StoryNode currentNode)
     {
         foreach (var line in currentNode.Text)
         {
@@ -13,12 +13,12 @@ public class SimpleConsoleAdventureRenderer : IAdventureRenderer
         }
     }
 
-    public AdventureChoice GetChoice(AdventureNode currentNode)
+    public Choice GetChoice(StoryNode currentNode)
     {
         Console.WriteLine("What do you want to do?");
         Console.WriteLine();
 
-        AdventureChoice? choice = null;
+        Choice? choice = null;
         while (choice is null)
         {
             for (var i = 0; i < currentNode.Choices.Length; i++)
@@ -47,7 +47,7 @@ public class SimpleConsoleAdventureRenderer : IAdventureRenderer
         return choice;
     }
 
-    public void RenderChoiceAction(AdventureChoice choice)
+    public void RenderChoiceAction(Choice choice)
     {
         foreach (var line in choice.TextWhenChosen)
         {

@@ -1,6 +1,6 @@
-﻿using ConsoleAppAdventureGame.Content;
-using ConsoleAppAdventureGame.Engine;
+﻿using ConsoleAppAdventureGame;
 using ConsoleAppAdventureGame.Renderers;
+using ConsoleAppAdventureGame.Engine;
 using Spectre.Console;
 
 const int normalExitCode = 0;

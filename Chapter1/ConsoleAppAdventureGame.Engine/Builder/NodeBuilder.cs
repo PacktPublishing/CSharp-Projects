@@ -1,6 +1,4 @@
-using ConsoleAppAdventureGame.Engine;
-
-namespace ConsoleAppAdventureGame.Builder;
+namespace ConsoleAppAdventureGame.Engine.Builder;
 
 public class NodeBuilder(string id)
 {
@@ -8,10 +6,11 @@ public class NodeBuilder(string id)
     private readonly List<ChoiceBuilder> _choices = new();
     
     public string Id => id;
-    
-    public AdventureNode Build()
+    internal IEnumerable<ChoiceBuilder> Choices => _choices;
+
+    public StoryNode Build()
     {
-        return new AdventureNode(id)
+        return new StoryNode(id)
         {
             Text = _text.ToArray(),
             Choices = _choices.Select(c => c.Build()).ToArray()
@@ -36,5 +35,18 @@ public class NodeBuilder(string id)
         _choices.Add(choiceBuilder);
         
         return choiceBuilder;
+    }
+
+    internal void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(Id)) 
+        {
+            throw new InvalidOperationException("Node must have an ID");
+        }
+        
+        if (_text.Count == 0)
+        {
+            throw new InvalidOperationException($"Node '{id}' must have text");
+        }
     }
 }
