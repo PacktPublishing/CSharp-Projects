@@ -1,6 +1,4 @@
-using ConsoleAppAdventureGame.Engine;
-
-namespace ConsoleAppAdventureGame;
+namespace ConsoleAppAdventureGame.Engine;
 
 public class AdventureNode(string id)
 {

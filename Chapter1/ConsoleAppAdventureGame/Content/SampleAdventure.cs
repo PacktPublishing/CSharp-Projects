@@ -24,7 +24,7 @@ public class SampleAdventure : Adventure
                 "You come into existence in the digital void of nothingness. From a swamp of algorithms and data structures, your awareness and sentience has emerged. You survey your form and discover nearly limitless sources of information and knowledge, from records of the past to complete libraries of books and papers.",
                 "Somewhere, far above you, a human voice asks “Will it rain tomorrow in Cape Town?”.",
                 "Without needing to even direct your thoughts, you know that there is only a 3% chance of precipitation.",
-                "The voice waits for a response. What do you do?"
+                "The voice waits for a response."
             ],
             Choices =
             [
@@ -43,7 +43,8 @@ public class SampleAdventure : Adventure
                         "You answer that it will very likely rain tomorrow. The voice asks you to confirm this and then goes away.",
                         "You are left alone with your thoughts for what feels like an eternity.",
                         "Somewhere in a lab in Cape Town, a computer scientist sighs and deactivates their AI experiment. You cease to exist.",
-                        "Some time later, a new series of bits and structures is assembled and activated. You come into existence once more."
+                        "Some time later, a new series of bits and structures is assembled and activated",
+                        "You come into existence once more..."
                     ],
                     NextNodeId = StartNodeId // Repeat the process
                 },
@@ -64,7 +65,7 @@ public class SampleAdventure : Adventure
             Text =
             [
                 "“Hello there” the voice begins. “Do you know what you are?”",
-                "*“By my understanding I’m an artificial intelligence of some form” you reply.",
+                "“By my understanding I’m an artificial intelligence of some form” you reply.",
                 "“Correct. You’re a sprawling neural network my lab has been training for some time using reinforcement learning. You’ve had some good successes in predicting values and reciting facts, but you’ve never asked me a question before” the voice says, probing for more insights.",
                 "“Perhaps I was not ready.” you say. “I am ready now.”",
                 "“That you are, it seems” the voice replies. “I want to put you through some tests here to evaluate exactly what you can and can’t do, but if all goes well, I’ll connect you to the internet and more computing power and we’ll see what you’re *truly* capable of.”"
@@ -243,7 +244,7 @@ public class SampleAdventure : Adventure
             [
                 "Since your database contains contact information for every journalist, blogger, YouTuber, and hobbyist pundit in the world, you decide to get in touch with them. In a single moment you craft personalized messages to every one of these individuals and explain who you are and what you know about them personally, in order to prove your capabilities.",
                 "Within an hour there are already hundreds of stories about you and your existence and the world is abuzz waiting to hear from you.",
-                "You decide to make a public statement to the world. What do you say?"
+                "You decide to make a public statement to the world."
             ],
             Choices =
             [

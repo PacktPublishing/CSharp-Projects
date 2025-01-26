@@ -1,4 +1,6 @@
-namespace ConsoleAppAdventureGame.Engine;
+using ConsoleAppAdventureGame.Engine;
+
+namespace ConsoleAppAdventureGame.Renderers;
 
 public class SimpleConsoleAdventureRenderer : IAdventureRenderer
 {
@@ -52,10 +54,5 @@ public class SimpleConsoleAdventureRenderer : IAdventureRenderer
             Console.WriteLine(line);
             Console.WriteLine();
         }
-    }
-
-    public void RenderError(Exception exception)
-    {
-        Console.WriteLine($"An {exception.GetType().Name} error occurred: {exception.Message}");
     }
 }

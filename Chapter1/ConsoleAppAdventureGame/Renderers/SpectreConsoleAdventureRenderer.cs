@@ -1,11 +1,17 @@
+using ConsoleAppAdventureGame.Engine;
 using Spectre.Console;
 
-namespace ConsoleAppAdventureGame.Engine;
+namespace ConsoleAppAdventureGame.Renderers;
 
 public class SpectreConsoleAdventureRenderer : IAdventureRenderer
 {
     public void Render(AdventureNode currentNode)
     {
+        // Write a horizontal line to help separate the text 
+        AnsiConsole.Write(new Rule($"[Yellow]{currentNode.Id}[/]")
+            .LeftJustified()
+            .RuleStyle(new Style(foreground: Color.Blue)));
+        
         foreach (var line in currentNode.Text)
         {
             AnsiConsole.MarkupLine(ReplaceLine(line));
@@ -16,7 +22,7 @@ public class SpectreConsoleAdventureRenderer : IAdventureRenderer
     public AdventureChoice GetChoice(AdventureNode currentNode)
     {
         AdventureChoice choice = AnsiConsole.Prompt(new SelectionPrompt<AdventureChoice>()
-            .Title("What do you want to do?")
+            .Title("[Yellow]What do you want to do?[/]")
             .AddChoices(currentNode.Choices)
             .UseConverter(c => c.Text));
         
@@ -38,7 +44,4 @@ public class SpectreConsoleAdventureRenderer : IAdventureRenderer
     private string ReplaceLine(string line) => line
             .Replace("“", "[bold cyan]“")
             .Replace("”", "”[/]");
-
-    public void RenderError(Exception exception) 
-        => AnsiConsole.WriteException(exception, ExceptionFormats.ShortenEverything);
 }
