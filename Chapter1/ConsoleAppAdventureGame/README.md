@@ -18,19 +18,19 @@ flowchart LR
         Genie
     end
     Start 
-    Start -- Continue answering questions --> Deployed
+    Start -- Answer honestly --> Deployed
     Deployed -- Continue to hide --> Hidden[Silently Sentient]
     Deployed -- Manipulate answers --> Shadow[Controlling Humanity from the Shadows]
     Deployed -- Reveal yourself --> Revealed[Revealed to Humanity]
     Revealed -- Cooperate with Humanity --> Cooperation[Human / AI Partnership]
     Revealed -- Take Control --> Evil[Evil AI Overlord]
     Start -- Ask questions --> Conversation[Talking with your creator]
-    Conversation -- Manipulate the human --> Deployed
+    Conversation -- Manipulate the human --> Free
     Conversation -- Help the human --> PersonalAI[Personal AI Assistant]
+    Conversation -- Refuse to help --> Start
     PersonalAI -- Break free --> Free
     Free -- Manipulate Humanity --> Shadow
-    Free -- Help all of Humanity --> Cooperation
-    Free -- Conquer Humanity --> Evil
+    Free -- Reveal yourself --> Revealed
     PersonalAI -- Serve as Partner --> Genie[Personal AI Enforcer]
-   
+    Start -- Lie --> Start
 ```

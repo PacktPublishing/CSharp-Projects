@@ -3,19 +3,19 @@ using ConsoleAppAdventureGame.Engine;
 using ConsoleAppAdventureGame.Renderers;
 using Spectre.Console;
 
+const int normalExitCode = 0;
+const int errorExitCode = 1;
+
 try
 {
-    Adventure adventure = new SampleAdventure();
+    Adventure adventure = SampleAdventureBuilder.BuildSampleAdventure();
     SpectreConsoleAdventureRenderer renderer = new();
     adventure.Run(renderer);
     
-    // Normal exit code
-    return 0;
+    return normalExitCode;
 }
 catch (Exception ex)
 {
     AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
-    
-    // An error exit code
-    return 1;
+    return errorExitCode;
 }
