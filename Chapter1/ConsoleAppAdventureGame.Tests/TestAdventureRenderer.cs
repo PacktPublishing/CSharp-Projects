@@ -2,14 +2,14 @@ namespace ConsoleAppAdventureGame.Tests;
 
 public class TestAdventureRenderer : IAdventureRenderer
 {
-    public void Render(StoryNode currentNode)
+    public void Render(StoryNode node)
     {
         // No action needed
     }
 
-    public Choice GetChoice(StoryNode currentNode)
+    public Choice GetChoice(StoryNode node)
     {
-        return currentNode.Choices.First();
+        return node.Choices.First();
     }
 
     public void RenderChoiceAction(Choice choice)

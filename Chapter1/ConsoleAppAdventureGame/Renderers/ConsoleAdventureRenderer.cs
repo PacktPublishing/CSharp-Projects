@@ -2,48 +2,46 @@ using ConsoleAppAdventureGame.Engine;
 
 namespace ConsoleAppAdventureGame.Renderers;
 
-public class SimpleConsoleAdventureRenderer : IAdventureRenderer
+public class ConsoleAdventureRenderer : IAdventureRenderer
 {
-    public void Render(StoryNode currentNode)
+    public void Render(StoryNode node)
     {
-        foreach (var line in currentNode.Text)
+        foreach (var line in node.Text)
         {
             Console.WriteLine(line);
             Console.WriteLine();
         }
     }
 
-    public Choice GetChoice(StoryNode currentNode)
+    public Choice GetChoice(StoryNode node)
     {
         Console.WriteLine("What do you want to do?");
         Console.WriteLine();
 
         Choice? choice = null;
-        while (choice is null)
+        do
         {
-            for (var i = 0; i < currentNode.Choices.Length; i++)
+            for (var i = 0; i < node.Choices.Length; i++)
             {
-                Console.WriteLine($"{i + 1}. {currentNode.Choices[i].Text}");
+                Console.WriteLine($"{i + 1}. {node.Choices[i].Text}");
             }
 
             Console.WriteLine();
             Console.Write("Enter your choice: ");
-            
+
             string? input = Console.ReadLine();
-            
-            if (int.TryParse(input, out var index) && index > 0 && index <= currentNode.Choices.Length)
+
+            if (int.TryParse(input, out int index) && index > 0 && index <= node.Choices.Length)
             {
-                choice = currentNode.Choices[index - 1];
+                choice = node.Choices[index - 1];
             }
             else
             {
                 Console.WriteLine("Invalid choice. Please try again.");
             }
-        }
-
+        } while (choice is null);
         
         Console.WriteLine($"You chose: {choice.Text}");
-        
         return choice;
     }
 

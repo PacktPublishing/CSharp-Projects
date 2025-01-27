@@ -2,7 +2,7 @@ namespace ConsoleAppAdventureGame.Engine;
 
 public interface IAdventureRenderer
 {
-    void Render(StoryNode currentNode);
-    Choice GetChoice(StoryNode currentNode);
+    void Render(StoryNode node);
+    Choice GetChoice(StoryNode node);
     void RenderChoiceAction(Choice choice);
 }

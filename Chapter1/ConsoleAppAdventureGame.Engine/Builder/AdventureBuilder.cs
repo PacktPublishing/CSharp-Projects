@@ -20,14 +20,9 @@ public class AdventureBuilder
     public Adventure Build()
     {
         Validate();
-    
-        Adventure adventure = new Adventure();
-        foreach (var nodeBuilder in _nodes)
-        {
-            StoryNode node = nodeBuilder.Build();
-            adventure.AddNode(node);
-        }
-        adventure.CurrentNode = adventure.GetNode(Adventure.StartNodeId);
+
+        IEnumerable<StoryNode> nodes = _nodes.Select(n => n.Build());
+        Adventure adventure = new Adventure(nodes);
         
         return adventure;
     }

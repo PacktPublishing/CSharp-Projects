@@ -190,4 +190,39 @@ public static class SampleAdventureBuilder
             })
             .Build();
     }
+
+    public static Adventure CreateMinimalAdventure()
+    {
+        StoryNode startNode = new("Start")
+        {
+            Text = [
+                "You are standing in a room with two doors.",
+                "One door is blue, the other purple."
+            ],
+            Choices = [
+                new Choice("Open the blue door")
+                {
+                    TextWhenChosen = ["You open the blue door."],
+                    NextNodeId = "BlueRoom"
+                },
+                new Choice("Open the purple door")
+                {
+                    TextWhenChosen = ["You open the purple door."],
+                    NextNodeId = "PurpleRoom"
+                }
+            ]
+        };
+        StoryNode blueRoomNode = new("BlueRoom")
+        {
+            Text = ["You are in a room with a blue floor."]
+        };
+        StoryNode purpleRoomNode = new("PurpleRoom")
+        {
+            Text = ["You are in a room with a purple floor."]
+        };
+
+        Adventure adventure = new([startNode, blueRoomNode, purpleRoomNode]);
+
+        return adventure;
+    }
 }

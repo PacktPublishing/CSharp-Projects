@@ -8,8 +8,8 @@ const int errorExitCode = 1;
 
 try
 {
-    Adventure adventure = SampleAdventureBuilder.BuildSampleAdventure();
-    SpectreConsoleAdventureRenderer renderer = new();
+    Adventure adventure = SampleAdventureBuilder.CreateMinimalAdventure();
+    ConsoleAdventureRenderer renderer = new();
     adventure.Run(renderer);
     
     return normalExitCode;

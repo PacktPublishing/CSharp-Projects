@@ -5,25 +5,25 @@ namespace ConsoleAppAdventureGame.Renderers;
 
 public class SpectreConsoleAdventureRenderer : IAdventureRenderer
 {
-    public void Render(StoryNode currentNode)
+    public void Render(StoryNode node)
     {
         // Write a horizontal line to help separate the text 
-        AnsiConsole.Write(new Rule($"[Yellow]{currentNode.Id}[/]")
+        AnsiConsole.Write(new Rule($"[Yellow]{node.Id}[/]")
             .LeftJustified()
             .RuleStyle(new Style(foreground: Color.Blue)));
         
-        foreach (var line in currentNode.Text)
+        foreach (var line in node.Text)
         {
             AnsiConsole.MarkupLine(ReplaceLine(line));
             AnsiConsole.WriteLine();
         }
     }
 
-    public Choice GetChoice(StoryNode currentNode)
+    public Choice GetChoice(StoryNode node)
     {
         Choice choice = AnsiConsole.Prompt(new SelectionPrompt<Choice>()
             .Title("[Yellow]What do you want to do?[/]")
-            .AddChoices(currentNode.Choices)
+            .AddChoices(node.Choices)
             .UseConverter(c => c.Text));
         
         AnsiConsole.MarkupLineInterpolated($"[yellow]>[/] [bold blue]{choice.Text}[/]");
