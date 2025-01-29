@@ -36,13 +36,8 @@ public class ChoiceBuilder(string text)
     public ChoiceBuilder ThatLeadsTo(string targetId)
     {
         _target = targetId;
-        
         return this;
     }
 
-    public ChoiceBuilder ThatLeadsTo(NodeBuilder targetNode) 
-        => ThatLeadsTo(targetNode.Id);
-
-    public ChoiceBuilder ThatLeadsToStart() 
-        => ThatLeadsTo(Adventure.StartNodeId);
+    public ChoiceBuilder ThatLeadsToStart() => ThatLeadsTo(Adventure.StartNodeId);
 }

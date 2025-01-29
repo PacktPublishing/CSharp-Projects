@@ -191,7 +191,27 @@ public static class SampleAdventureBuilder
             .Build();
     }
 
-    public static Adventure CreateMinimalAdventure()
+    public static Adventure BuildMinimalAdventure()
+    {
+        Adventure adventure = new AdventureBuilder()
+            .WithStartNode(n => {
+                n.HasText("You are standing in a room with two doors.",
+                    "One door is blue, the other purple.");
+                n.HasChoice("Open the blue door")
+                    .WithText("You open the blue door.")
+                    .ThatLeadsTo("BlueRoom");
+                n.HasChoice("Open the purple door")
+                    .WithText("You open the purple door.")
+                    .ThatLeadsTo("PurpleRoom");
+            })
+            .WithNode("BlueRoom", n => n.HasText("You are in a room with a blue floor."))
+            .WithNode("PurpleRoom", n => n.HasText("You are in a room with a purple floor."))
+            .Build();
+        
+        return adventure;
+    }
+    
+    public static Adventure BuildMinimalAdventureUsingBuilder()
     {
         StoryNode startNode = new("Start")
         {

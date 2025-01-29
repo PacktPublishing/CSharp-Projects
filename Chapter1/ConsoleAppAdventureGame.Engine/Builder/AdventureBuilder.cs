@@ -8,7 +8,6 @@ public class AdventureBuilder
     {
         NodeBuilder nodeBuilder = new(id);
         configure(nodeBuilder);
-        
         _nodes.Add(nodeBuilder);
         
         return this;

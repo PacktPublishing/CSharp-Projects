@@ -5,6 +5,20 @@ namespace ConsoleAppAdventureGame.Renderers;
 
 public class SpectreConsoleAdventureRenderer : IAdventureRenderer
 {
+    
+    public Choice GetChoice(StoryNode node)
+    {
+        Choice choice = AnsiConsole.Prompt(new SelectionPrompt<Choice>()
+            .Title("[Yellow]What do you want to do?[/]")
+            .AddChoices(node.Choices)
+            .UseConverter(c => c.Text));
+        
+        AnsiConsole.MarkupLineInterpolated($"[yellow]>[/] [bold blue]{choice.Text}[/]");
+        AnsiConsole.WriteLine();
+        
+        return choice;
+    }
+    
     public void Render(StoryNode node)
     {
         // Write a horizontal line to help separate the text 
@@ -17,19 +31,6 @@ public class SpectreConsoleAdventureRenderer : IAdventureRenderer
             AnsiConsole.MarkupLine(ReplaceLine(line));
             AnsiConsole.WriteLine();
         }
-    }
-
-    public Choice GetChoice(StoryNode node)
-    {
-        Choice choice = AnsiConsole.Prompt(new SelectionPrompt<Choice>()
-            .Title("[Yellow]What do you want to do?[/]")
-            .AddChoices(node.Choices)
-            .UseConverter(c => c.Text));
-        
-        AnsiConsole.MarkupLineInterpolated($"[yellow]>[/] [bold blue]{choice.Text}[/]");
-        AnsiConsole.WriteLine();
-        
-        return choice;
     }
 
     public void RenderChoiceAction(Choice choice)

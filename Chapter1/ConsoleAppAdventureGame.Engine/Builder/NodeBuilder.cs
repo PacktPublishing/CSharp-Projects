@@ -17,7 +17,7 @@ public class NodeBuilder(string id)
         };
     }
 
-    public NodeBuilder HasText(params string[] lines)
+    public void HasText(params string[] lines)
     {
         if (lines.Length == 0)
         {
@@ -25,8 +25,11 @@ public class NodeBuilder(string id)
         }
         
         _text.AddRange(lines);
-
-        return this;
+        
+        /* NOTE: This method could return a NodeBuilder and return this to enable fluent-style method chaining.
+        However, in combination with the HasChoice method which returned a ChoiceBuilder, I found this to be
+        confusing and potentially error-prone so I elected to make this void instead at the risk of being inconvenient
+        instead of confusing or buggy */
     }
 
     public ChoiceBuilder HasChoice(string text)
