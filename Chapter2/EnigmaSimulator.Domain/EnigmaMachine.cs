@@ -1,30 +1,38 @@
 namespace EnigmaSimulator.Domain;
 
-public class EnigmaMachine
+public class EnigmaMachine(Rotor[] rotors, Pegboard pegboard, Reflector reflector)
 {
-    private readonly Reflector _reflector;
-    private readonly Pegboard _pegboard;
-    private readonly Rotor[] _rotors;
-    
-    public EnigmaMachine(Rotor[] rotors, Pegboard pegboard, Reflector reflector)
+    public char EncodeAndAdvance(char input)
     {
-        _reflector = reflector;
-        _pegboard = pegboard;
-        _rotors = rotors;
+        char output = Encode(input);
+        Advance();
+
+        return output;
     }
-    
-    public char Encode(char input)
+
+    private void Advance()
     {
-        char output = _pegboard.Encode(input);
+        Queue<Rotor> rotorsToAdvance = new(rotors);
+        bool shouldAdvance = true;
+        while (shouldAdvance && rotorsToAdvance.Count > 0)
+        {
+            Rotor rotor = rotorsToAdvance.Dequeue();
+            shouldAdvance = rotor.Advance();
+        }
+    }
+
+    private char Encode(char input)
+    {
+        char output = pegboard.Encode(input);
         
-        foreach (var rotor in _rotors)
+        foreach (var rotor in rotors)
         {
             output = rotor.Encode(output);
         }
         
-        output = _reflector.Encode(output);
+        output = reflector.Encode(output);
         
-        foreach (var rotor in _rotors.Reverse())
+        foreach (var rotor in rotors.Reverse())
         {
             output = rotor.Encode(output);
         }
