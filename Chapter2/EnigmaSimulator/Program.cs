@@ -1,14 +1,14 @@
 ﻿using EnigmaSimulator.Domain;
 
-Rotor[] rotors = new Rotor[]
-{
-    new Rotor(),
-    new Rotor(),
-    new Rotor()
-};
+Rotor[] rotors =
+[
+    new(Rotor.Enigma1),
+    new(Rotor.Enigma2),
+    new(Rotor.Enigma3)
+];
 
-Pegboard pegboard = new Pegboard();
-Reflector reflector = new Reflector();
+Pegboard pegboard = new();
+Reflector reflector = new();
 
 EnigmaMachine enigmaMachine = new(rotors, pegboard, reflector);
 

@@ -5,7 +5,6 @@ namespace EnigmaSimulator.Tests;
 
 public class PegboardTests
 {
-    
     [Test]
     public void ConnectionPresentAfterBeingConfigured()
     {
@@ -47,5 +46,24 @@ public class PegboardTests
         
         // Assert
         output.ShouldBe(input);
+    }
+    
+    [Test]
+    public void DuplicateConnectionsAreNotAllowed()
+    {
+        // Arrange
+        Pegboard pegboard = new();
+        pegboard.Connect('H', 'I');
+        
+        // Act / Assert
+        try
+        {
+            pegboard.Connect('I', 'D'); // I is already connected to H
+            Assert.Fail("Expected an exception to be thrown");
+        }
+        catch (ArgumentException)
+        {
+            // Expected
+        }
     }
 }

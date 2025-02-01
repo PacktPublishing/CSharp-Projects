@@ -1,17 +1,30 @@
 namespace EnigmaSimulator.Domain;
 
-public class Rotor
+public class Rotor(IEnumerable<char> characterMapping)
 {
+    public const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public const string Enigma1 = "EKMFLGDQVZNTOWYHXUSPAIBRCJ";
+    public const string Enigma2 = "AJDKSIRUXBLHWTMCQGZNPYFVOE";
+    public const string Enigma3 = "BDFHJLCPRTXVZNYEIWGAKMUSQO";
+    public const string Enigma4 = "ESOVPZJAYQUIRHXLNFTGKDCMWB";
+    public const string Enigma5 = "VZBRGITYUPSDNHLXAWMJQOFECK";
+    public const string ReflectorA = "EJMZALYXVBWFCRQUONTSPIKHGD";
+    public const string ReflectorB = "YRUHQSLDPXNGOKMIEBFZCWVJAT";
+    public const string ReflectorC = "FVPJIAOYEDRZXWGCTKUQSBNMHL";
+ 
     public char Encode(char input)
     {
-        // Rot3 the input
-        char output = (char)(input + 3);
-        // If the output is greater than 'Z', wrap around to 'A'
-        if (output > 'Z')
+        // Get the index of the character in the alphabet (case-insensitive)
+        int index = Alphabet.IndexOf(char.ToUpper(input));
+        
+        // We can only map letters, so return input for other characters
+        if (index < 0)
         {
-            output = (char)(output - 26);
+            return input;
         }
         
-        return output;
+        // Get the character at the same index in the character mapping
+        return characterMapping.ElementAt(index);
     }
+
 }
