@@ -32,24 +32,26 @@ public class Rotor
 
     public override string ToString() => Name;
 
-    public char Encode(char input)
+    public char Encode(char input, bool isForward)
     {
-        input = AdjustForPositionAndRing(char.ToUpper(input), forward: true);
-        char output = _mappings.Encode(input);
-        output = AdjustForPositionAndRing(output, forward: false);
-        
+        char adjustedInput = AdjustForPositionAndRing(char.ToUpper(input), isForward);
+        char encodedChar = _mappings.Encode(adjustedInput);
+        char output = AdjustForPositionAndRing(encodedChar, !isForward);
+
         foreach (var observer in _observers)
         {
             observer.Encoded(this, input, output);
         }
-        
+
         return output;
     }
 
-    public char AdjustForPositionAndRing(char input, bool forward) {
+    public char AdjustForPositionAndRing(char input, bool isForward)
+    {
         int shift = Position - 1;
-        int offset = forward ? shift : -shift;
+        int offset = isForward ? shift : -shift;
         int adjusted = ((input - 'A') + offset + AlphabetLength) % AlphabetLength; // Ensure wrapping using modular arithmetic
+
         return (char)('A' + adjusted);
     }
 

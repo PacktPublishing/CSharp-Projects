@@ -43,14 +43,14 @@ public class EnigmaMachine(Rotor[] rotors, Plugboard plugboard, Reflector reflec
         
         foreach (var rotor in rotors.Reverse())
         {
-            output = rotor.Encode(output);
+            output = rotor.Encode(output, isForward: true);
         }
         
         output = reflector.Encode(output);
         
         foreach (var rotor in rotors)
         {
-            output = rotor.Encode(output);
+            output = rotor.Encode(output, isForward: false);
         }
         output = plugboard.Encode(output);
 

@@ -5,22 +5,6 @@ namespace EnigmaSimulator.Tests;
 
 public class RotorTests
 {
-    [TestCase('A', 1, 'E')] // 1st letter of sequence
-    [TestCase('a', 1, 'E')]
-    [TestCase('A', 2, 'J')] // 2nd letter of sequence
-    [TestCase('Z', 1, 'J')]
-    [TestCase('Z', 2, 'D')] // Should wrap back to 1st
-    public void RotorShouldMapInputCorrectly(char input, int position, char expectedOutput)
-    {
-        // Arrange
-        Rotor rotor = new(Rotor.Enigma1, position);
-        
-        // Act
-        char output = rotor.Encode(input);
-        
-        // Assert
-        output.ShouldBe(expectedOutput);
-    }
     
     [TestCase(1,2)]
     [TestCase(5,6)]
@@ -37,38 +21,56 @@ public class RotorTests
         rotor.Position.ShouldBe(expectedPosition);
     }
     
-    [TestCase('A', 1, 'B')]
-    [TestCase('A', 2, 'C')]
-    [TestCase('D', 1, 'H')]
-    [TestCase('D', 2, 'I')]
-    [TestCase('G', 1, 'C')]
-    [TestCase('S', 1, 'G')]
-    [TestCase('X', 2, 'P')]
-    [TestCase('Z', 1, 'O')]
-    [TestCase('Z', 2, 'A')]
-    public void Rotor3MappingTests(char input, int position, char expected)
+    [TestCase('A', Rotor.Enigma1, 1, true, 'E')] // 1st letter of sequence
+    [TestCase('a', Rotor.Enigma1, 1, true, 'E')]
+    [TestCase('A', Rotor.Enigma1, 2, true, 'J')] // 2nd letter of sequence
+    [TestCase('Z', Rotor.Enigma1, 1, true, 'J')]
+    [TestCase('Z', Rotor.Enigma1, 2, true, 'D')] // Should wrap back to 1st
+    [TestCase('A', Rotor.Enigma3, 1, true, 'B')]
+    [TestCase('A', Rotor.Enigma3, 2, true, 'C')]
+    [TestCase('D', Rotor.Enigma3, 1, true, 'H')]
+    [TestCase('D', Rotor.Enigma3, 2, true, 'I')]
+    [TestCase('G', Rotor.Enigma3, 1, true, 'C')]
+    [TestCase('S', Rotor.Enigma3, 1, true, 'G')]
+    [TestCase('X', Rotor.Enigma3, 2, true, 'P')]
+    [TestCase('Z', Rotor.Enigma3, 1, true, 'O')]
+    [TestCase('Z', Rotor.Enigma3, 2, true, 'A')]
+    [TestCase('D', Rotor.Enigma3, 3, true, 'J')]
+    [TestCase('J', Rotor.Enigma2, 1, true, 'B')]
+    [TestCase('B', Rotor.Enigma1, 1, true, 'K')]
+    [TestCase('N', Rotor.Enigma1, 1, false, 'K')]
+    [TestCase('K', Rotor.Enigma2, 1, false, 'D')]
+    [TestCase('D', Rotor.Enigma3, 3, false, 'A')]
+    [TestCase('S', Rotor.Enigma1, 1, false, 'S')]
+    [TestCase('S', Rotor.Enigma2, 1, false, 'E')]
+    [TestCase('E', Rotor.Enigma3, 1, false, 'P')]
+    public void RotorMappingTests(char input, string mapping, int position, bool isForward, char expected)
     {
         // Arrange
-        Rotor rotor = new(Rotor.Enigma3, position);
+        Rotor rotor = new(mapping, position);
         
         // Act
-        char output = rotor.Encode(input);
+        char output = rotor.Encode(input, isForward);
         
         // Assert
         output.ShouldBe(expected);
     }
 
-    [TestCase('A', 1, 'A')]
-    [TestCase('A', 2, 'B')]
-    [TestCase('Z', 1, 'Z')]
-    [TestCase('Z', 2, 'A')]
-    public void PositionAndRingTests(char input, int position, char expected)
+    [TestCase('A', 1, true, 'A')]
+    [TestCase('A', 2, true, 'B')]
+    [TestCase('Z', 1, true, 'Z')]
+    [TestCase('Z', 2, true, 'A')]
+    [TestCase('A', 1, false, 'A')]
+    [TestCase('B', 2, false, 'A')]
+    [TestCase('Z', 1, false, 'Z')]
+    [TestCase('A', 2, false, 'Z')]
+    public void PositionAndRingTests(char input, int position, bool isForward, char expected)
     {
         // Arrange
         Rotor rotor = new(Rotor.Enigma1, position);
         
         // Act
-        char output = rotor.AdjustForPositionAndRing(input, true);
+        char output = rotor.AdjustForPositionAndRing(input, isForward);
         
         // Assert
         output.ShouldBe(expected);
