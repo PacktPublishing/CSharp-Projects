@@ -1,4 +1,4 @@
-namespace EnigmaSimulator.Domain;
+namespace EnigmaSimulator.Domain.Utilities;
 
 internal class CaseInsensitiveCharComparer : IEqualityComparer<char>
 {

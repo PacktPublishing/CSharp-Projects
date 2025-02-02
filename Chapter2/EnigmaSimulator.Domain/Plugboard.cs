@@ -1,37 +1,18 @@
-using System.ComponentModel;
+using EnigmaSimulator.Domain.Utilities;
 
 namespace EnigmaSimulator.Domain;
 
-public class Plugboard
+public class Plugboard(params string[] pairs)
 {
-    private readonly Dictionary<char, char> _mappings 
-        = new(new CaseInsensitiveCharComparer());
+    private readonly BidirectionalCharEncoder _mappings = BidirectionalCharEncoder.FromPairs(pairs);
 
     private readonly List<IEnigmaVisitor> _observers = [];
 
     public override string ToString() => "Plugboard";
 
-    public Plugboard(params string[] pairs)
-    {
-        foreach (var pair in pairs)
-        {
-            if (pair.Length != 2)
-            {
-                throw new ArgumentException("Pairs must be exactly 2 characters long", nameof(pairs));
-            }
-
-            Connect(pair[0], pair[1]);
-        }
-    }
-
     public char Encode(char input)
     {
-        char output = input;
-        
-        if (_mappings.ContainsKey(char.ToUpper(input)))
-        {
-            output = _mappings[char.ToUpper(input)];
-        }
+        char output = _mappings.Encode(input);
 
         foreach (var observer in _observers)
         {
@@ -41,14 +22,5 @@ public class Plugboard
         return output;
     }
 
-    private void Connect(char c1, char c2)
-    {
-        _mappings.Add(c1, c2);
-        _mappings.Add(c2, c1);
-    }
-
-    public void Register(IEnigmaVisitor observer)
-    {
-        _observers.Add(observer);
-    }
+    public void Register(IEnigmaVisitor observer) => _observers.Add(observer);
 }

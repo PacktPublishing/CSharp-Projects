@@ -50,7 +50,7 @@ public class EnigmaMachine(Rotor[] rotors, Plugboard plugboard, Reflector reflec
         
         foreach (var rotor in rotors)
         {
-            output = rotor.EncodeReverse(output);
+            output = rotor.Encode(output);
         }
         output = plugboard.Encode(output);
 

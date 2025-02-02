@@ -1,40 +1,42 @@
+using EnigmaSimulator.Domain.Utilities;
+
 namespace EnigmaSimulator.Domain;
 
-public class Rotor(string characterMapping, int position = 1)
+public class Rotor
 {
     private readonly List<IEnigmaVisitor> _observers = [];
-    
-    public const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public const int AlphabetLength = 26;
     
     public const string Enigma1 = "EKMFLGDQVZNTOWYHXUSPAIBRCJ";
     public const string Enigma2 = "AJDKSIRUXBLHWTMCQGZNPYFVOE";
     public const string Enigma3 = "BDFHJLCPRTXVZNYEIWGAKMUSQO";
     public const string Enigma4 = "ESOVPZJAYQUIRHXLNFTGKDCMWB";
     public const string Enigma5 = "VZBRGITYUPSDNHLXAWMJQOFECK";
+    
+    private readonly BidirectionalCharEncoder _mappings;
 
-    public int Position { get; private set; } = position;
-    public string Name { get; set; } = characterMapping[..3];
+    public Rotor(string characterMapping, int position = 1)
+    {
+        if (position < 1 || position > characterMapping.Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(position), "Position must be between 1 and the length of the character mapping.");
+        }
+        
+        _mappings = BidirectionalCharEncoder.FromMapping(characterMapping);
+        Name = characterMapping[..3];
+        Position = position;
+    }
+
+    public int Position { get; private set; }
+    public string Name { get; init; }
 
     public override string ToString() => Name;
 
     public char Encode(char input)
     {
-        char output = input;
-     
-        // Get the index of the character in the alphabet (case-insensitive)
-        int index = Alphabet.IndexOf(input);
-        
-        // We can only map letters, so return input for other characters
-        if (index >= 0)
-        {
-            output = characterMapping.ElementAt(index);
-            
-            // Add the position to the output
-            output = (char)(output + Position - 1);
-            // Offset the output by the rotor's position
-            //index = (index - Position + characterMapping.Length) % characterMapping.Length;
-            //output = Alphabet.ElementAt(index);
-        }
+        input = AdjustForPositionAndRing(char.ToUpper(input), forward: true);
+        char output = _mappings.Encode(input);
+        output = AdjustForPositionAndRing(output, forward: false);
         
         foreach (var observer in _observers)
         {
@@ -44,30 +46,11 @@ public class Rotor(string characterMapping, int position = 1)
         return output;
     }
 
-    public char EncodeReverse(char input)
-    {
-        char output = input;
-        
-        // Get the index of the character in the alphabet (case-insensitive)
-        int index = characterMapping.IndexOf(input);
-
-        if (index >= 0)
-        {
-            // Adjust index by position
-            index = (index - Position + 1 + characterMapping.Length) % characterMapping.Length;
-            
-            output = Alphabet.ElementAt(index);
-            
-            // Add the position to the output
-            //output = (char)(output - Position + 1);
-        }
-        
-        foreach (var observer in _observers)
-        {
-            observer.Encoded(this, input, output);
-        }
-        
-        return output;
+    public char AdjustForPositionAndRing(char input, bool forward) {
+        int shift = Position - 1;
+        int offset = forward ? shift : -shift;
+        int adjusted = ((input - 'A') + offset + AlphabetLength) % AlphabetLength; // Ensure wrapping using modular arithmetic
+        return (char)('A' + adjusted);
     }
 
     public bool Advance()
@@ -76,9 +59,9 @@ public class Rotor(string characterMapping, int position = 1)
 
         bool advancedNext = false;
         Position++;
-        while (Position > characterMapping.Length)
+        while (Position > AlphabetLength)
         {
-            Position -= characterMapping.Length;
+            Position -= AlphabetLength;
             advancedNext = true;
         }
         
