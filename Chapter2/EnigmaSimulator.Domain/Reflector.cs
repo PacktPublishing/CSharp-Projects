@@ -13,7 +13,7 @@ public class Reflector(string inputMapping)
     
     public override string ToString() => "Reflector";
 
-    public char Encode(char input)
+    public virtual char Encode(char input)
     {
         char output = _mapper.Encode(input);
 

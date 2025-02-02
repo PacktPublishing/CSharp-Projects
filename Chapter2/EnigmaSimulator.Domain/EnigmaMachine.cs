@@ -36,7 +36,7 @@ public class EnigmaMachine(Rotor[] rotors, Plugboard plugboard, Reflector reflec
         }
     }
 
-    private char Encode(char input)
+    public char Encode(char input)
     {
         input = char.ToUpper(input);
         char output = plugboard.Encode(input);
