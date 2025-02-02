@@ -5,16 +5,19 @@ namespace EnigmaSimulator.Tests;
 
 public class ReflectorTests
 {
-    [Test]
-    public void ReflectorShouldMapInputCorrectly()
+    [TestCase('A', 'Y')]
+    [TestCase('J', 'X')]
+    [TestCase('X', 'J')]
+    [TestCase('F', 'S')]
+    public void ReflectorShouldMapInputCorrectly(char input, char expected)
     {
         // Arrange
         Reflector reflector = new(Reflector.ReflectorB);
         
         // Act
-        char output = reflector.Encode('A');
+        char output = reflector.Encode(input);
         
         // Assert
-        output.ShouldBe('Y');
+        output.ShouldBe(expected);
     }
 }

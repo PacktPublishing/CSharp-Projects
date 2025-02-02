@@ -1,24 +1,36 @@
-﻿using EnigmaSimulator.Domain;
+﻿using EnigmaSimulator;
+using EnigmaSimulator.Domain;
+using Spectre.Console;
 
-Pegboard pegboard = new("AM", "FI", "NV", "PS", "TU", "WZ");
+AnsiConsole.Write(new FigletText("Enigma").Color(Color.Gold1));
+
+Plugboard plugboard = new();//"AM", "FI", "NV", "PS", "TU", "WZ");
 Rotor[] rotors =
 [
-    new(Rotor.Enigma2, 24),
-    new(Rotor.Enigma1, 13),
-    new(Rotor.Enigma3, 22)
+    //new(Rotor.Enigma1, 1) { Name = "Rotor 1 (I)" },
+    //new(Rotor.Enigma2, 1) { Name = "Rotor 2 (II)" },
+    new(Rotor.Enigma3, 1) { Name = "Rotor 1 (III)" },
+    new(Rotor.Enigma3, 1) { Name = "Rotor 2 (III)" },
+    new(Rotor.Enigma3, 1) { Name = "Rotor 3 (III)" },
+    //new(Rotor.Enigma1, 1) { Name = "I" },
+    //new(Rotor.Enigma1, 1) { Name = "I" },
+    //new(Rotor.Enigma2, 1) { Name = "II" },
+    //new(Rotor.Enigma3, 1) { Name = "III" }
 ];
-Reflector reflector = new(Reflector.ReflectorA);
-EnigmaMachine enigmaMachine = new(rotors, pegboard, reflector);
+Reflector reflector = new(Reflector.ReflectorB);
+EnigmaMachine enigmaMachine = new(rotors, plugboard, reflector);
+enigmaMachine.Register(new EnigmaConsoleVisitor());
 
 do
 {
     // Read a character from the console
-    char input = Console.ReadKey().KeyChar;
+    ConsoleKeyInfo? keyInfo = AnsiConsole.Console.Input.ReadKey(intercept: true);
     
+    char input = keyInfo.GetValueOrDefault().KeyChar;
     char output = input;
     if (char.IsLetter(input))
     {;
-        output = enigmaMachine.Encode(input);
+        output = enigmaMachine.EncodeAndAdvance(input);
     } 
     else if (!char.IsPunctuation(input))
     {

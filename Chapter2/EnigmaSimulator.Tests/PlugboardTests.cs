@@ -3,16 +3,16 @@ using Shouldly;
 
 namespace EnigmaSimulator.Tests;
 
-public class PegboardTests
+public class PlugboardTests
 {
     [Test]
     public void ConnectionPresentAfterBeingConfigured()
     {
         // Arrange
-        Pegboard pegboard = new("HI");
+        Plugboard plugboard = new("HI");
         
         // Act
-        char output = pegboard.Encode('H');
+        char output = plugboard.Encode('H');
         
         // Assert
         output.ShouldBe('I');
@@ -24,10 +24,10 @@ public class PegboardTests
     public void PegboardShouldReturnInputWhenNotConnected(char input)
     {
         // Arrange
-        Pegboard pegboard = new();
+        Plugboard plugboard = new();
         
         // Act
-        char output = pegboard.Encode(input);
+        char output = plugboard.Encode(input);
         
         // Assert
         output.ShouldBe(input);
@@ -37,7 +37,7 @@ public class PegboardTests
     public void DuplicateConnectionsAreNotAllowed()
     {
         Should.Throw<ArgumentException>(
-            () => new Pegboard("HI", "ID")
+            () => new Plugboard("HI", "ID")
         );
     }
 }

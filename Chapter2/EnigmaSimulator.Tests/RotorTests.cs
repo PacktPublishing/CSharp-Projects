@@ -36,4 +36,34 @@ public class RotorTests
         // Assert
         rotor.Position.ShouldBe(expectedPosition);
     }
+
+    [TestCase('A', 1, 'B')]
+    [TestCase('A', 2, 'C')]
+    public void Rotor3RightToLeftMappingTests(char input, int position, char expected)
+    {
+        // Arrange
+        Rotor rotor = new(Rotor.Enigma3, position);
+        
+        // Act
+        char output = rotor.Encode(input);
+        
+        // Assert
+        output.ShouldBe(expected);
+    }
+    
+    
+    [TestCase('G', 1, 'S')]
+    [TestCase('S', 1, 'X')]
+    [TestCase('X', 2, 'N')]
+    public void Rotor3LeftToRightMappingTests(char input, int position, char expected)
+    {
+        // Arrange
+        Rotor rotor = new(Rotor.Enigma3, position);
+        
+        // Act
+        char output = rotor.EncodeReverse(input);
+        
+        // Assert
+        output.ShouldBe(expected);
+    }
 }
