@@ -1,10 +1,24 @@
+using System.Text;
+
 namespace EnigmaSimulator.Domain;
 
 public class EnigmaMachine(Rotor[] rotors, Plugboard plugboard, Reflector reflector)
 {
     private readonly List<IEnigmaVisitor> _observers = new();
+
+    public string Encode(string input)
+    {
+        StringBuilder sb = new(input.Length);
+        
+        foreach (char c in input)
+        {
+            sb.Append(AdvanceAndEncode(c));
+        }
+        
+        return sb.ToString();
+    }
     
-    public char EncodeAndAdvance(char input)
+    public char AdvanceAndEncode(char input)
     {
         Advance();
         
@@ -36,7 +50,7 @@ public class EnigmaMachine(Rotor[] rotors, Plugboard plugboard, Reflector reflec
         }
     }
 
-    public char Encode(char input)
+    private char Encode(char input)
     {
         input = char.ToUpper(input);
         char output = plugboard.Encode(input);

@@ -5,20 +5,21 @@ namespace EnigmaSimulator.Tests;
 
 public class RotorTests
 {
-    
-    [TestCase(1,2)]
-    [TestCase(5,6)]
-    [TestCase(26,1)]
-    public void RotorShouldAdvanceCorrectly(int initialPosition, int expectedPosition)
+    [TestCase(1,2, false)]
+    [TestCase(5,6, false)]
+    [TestCase(17,18, true)] // Notch at Q on Enigma 1
+    [TestCase(26,1, false)]
+    public void RotorShouldAdvanceCorrectly(int initialPosition, int expectedPosition, bool expectedNotch)
     {
         // Arrange
         Rotor rotor = new(Rotor.Enigma1, initialPosition);
         
         // Act
-        rotor.Advance();
+        bool encounteredNotch = rotor.Advance();
         
         // Assert
         rotor.Position.ShouldBe(expectedPosition);
+        encounteredNotch.ShouldBe(expectedNotch);
     }
     
     [TestCase('A', Rotor.Enigma1, 1, true, 'E')] // 1st letter of sequence

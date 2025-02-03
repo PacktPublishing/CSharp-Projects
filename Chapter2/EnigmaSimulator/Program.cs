@@ -4,18 +4,12 @@ using Spectre.Console;
 
 AnsiConsole.Write(new FigletText("Enigma").Color(Color.Gold1));
 
-Plugboard plugboard = new();//"AM", "FI", "NV", "PS", "TU", "WZ");
+Plugboard plugboard = new("AM", "FI", "NV", "PS", "TU", "WZ");
 Rotor[] rotors =
 [
-    //new(Rotor.Enigma1, 1) { Name = "Rotor 1 (I)" },
-    //new(Rotor.Enigma2, 1) { Name = "Rotor 2 (II)" },
-    new(Rotor.Enigma3, 1) { Name = "Rotor 1 (III)" },
-    new(Rotor.Enigma3, 1) { Name = "Rotor 2 (III)" },
-    new(Rotor.Enigma3, 1) { Name = "Rotor 3 (III)" },
-    //new(Rotor.Enigma1, 1) { Name = "I" },
-    //new(Rotor.Enigma1, 1) { Name = "I" },
-    //new(Rotor.Enigma2, 1) { Name = "II" },
-    //new(Rotor.Enigma3, 1) { Name = "III" }
+    new(Rotor.Enigma1, 1),
+    new(Rotor.Enigma2, 1),
+    new(Rotor.Enigma3, 1),
 ];
 Reflector reflector = new(Reflector.ReflectorB);
 EnigmaMachine enigmaMachine = new(rotors, plugboard, reflector);
@@ -30,7 +24,7 @@ do
     char output = input;
     if (char.IsLetter(input))
     {;
-        output = enigmaMachine.EncodeAndAdvance(input);
+        output = enigmaMachine.AdvanceAndEncode(input);
     } 
     else if (!char.IsPunctuation(input))
     {
