@@ -3,10 +3,12 @@ namespace EnigmaSimulator.Domain.Utilities;
 public class BidirectionalCharEncoder
 {
     private readonly Dictionary<char, char> _mappings;
+    private readonly Dictionary<char, char> _reverseMappings;
 
     private BidirectionalCharEncoder()
     {
         _mappings = new Dictionary<char, char>(new CaseInsensitiveCharComparer());
+        _reverseMappings = new Dictionary<char, char>(new CaseInsensitiveCharComparer());
     }
     
     public static BidirectionalCharEncoder FromPairs(params string[] pairs)
@@ -35,6 +37,7 @@ public class BidirectionalCharEncoder
             char input = (char)('A' + i);
             char output = char.ToUpper(mapping[i]);
             encoder._mappings.Add(input, output);
+            encoder._reverseMappings.Add(output, input);
         }
 
         if (encoder._mappings.Keys.Count != mapping.Length || 
@@ -46,6 +49,18 @@ public class BidirectionalCharEncoder
         return encoder;
     }
 
-    public char Encode(char input) 
-        => _mappings.GetValueOrDefault(input, input);
+    public char Encode(char input, bool isForward, int offset = 0)
+    {
+        const int numLetters = 26; // Length of the alphabet
+        input = char.ToUpper(input);
+        
+        // Adjust the input character for the offset
+        int adjustedInput = ((input - 'A') + offset + numLetters) % numLetters + 'A';
+        Dictionary<char, char> mappings = isForward ? _mappings : _reverseMappings;
+        char encodedChar = mappings.GetValueOrDefault((char)adjustedInput, input);
+
+        // Adjust the encoded character back for the offset
+        int adjustedOutput = ((encodedChar - 'A') - offset + numLetters) % numLetters + 'A';
+        return (char)adjustedOutput;
+    }
 }

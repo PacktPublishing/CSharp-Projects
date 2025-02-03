@@ -12,7 +12,7 @@ public class Plugboard(params string[] pairs)
 
     public char Encode(char input)
     {
-        char output = _mappings.Encode(input);
+        char output = _mappings.Encode(input, isForward: true);
 
         foreach (var observer in _observers)
         {

@@ -55,24 +55,4 @@ public class RotorTests
         // Assert
         output.ShouldBe(expected);
     }
-
-    [TestCase('A', 1, true, 'A')]
-    [TestCase('A', 2, true, 'B')]
-    [TestCase('Z', 1, true, 'Z')]
-    [TestCase('Z', 2, true, 'A')]
-    [TestCase('A', 1, false, 'A')]
-    [TestCase('B', 2, false, 'A')]
-    [TestCase('Z', 1, false, 'Z')]
-    [TestCase('A', 2, false, 'Z')]
-    public void PositionAndRingTests(char input, int position, bool isForward, char expected)
-    {
-        // Arrange
-        Rotor rotor = new(Rotor.Enigma1, position);
-        
-        // Act
-        char output = rotor.AdjustForPositionAndRing(input, isForward);
-        
-        // Assert
-        output.ShouldBe(expected);
-    }
 }

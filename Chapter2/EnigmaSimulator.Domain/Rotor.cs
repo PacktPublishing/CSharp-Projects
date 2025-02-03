@@ -34,9 +34,7 @@ public class Rotor
 
     public char Encode(char input, bool isForward)
     {
-        char adjustedInput = AdjustForPositionAndRing(char.ToUpper(input), isForward);
-        char encodedChar = _mappings.Encode(adjustedInput);
-        char output = AdjustForPositionAndRing(encodedChar, !isForward);
+        char output = _mappings.Encode(input, isForward, offset: Position - 1);
 
         foreach (var observer in _observers)
         {
@@ -44,15 +42,6 @@ public class Rotor
         }
 
         return output;
-    }
-
-    public char AdjustForPositionAndRing(char input, bool isForward)
-    {
-        int shift = Position - 1;
-        int offset = isForward ? shift : -shift;
-        int adjusted = ((input - 'A') + offset + AlphabetLength) % AlphabetLength; // Ensure wrapping using modular arithmetic
-
-        return (char)('A' + adjusted);
     }
 
     public bool Advance()

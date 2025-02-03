@@ -15,7 +15,7 @@ public class Reflector(string inputMapping)
 
     public virtual char Encode(char input)
     {
-        char output = _mapper.Encode(input);
+        char output = _mapper.Encode(input, isForward: true);
 
         foreach (var observer in _observers)
         {
