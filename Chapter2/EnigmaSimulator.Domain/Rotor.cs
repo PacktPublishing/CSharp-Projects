@@ -5,7 +5,6 @@ namespace EnigmaSimulator.Domain;
 public class Rotor
 {
     private readonly List<IEnigmaVisitor> _observers = [];
-    public const int AlphabetLength = 26;
     
     public const string Enigma1 = "EKMFLGDQVZNTOWYHXUSPAIBRCJ";
     public const string Enigma2 = "AJDKSIRUXBLHWTMCQGZNPYFVOE";
@@ -22,7 +21,7 @@ public class Rotor
             throw new ArgumentOutOfRangeException(nameof(position), "Position must be between 1 and the length of the character mapping.");
         }
         
-        _mappings = BidirectionalCharEncoder.FromMapping(characterMapping);
+        _mappings = new(characterMapping);
         Name = characterMapping[..3];
         Position = position;
     }
@@ -46,13 +45,14 @@ public class Rotor
 
     public bool Advance()
     {
+        const int numLetters = 26;
         int initialPosition = Position;
 
         bool advancedNext = false;
         Position++;
-        while (Position > AlphabetLength)
+        while (Position > numLetters)
         {
-            Position -= AlphabetLength;
+            Position -= numLetters;
             advancedNext = true;
         }
         

@@ -9,7 +9,7 @@ public class Reflector(string inputMapping)
     public const string ReflectorB = "YRUHQSLDPXNGOKMIEBFZCWVJAT";
     public const string ReflectorC = "FVPJIAOYEDRZXWGCTKUQSBNMHL";
 
-    private readonly BidirectionalCharEncoder _mapper = BidirectionalCharEncoder.FromMapping(inputMapping);
+    private readonly BidirectionalCharEncoder _mapper = new(inputMapping);
     
     public override string ToString() => "Reflector";
 
