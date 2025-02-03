@@ -15,7 +15,7 @@ public class BidirectionalCharEncoderTests
     public void ShouldEncodeBidirectionally(char input, bool isForward, int offset, char expected)
     {
         // Arrange
-        string mapping = Rotor.Enigma1[..26]; // Ignore the notch dash notation
+        string mapping = RotorSets.Enigma1[..26]; // Ignore the notch dash notation
         BidirectionalCharEncoder encoder = new(mapping);
         
         // Act

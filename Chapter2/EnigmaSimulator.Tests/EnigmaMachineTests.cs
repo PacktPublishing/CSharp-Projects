@@ -12,18 +12,15 @@ public class EnigmaMachineTests
     public void EnigmaShouldProduceCorrectOutputForFirstKeystroke(char input, char expected)
     {
         // Arrange
-        EnigmaMachine enigma = new(
+        EnigmaMachine enigma = new(new Plugboard(),
             [
-                new Rotor(Rotor.Enigma1),
-                new Rotor(Rotor.Enigma2),
-                new Rotor(Rotor.Enigma3),
-            ],
-            new Plugboard(),
-            new Reflector(Reflector.ReflectorB)
-        );
+                new Rotor(RotorSets.Enigma1),
+                new Rotor(RotorSets.Enigma2),
+                new Rotor(RotorSets.Enigma3),
+            ], new Reflector(Reflector.ReflectorB));
         
         // Act
-        char output = enigma.AdvanceAndEncode(input);
+        char output = enigma.Process(input);
         
         // Assert
         output.ShouldBe(expected);
@@ -34,18 +31,15 @@ public class EnigmaMachineTests
     {
         // Arrange
         CapturingReflector reflector = new(Reflector.ReflectorB);
-        EnigmaMachine enigma = new(
+        EnigmaMachine enigma = new(new Plugboard(),
             [
-                new Rotor(Rotor.Enigma1),
-                new Rotor(Rotor.Enigma2),
-                new Rotor(Rotor.Enigma3),
-            ],
-            new Plugboard(),
-            reflector
-        );
+                new Rotor(RotorSets.Enigma1),
+                new Rotor(RotorSets.Enigma2),
+                new Rotor(RotorSets.Enigma3),
+            ], reflector);
         
         // Act
-        _ = enigma.AdvanceAndEncode(input);
+        _ = enigma.Process(input);
         
         // Assert
         reflector.LastInput.ShouldBe(expected);
@@ -56,15 +50,12 @@ public class EnigmaMachineTests
     public void EnigmaShouldEncodeStringsCorrectly(string input, string expected)
     {
         // Arrange
-        EnigmaMachine enigma = new(
+        EnigmaMachine enigma = new(new Plugboard(),
             [
-                new Rotor(Rotor.Enigma1),
-                new Rotor(Rotor.Enigma2),
-                new Rotor(Rotor.Enigma3),
-            ],
-            new Plugboard(),
-            new Reflector(Reflector.ReflectorB)
-        );
+                new Rotor(RotorSets.Enigma1),
+                new Rotor(RotorSets.Enigma2),
+                new Rotor(RotorSets.Enigma3),
+            ], new Reflector(Reflector.ReflectorB));
         
         // Act
         string output = enigma.Encode(input);
@@ -79,15 +70,12 @@ public class EnigmaMachineTests
     public void EnigmaShouldEncodeStringsCorrectlyWithPlugboard(string input, string expected)
     {
         // Arrange
-        EnigmaMachine enigma = new(
+        EnigmaMachine enigma = new(new Plugboard("NE", "XT"),
             [
-                new Rotor(Rotor.Enigma1),
-                new Rotor(Rotor.Enigma2),
-                new Rotor(Rotor.Enigma3),
-            ],
-            new Plugboard("NE", "XT"),
-            new Reflector(Reflector.ReflectorB)
-        );
+                new Rotor(RotorSets.Enigma1),
+                new Rotor(RotorSets.Enigma2),
+                new Rotor(RotorSets.Enigma3),
+            ], new Reflector(Reflector.ReflectorB));
         
         // Act
         string output = enigma.Encode(input);

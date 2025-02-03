@@ -2,28 +2,33 @@ using EnigmaSimulator.Domain.Utilities;
 
 namespace EnigmaSimulator.Domain;
 
-public class Reflector(string inputMapping)
+public class Reflector(string inputMapping) : IEnigmaModule
 {
-    private readonly List<IEnigmaVisitor> _observers = [];
     public const string ReflectorA = "EJMZALYXVBWFCRQUONTSPIKHGD";
     public const string ReflectorB = "YRUHQSLDPXNGOKMIEBFZCWVJAT";
     public const string ReflectorC = "FVPJIAOYEDRZXWGCTKUQSBNMHL";
 
     private readonly BidirectionalCharEncoder _mapper = new(inputMapping);
-    
+
     public override string ToString() => "Reflector";
 
-    public virtual char Encode(char input)
+    public virtual char Encode(char input, bool isForward)
     {
         char output = _mapper.Encode(input, isForward: true);
 
-        foreach (var observer in _observers)
-        {
-            observer.Encoded(this, input, output);
-        }
-        
-        return output;
+        // Shift isForward to false to indicate we're now going backwards
+        return NextModule?.Encode(output, isForward: false) ?? output;
     }
 
-    public void Register(IEnigmaVisitor observer) => _observers.Add(observer);
+    public char Process(char input)
+    {
+        // Note: this will NEVER look at NextModule as the Reflector's job is to be an end-cap.
+        return Encode(input, isForward: true);
+    }
+
+    public IEnigmaModule? NextModule
+    {
+        get => null;
+        set => throw new InvalidOperationException("Reflector cannot have a next module");
+    }
 }

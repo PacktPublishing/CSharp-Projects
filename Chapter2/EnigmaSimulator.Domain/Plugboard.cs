@@ -2,10 +2,9 @@ using EnigmaSimulator.Domain.Utilities;
 
 namespace EnigmaSimulator.Domain;
 
-public class Plugboard
+public class Plugboard : IEnigmaModule
 {
     private readonly Dictionary<char, char> _mappings;
-    private readonly List<IEnigmaVisitor> _observers = [];
 
     public Plugboard(params string[] pairs)
     {
@@ -18,27 +17,15 @@ public class Plugboard
                 throw new ArgumentException("Each pair must consist of exactly two characters.");
             }
 
-            char first = char.ToUpper(pair[0]);
-            char second = char.ToUpper(pair[1]);
-
-            _mappings.Add(first, second);
-            _mappings.Add(second, first);
+            _mappings.Add(char.ToUpper(pair[0]), char.ToUpper(pair[1]));
+            _mappings.Add(char.ToUpper(pair[1]), char.ToUpper(pair[0]));
         }
     }
 
     public override string ToString() => "Plugboard";
 
-    public char Encode(char input)
-    {
-        var output = _mappings.GetValueOrDefault(input, input);
-        
-        foreach (var observer in _observers)
-        {
-            observer.Encoded(this, input, output);
-        }
-        
-        return output;
-    }
+    public char Encode(char input, bool isForward) 
+        => _mappings.GetValueOrDefault(input, input);
 
-    public void Register(IEnigmaVisitor observer) => _observers.Add(observer);
+    public IEnigmaModule? NextModule { get; set; }
 }

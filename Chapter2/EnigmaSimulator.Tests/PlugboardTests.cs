@@ -12,7 +12,7 @@ public class PlugboardTests
         Plugboard plugboard = new("HI");
         
         // Act
-        char output = plugboard.Encode('H');
+        char output = plugboard.Encode('H', isForward:true);
         
         // Assert
         output.ShouldBe('I');
@@ -27,7 +27,7 @@ public class PlugboardTests
         Plugboard plugboard = new();
         
         // Act
-        char output = plugboard.Encode(input);
+        char output = plugboard.Encode(input, isForward: true);
         
         // Assert
         output.ShouldBe(input);

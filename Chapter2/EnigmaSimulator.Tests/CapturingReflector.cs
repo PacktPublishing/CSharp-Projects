@@ -4,10 +4,10 @@ namespace EnigmaSimulator.Tests;
 
 public class CapturingReflector(string inputMapping) : Reflector(inputMapping)
 {
-    public override char Encode(char input)
+    public override char Encode(char input, bool isForward)
     {
         LastInput = input;
-        char output = base.Encode(input);
+        char output = base.Encode(input, isForward);
         LastOutput = output;
         
         return output;
