@@ -3,9 +3,22 @@ using Spectre.Console;
 
 namespace ConsoleRolePlayingGame.ConsoleApp;
 
-public static class MapRenderingHelpers
+public static class CanvasMapRenderer
 {
-    public static Color ToColor(this TerrainType terrainType) 
+    public static void Render(WorldMap map)
+    {
+        Canvas canvas = new(map.Width, map.Height);
+        foreach (var cell in map.Map)
+        {
+            canvas.SetPixel(cell.Position.X, cell.Position.Y, ToColor(cell.Terrain));
+        }
+    
+        canvas.SetPixel(map.PlayerPos.X, map.PlayerPos.Y, Color.Yellow1);
+    
+        AnsiConsole.Write(canvas);
+    }
+    
+    public static Color ToColor(TerrainType terrainType) 
         => terrainType switch
         {
             TerrainType.Grass => Color.Green,

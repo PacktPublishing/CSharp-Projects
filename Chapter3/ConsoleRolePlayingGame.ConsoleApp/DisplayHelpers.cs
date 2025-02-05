@@ -7,7 +7,7 @@ public static class DisplayHelpers
     public static void DisplayTitle()
     {
         AnsiConsole.Write(new FigletText("Console RPG").Color(Color.Yellow));
-        AnsiConsole.WriteLine("You are a group of adventurers in a fantasy world. Cleanse the world of evil!");
+        AnsiConsole.MarkupLine("You are a group of [yellow1]adventurers[/] in a fantasy world. Cleanse the world of [red1]evil[/]!");
         AnsiConsole.WriteLine();
     }
 
