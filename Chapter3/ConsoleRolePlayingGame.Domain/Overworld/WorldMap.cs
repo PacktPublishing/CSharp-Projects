@@ -1,35 +1,36 @@
 namespace ConsoleRolePlayingGame.Domain.Overworld;
 
-public class WorldMap
+public class WorldMap(MapGenerator mapGenerator)
 {
-    private readonly MapGenerator _mapGenerator = new();
-    
-    public WorldMap(int width, int height, Random rand)
+    private MapCell GetMapCell(Pos position)
     {
-        Width = width;
-        Height = height;
-                
-        Map = new MapCell[width, height];
+        TerrainType terrain = mapGenerator.CalculateTerrain(position);
 
-        for (int y = 0; y < height; y++)
+        MapCell cell = new MapCell(terrain, position);
+        return cell;
+    }
+
+    public Pos PlayerPos { get; set; } = new(0,0);
+
+    public MapCell[,] GetMapWindow(Pos upperLeftCorner, Pos lowerRightCorner)
+    {
+        if (upperLeftCorner.X > lowerRightCorner.X || upperLeftCorner.Y > lowerRightCorner.Y)
         {
-            for (int x = 0; x < width; x++)
+            throw new ArgumentException("Upper left corner must be above and to the left of lower right corner");
+        }
+        
+        MapCell[,] mapWindow = new MapCell[lowerRightCorner.X - upperLeftCorner.X + 1, lowerRightCorner.Y - upperLeftCorner.Y + 1];
+        
+        for (int y = upperLeftCorner.Y; y <= lowerRightCorner.Y; y++)
+        {
+            for (int x = upperLeftCorner.X; x <= lowerRightCorner.X; x++)
             {
-                Pos position = new Pos(x, y);
-                TerrainType terrain = _mapGenerator.CalculateTerrain(position);
-
-                MapCell cell = new MapCell(terrain, position, height);
-                Map[x, y] = cell;
+                Pos pos = new Pos(x, y);
+                MapCell cell = GetMapCell(pos);
+                mapWindow[x - upperLeftCorner.X, y - upperLeftCorner.Y] = cell;
             }
         }
         
-        PlayerPos = new Pos((int)Math.Floor(width / 2.0), (int)Math.Floor(height / 2.0));
+        return mapWindow;
     }
-
-    public Pos PlayerPos { get; set; }
-
-    public MapCell[,] Map { get; }
-    
-    public int Width { get; }
-    public int Height { get; }
 }

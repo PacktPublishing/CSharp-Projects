@@ -7,18 +7,25 @@ public static class CanvasMapRenderer
 {
     public static void Render(WorldMap map)
     {
-        Canvas canvas = new(map.Width, map.Height);
-        foreach (var cell in map.Map)
+        Pos playerPos = map.PlayerPos;
+        Pos upperLeftCorner = new Pos(playerPos.X - 10, playerPos.Y - 5);
+        Pos lowerRightCorner = new Pos(playerPos.X + 10, playerPos.Y + 5);
+        MapCell[,] mapWindow = map.GetMapWindow(upperLeftCorner, lowerRightCorner);
+        
+        Canvas canvas = new(mapWindow.GetLength(0), mapWindow.GetLength(1));
+        foreach (var cell in mapWindow)
         {
-            canvas.SetPixel(cell.Position.X, cell.Position.Y, ToColor(cell.Terrain));
+            int x = cell.Position.X - upperLeftCorner.X;
+            int y = cell.Position.Y - upperLeftCorner.Y;
+            canvas.SetPixel(x, y, ToColor(cell.Terrain));
         }
     
-        canvas.SetPixel(map.PlayerPos.X, map.PlayerPos.Y, Color.Yellow1);
+        canvas.SetPixel(map.PlayerPos.X - upperLeftCorner.X, map.PlayerPos.Y - upperLeftCorner.Y, Color.Yellow1);
     
         AnsiConsole.Write(canvas);
     }
-    
-    public static Color ToColor(TerrainType terrainType) 
+
+    private static Color ToColor(TerrainType terrainType) 
         => terrainType switch
         {
             TerrainType.Grass => Color.Green,

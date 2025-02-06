@@ -11,9 +11,7 @@ public class GameManager
     
     public GameManager()
     {
-        Random rand = new();
-        
-        // TODO: Load this map from a file
-        Map = new WorldMap(30, 15, rand);
+        MapGenerator generator = new();
+        Map = new WorldMap(generator);
     }
 }
