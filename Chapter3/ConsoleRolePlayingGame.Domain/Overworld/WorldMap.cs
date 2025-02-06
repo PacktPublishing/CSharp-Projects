@@ -10,8 +10,6 @@ public class WorldMap(MapGenerator mapGenerator)
         return cell;
     }
 
-    public Pos PlayerPos { get; set; } = new(0,0);
-
     public MapCell[,] GetMapWindow(Pos upperLeftCorner, Pos lowerRightCorner)
     {
         if (upperLeftCorner.X > lowerRightCorner.X || upperLeftCorner.Y > lowerRightCorner.Y)

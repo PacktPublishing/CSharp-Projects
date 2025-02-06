@@ -1,7 +1,10 @@
+using ConsoleRolePlayingGame.Domain.Overworld;
+
 namespace ConsoleRolePlayingGame.Domain;
 
-public abstract class GameCharacter 
+public abstract class GameCharacter(Pos pos)
 {
+    public Pos Position { get; set; } = pos;
     public int Health { get; set; }
     public int Mana { get; set; }
     public int Strength { get; set; }

@@ -1,26 +1,29 @@
+using ConsoleRolePlayingGame.Domain;
 using ConsoleRolePlayingGame.Domain.Overworld;
 using Spectre.Console;
 
 namespace ConsoleRolePlayingGame.ConsoleApp;
 
-public static class CanvasMapRenderer
+public class CanvasMapRenderer(int availableWidth, int availableHeight, int xOffset = 0, int yOffset = 0)
 {
-    public static void Render(WorldMap map)
+    public void Render(GameManager game)
     {
-        Pos playerPos = map.PlayerPos;
-        Pos upperLeftCorner = new Pos(playerPos.X - 10, playerPos.Y - 5);
-        Pos lowerRightCorner = new Pos(playerPos.X + 10, playerPos.Y + 5);
-        MapCell[,] mapWindow = map.GetMapWindow(upperLeftCorner, lowerRightCorner);
+        Pos playerPos = game.Player.Position;
+        int playerOffsetX = (int)Math.Ceiling(availableWidth / 2.0);
+        int playerOffsetY = (int)Math.Ceiling(availableHeight / 2.0);
+        Pos mapUpperLeft = new Pos(playerPos.X - playerOffsetX, playerPos.Y - playerOffsetY);
+        Pos mapLowerRight = new Pos(mapUpperLeft.X + availableWidth, mapUpperLeft.Y + availableHeight);
+        MapCell[,] mapWindow = game.Map.GetMapWindow(mapUpperLeft, mapLowerRight);
         
         Canvas canvas = new(mapWindow.GetLength(0), mapWindow.GetLength(1));
         foreach (var cell in mapWindow)
         {
-            int x = cell.Position.X - upperLeftCorner.X;
-            int y = cell.Position.Y - upperLeftCorner.Y;
+            int x = cell.Position.X - mapUpperLeft.X;
+            int y = cell.Position.Y - mapUpperLeft.Y;
             canvas.SetPixel(x, y, ToColor(cell.Terrain));
         }
     
-        canvas.SetPixel(map.PlayerPos.X - upperLeftCorner.X, map.PlayerPos.Y - upperLeftCorner.Y, Color.Yellow1);
+        canvas.SetPixel(playerPos.X - mapUpperLeft.X, playerPos.Y - mapUpperLeft.Y, Color.Yellow1);
     
         AnsiConsole.Write(canvas);
     }

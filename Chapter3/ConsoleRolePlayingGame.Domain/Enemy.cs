@@ -1,6 +1,8 @@
+using ConsoleRolePlayingGame.Domain.Overworld;
+
 namespace ConsoleRolePlayingGame.Domain;
 
-public class Enemy : GameCharacter
+public class Enemy(Pos pos) : GameCharacter(pos)
 {
     
 }

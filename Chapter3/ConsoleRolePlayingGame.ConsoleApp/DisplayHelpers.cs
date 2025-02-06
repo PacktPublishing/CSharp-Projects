@@ -1,3 +1,4 @@
+using ConsoleRolePlayingGame.Domain;
 using Spectre.Console;
 
 namespace ConsoleRolePlayingGame.ConsoleApp;
@@ -22,5 +23,11 @@ public static class DisplayHelpers
         {
             AnsiConsole.MarkupLine("[red]Error setting console encoding; the application may not render properly[/]");
         }
+    }
+
+    public static void WriteHeader(GameManager game)
+    {
+        AnsiConsole.MarkupLine("Press [yellow bold]q[/] to quit");
+        AnsiConsole.WriteLine();
     }
 }
