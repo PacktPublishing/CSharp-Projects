@@ -33,10 +33,10 @@ public class CanvasMapRenderer(int availableWidth, int availableHeight, int xOff
         {
             TerrainType.Grass => Color.Green,
             TerrainType.Water => Color.Blue,
-            TerrainType.Mountain => Color.DarkSlateGray1,
+            TerrainType.DeepWater => Color.Blue3_1,
+            TerrainType.Mountain => new Color(128, 128, 128),
             TerrainType.Forest => Color.DarkGreen,
             TerrainType.Desert => Color.MistyRose1,
-            TerrainType.Road => Color.SandyBrown,
             _ => Color.HotPink // Highlight the problem
         };
 }

@@ -3,9 +3,8 @@ namespace ConsoleRolePlayingGame.Domain.Overworld;
 public enum TerrainType
 {
     Grass,
-    Road,
-    City,
     Water,
+    DeepWater,
     Mountain,
     Forest,
     Desert
