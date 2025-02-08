@@ -1,7 +1,6 @@
 ﻿using ConsoleRolePlayingGame.ConsoleApp;
 using ConsoleRolePlayingGame.Domain;
 using ConsoleRolePlayingGame.Domain.Commands;
-using ConsoleRolePlayingGame.Domain.Overworld;
 using Spectre.Console;
 
 try
@@ -12,9 +11,7 @@ try
     
     const int headerHeight = 2;
     const int footerHeight = 2;
-    CanvasMapRenderer renderer = new(AnsiConsole.Profile.Width, AnsiConsole.Profile.Height - headerHeight - footerHeight);
-    
-    WorldMap map = game.Map;
+    CanvasMapRenderer renderer = new(21, 21);
 
     do
     {

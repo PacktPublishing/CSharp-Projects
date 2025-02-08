@@ -16,11 +16,12 @@ public class CanvasMapRenderer(int availableWidth, int availableHeight, int xOff
         MapCell[,] mapWindow = game.Map.GetMapWindow(mapUpperLeft, mapLowerRight);
         
         Canvas canvas = new(mapWindow.GetLength(0), mapWindow.GetLength(1));
-        foreach (var cell in mapWindow)
+        for (int y = 0; y < mapWindow.GetLength(1); y++)
         {
-            int x = cell.Position.X - mapUpperLeft.X;
-            int y = cell.Position.Y - mapUpperLeft.Y;
-            canvas.SetPixel(x, y, ToColor(cell.Terrain));
+            for (int x = 0; x < mapWindow.GetLength(0); x++)
+            {
+                canvas.SetPixel(x, y, ToColor(mapWindow[x,y].Terrain));
+            }
         }
     
         canvas.SetPixel(playerPos.X - mapUpperLeft.X, playerPos.Y - mapUpperLeft.Y, Color.Yellow1);

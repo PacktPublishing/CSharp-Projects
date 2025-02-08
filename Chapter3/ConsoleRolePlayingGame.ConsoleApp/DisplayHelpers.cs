@@ -27,7 +27,7 @@ public static class DisplayHelpers
 
     public static void WriteHeader(GameManager game)
     {
-        AnsiConsole.MarkupLine("Press [yellow bold]q[/] to quit");
+        AnsiConsole.MarkupLineInterpolated($"Location: [bold white]{game.Player.Position.X}[/],[bold white]{game.Player.Position.Y}[/]. Press [yellow bold]q[/] to quit");
         AnsiConsole.WriteLine();
     }
 }
