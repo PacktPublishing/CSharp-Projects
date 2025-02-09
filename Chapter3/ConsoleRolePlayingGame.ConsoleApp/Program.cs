@@ -21,19 +21,23 @@ try
                 break;
             
             case GameStatus.Combat:
-                throw new NotImplementedException();
+                AnsiConsole.MarkupLine("[red]In combat![/]");
                 break;
         }
 
         // Get input from the user
+        // TODO: This is probably only needed on the overworld
         AnsiConsole.Markup("[Yellow]>[/] ");
         ConsoleKeyInfo? keyInfo = AnsiConsole.Console.Input.ReadKey(intercept: true);
 
         if (keyInfo.HasValue)
         {
+            // TODO: Commands should be specific to the current game state
             Command? command = game.Commands.GetCommandForKey(keyInfo.Value.Key);
             command?.Execute(game);
         }
+
+        game.Update();
     }
 }
 catch (Exception ex)
