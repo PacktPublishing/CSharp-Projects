@@ -1,6 +1,4 @@
-using ConsoleRolePlayingGame.Domain.Overworld;
-
-namespace ConsoleRolePlayingGame.Domain;
+namespace ConsoleRolePlayingGame.Domain.Combat;
 
 public abstract class GameCharacter
 {
@@ -13,4 +11,7 @@ public abstract class GameCharacter
     public int Dexterity { get; set; }
     public int Intelligence { get; set; }
     public int Speed { get; set; }
+    
+    public bool IsDead => Health <= 0;
+    public abstract string[] AsciiArt { get; init; }
 }

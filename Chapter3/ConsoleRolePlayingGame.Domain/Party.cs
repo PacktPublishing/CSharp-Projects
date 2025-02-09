@@ -1,15 +1,16 @@
+using ConsoleRolePlayingGame.Domain.Combat;
 using ConsoleRolePlayingGame.Domain.Overworld;
 
 namespace ConsoleRolePlayingGame.Domain;
 
-public class Party : IMapEntity
+public class Party : IMapEntity, ICombatGroup
 {
     public Pos Position { get; set; } = new(0, 0);
-    public List<PlayerCharacter> Members { get; } = new()
-    {
+    public List<GameCharacter> Members { get; } = // TODO: This should come from JSON
+    [
         new PlayerCharacter
         {
-            Name = "Samwise the Terramancer",
+            Name = "Sam the Terramancer",
             Health = 10,
             MaxHealth = 10,
             Mana = 12,
@@ -17,8 +18,14 @@ public class Party : IMapEntity
             Dexterity = 10,
             Speed = 8,
             Strength = 9,
-            Intelligence = 15
-        },     
+            Intelligence = 15,
+            AsciiArt = [
+                @"@ O  ",
+                @"|-|-*",
+                @"|/ \ "
+            ]
+        },
+
         new PlayerCharacter
         {
             Name = "Stephanie the Paladin",
@@ -29,8 +36,14 @@ public class Party : IMapEntity
             Dexterity = 8,
             Speed = 7,
             Strength = 13,
-            Intelligence = 10
+            Intelligence = 10,
+            AsciiArt = [
+                @"  O~ ",
+                @"\-|#  ",
+                @" / \ "
+            ]
         },
+
         new PlayerCharacter
         {
             Name = "James the Goat Herder",
@@ -41,8 +54,14 @@ public class Party : IMapEntity
             Dexterity = 8,
             Speed = 8,
             Strength = 8,
-            Intelligence = 8
+            Intelligence = 8,
+            AsciiArt = [
+                @"^ O       ",
+                @"|-|-      ",
+                @"| /\ g~ g~"
+            ]
         },
+
         new PlayerCharacter
         {
             Name = "Sara of the Knives",
@@ -53,7 +72,16 @@ public class Party : IMapEntity
             Dexterity = 12,
             Speed = 12,
             Strength = 8,
-            Intelligence = 10
-        },
-    };
+            Intelligence = 10,
+            AsciiArt = [
+                @"  O~  ",
+                @"\-|-/ ",
+                @" / \  "
+            ]
+        }
+    ];
+
+    public string Name => "The Party";
+
+    public bool IsDead => Members.All(m => m.IsDead);
 }

@@ -1,13 +1,15 @@
 using ConsoleRolePlayingGame.Domain;
+using ConsoleRolePlayingGame.Domain.Combat;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class PartyMemberListRenderer(IEnumerable<PlayerCharacter> team) : IVisualGenerator
+public class PartyMemberListRenderer(Party party) : IVisualGenerator
 {
     public IRenderable GenerateVisual()
     {
+        IEnumerable<GameCharacter> team = party.Members;
         int maxHealth = team.Max(c => c.MaxHealth);
         int maxMana = team.Max(c => c.MaxMana);
         
@@ -16,15 +18,15 @@ public class PartyMemberListRenderer(IEnumerable<PlayerCharacter> team) : IVisua
                 new Markup($"[bold]{m.Name}[/]"),
                 new Padder(
                 new BarChart()
-                    .AddItem("[Red]Health[/]", m.Health, Color.Red)
-                    .AddItem("[Blue]Mana[/]", m.Mana, Color.Blue)
+                    .AddItem("[Red]HP[/]", m.Health, Color.Red)
+                    .AddItem("[Blue]MP[/]", m.Mana, Color.Blue)
                     .WithMaxValue(Math.Max(maxHealth, maxMana))
                     .ShowValues()
             , new Padding(5, 0, 0, 0)))
         );
 
         return new Panel(new Rows(partyMarkdown))
-            .Header("[Yellow] Party Status [/]")
+            .Header($"[Yellow] {party.Name} [/]")
             .Border(BoxBorder.Rounded);
     }
 }

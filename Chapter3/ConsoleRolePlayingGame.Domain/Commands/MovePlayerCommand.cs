@@ -1,3 +1,5 @@
+using ConsoleRolePlayingGame.Domain.Overworld;
+
 namespace ConsoleRolePlayingGame.Domain.Commands;
 
 public class MovePlayerCommand(Direction direction) : Command

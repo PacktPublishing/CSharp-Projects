@@ -4,5 +4,6 @@ public enum GameStatus
 {
     Overworld,
     Combat,
-    Terminated
+    Terminated,
+    GameOver
 }

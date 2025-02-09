@@ -1,6 +1,4 @@
-using ConsoleRolePlayingGame.Domain.Overworld;
-
-namespace ConsoleRolePlayingGame.Domain;
+namespace ConsoleRolePlayingGame.Domain.Overworld;
 
 public interface IMapEntity
 {

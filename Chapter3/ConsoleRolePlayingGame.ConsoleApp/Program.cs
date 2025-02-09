@@ -1,5 +1,4 @@
 ﻿using ConsoleRolePlayingGame.ConsoleApp.Screens;
-using ConsoleRolePlayingGame.ConsoleApp.Visuals;
 using ConsoleRolePlayingGame.Domain;
 using ConsoleRolePlayingGame.Domain.Commands;
 using Spectre.Console;
@@ -8,6 +7,7 @@ try
 {
     GameManager game = new();
     OverworldScreen overworldScreen = new(game);
+    BattleScreen battleScreen = new(game);
 
     while (game.Status != GameStatus.Terminated)
     {
@@ -21,7 +21,11 @@ try
                 break;
             
             case GameStatus.Combat:
-                AnsiConsole.MarkupLine("[red]In combat![/]");
+                AnsiConsole.Write(battleScreen.GenerateVisual());
+                break;         
+            
+            case GameStatus.GameOver:
+                AnsiConsole.MarkupLine("[red]Game Over[/]");
                 break;
         }
 
@@ -43,4 +47,5 @@ try
 catch (Exception ex)
 {
     AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
+    Console.ReadKey();
 }

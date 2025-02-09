@@ -8,9 +8,9 @@ public class InstructionsRenderer : IVisualGenerator
     public IRenderable GenerateVisual() 
         => new Panel(new Rows(
                 new Markup("The [yellow]yellow block[/] is your party."),
-                new Markup("Use [yellow]arrow keys[/] or [yellow]WASD[/] to move"), 
-                new Markup("Enter [red]red blocks[/] to begin combat."),
-                new Markup("Press [yellow]q[/] to quit"))
+                new Markup("Use [cyan]arrow keys[/] or [cyan]WASD[/] to move."), 
+                new Markup("Enter [red]red blocks[/] to begin combat. "),
+                new Markup("Press [cyan]q[/] to quit."))
            )
            .Header("[Yellow] Instructions [/]")
            .Padding(1, 1, 1, 0)

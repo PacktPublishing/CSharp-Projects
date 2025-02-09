@@ -15,7 +15,7 @@ public class OverworldScreen : IVisualGenerator
     public OverworldScreen(GameManager game)
     {
         // Instantiate our renderers that will be used to render the UI
-        _partyRenderer = new PartyMemberListRenderer(game.Party.Members);
+        _partyRenderer = new PartyMemberListRenderer(game.Party);
         _mapRenderer = new CanvasMapRenderer(game, 21, 21);
         _helpRenderer = new InstructionsRenderer();
         
