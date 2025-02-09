@@ -1,6 +1,7 @@
 using ConsoleRolePlayingGame.Domain.Combat;
 using ConsoleRolePlayingGame.Domain.Commands;
 using ConsoleRolePlayingGame.Domain.Overworld;
+using ConsoleRolePlayingGame.Domain.Repositories;
 
 namespace ConsoleRolePlayingGame.Domain;
 
@@ -9,15 +10,19 @@ public class GameManager
     public GameStatus Status { get; internal set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
     public CommandRegistry Commands { get; } = new();
-    public Party Party { get; } = new();
+    public Party Party { get; }
     public Battle? Battle { get; private set; }
 
     public GameManager()
     {
+        CharacterRepository characterRepository = new();
+        GroupsRepository groupsRepository = new(characterRepository);
+        Party = groupsRepository.LoadParty();
+        
         MapGenerator generator = new();
         Map = new WorldMap(generator);
         Map.AddEntity(Party);
-        Map.AddEntity(new EnemyGroup(new Pos(7,3))
+        Map.AddEntity(new EnemyGroup(new Pos(7, 3))
         {
             Members = [..Enumerable.Range(1, 8).Select(CreateGoblin)]
         });
@@ -41,6 +46,12 @@ public class GameManager
 
     public void Update()
     {
+        if (Party.IsDead && Status != GameStatus.GameOver)
+        {
+            TotalPartyWipe();
+            return;
+        } 
+        
         if (Status == GameStatus.Overworld)
         {
             EnemyGroup? encounter = Map.Entities.OfType<EnemyGroup>()
@@ -53,11 +64,7 @@ public class GameManager
         }
         else if (Status == GameStatus.Combat)
         {
-            if (Party.IsDead)
-            {
-                TotalPartyWipe();
-            } 
-            else if (Battle is not null && Battle.Enemies.IsDead)
+            if (Battle is not null && Battle.Enemies.IsDead)
             {
                 EndBattle();
             }

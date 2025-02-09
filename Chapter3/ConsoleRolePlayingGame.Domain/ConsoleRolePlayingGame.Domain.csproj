@@ -10,4 +10,10 @@
       <PackageReference Include="SimplexNoise" Version="2.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Characters.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
