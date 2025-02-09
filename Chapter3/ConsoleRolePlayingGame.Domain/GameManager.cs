@@ -9,7 +9,7 @@ public class GameManager
     public GameStatus Status { get; internal set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
     public CommandRegistry Commands { get; } = new();
-    public PlayerCharacter Player { get; } = new(new Pos(0, 0));
+    public Party Party { get; } = new();
 
     public GameManager()
     {

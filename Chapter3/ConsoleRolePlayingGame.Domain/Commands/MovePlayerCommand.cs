@@ -4,6 +4,7 @@ public class MovePlayerCommand(Direction direction) : Command
 {
     public override void Execute(GameManager game)
     {
-        game.Player.Move(direction);
+        IMapEntity party = game.Party;
+        party.Move(direction);
     }
 }

@@ -1,14 +1,18 @@
 using ConsoleRolePlayingGame.Domain;
 using ConsoleRolePlayingGame.Domain.Overworld;
 using Spectre.Console;
+using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp;
 
-public class CanvasMapRenderer(int availableWidth, int availableHeight, int xOffset = 0, int yOffset = 0)
+public class CanvasMapRenderer(int availableWidth, int availableHeight)
 {
-    public void Render(GameManager game)
+    public int Width => availableWidth;
+    public int Height => availableHeight;
+    
+    public IRenderable Render(GameManager game)
     {
-        Pos playerPos = game.Player.Position;
+        Pos playerPos = game.Party.Position;
         int playerOffsetX = (int)Math.Ceiling(availableWidth / 2.0);
         int playerOffsetY = (int)Math.Ceiling(availableHeight / 2.0);
         Pos mapUpperLeft = new Pos(playerPos.X - playerOffsetX, playerPos.Y - playerOffsetY);
@@ -25,8 +29,8 @@ public class CanvasMapRenderer(int availableWidth, int availableHeight, int xOff
         }
     
         canvas.SetPixel(playerPos.X - mapUpperLeft.X, playerPos.Y - mapUpperLeft.Y, Color.Yellow1);
-    
-        AnsiConsole.Write(canvas);
+
+        return canvas;
     }
 
     private static Color ToColor(TerrainType terrainType) 
