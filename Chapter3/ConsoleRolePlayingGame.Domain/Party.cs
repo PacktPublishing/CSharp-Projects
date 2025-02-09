@@ -5,11 +5,11 @@ namespace ConsoleRolePlayingGame.Domain;
 public class Party : IMapEntity
 {
     public Pos Position { get; set; } = new(0, 0);
-    public List<GameCharacter> Members { get; } = new()
+    public List<PlayerCharacter> Members { get; } = new()
     {
         new PlayerCharacter
         {
-            Name = "Samwise the Automancer",
+            Name = "Samwise the Terramancer",
             Health = 10,
             MaxHealth = 10,
             Mana = 12,

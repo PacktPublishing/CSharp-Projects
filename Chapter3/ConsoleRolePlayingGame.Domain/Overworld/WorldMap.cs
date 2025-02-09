@@ -1,7 +1,11 @@
+using System.Collections;
+
 namespace ConsoleRolePlayingGame.Domain.Overworld;
 
 public class WorldMap(MapGenerator mapGenerator)
 {
+    private readonly List<IMapEntity> _entities = new();
+
     private MapCell GetMapCell(Pos position)
     {
         TerrainType terrain = mapGenerator.CalculateTerrain(position);
@@ -31,4 +35,9 @@ public class WorldMap(MapGenerator mapGenerator)
         
         return mapWindow;
     }
+
+    public IEnumerable<IMapEntity> Entities => _entities;
+    
+    public void AddEntity(IMapEntity entity) => _entities.Add(entity);
+    public void RemoveEntity(IMapEntity entity) => _entities.Remove(entity);
 }

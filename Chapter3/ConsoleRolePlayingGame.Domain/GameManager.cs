@@ -1,4 +1,3 @@
-using ConsoleRolePlayingGame.Domain.Combat;
 using ConsoleRolePlayingGame.Domain.Commands;
 using ConsoleRolePlayingGame.Domain.Overworld;
 
@@ -15,5 +14,7 @@ public class GameManager
     {
         MapGenerator generator = new();
         Map = new WorldMap(generator);
+        Map.AddEntity(Party);
+        Map.AddEntity(new EnemyGroup(new Pos(7,3)));
     }
 }
