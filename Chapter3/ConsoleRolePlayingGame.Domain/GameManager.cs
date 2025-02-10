@@ -15,34 +15,20 @@ public class GameManager
 
     public GameManager()
     {
-        CharacterRepository characterRepository = new();
-        GroupsRepository groupsRepository = new(characterRepository);
-        Party = groupsRepository.LoadParty();
+        PartyRepository partyRepository = new();
+        Party = partyRepository.Load();
+        
+        EnemyRepository enemyRepository = new();
+        EncounterRepository encounterRepository = new(enemyRepository);
         
         MapGenerator generator = new();
         Map = new WorldMap(generator);
         Map.AddEntity(Party);
-        Map.AddEntity(new EnemyGroup(new Pos(7, 3))
-        {
-            Members = [..Enumerable.Range(1, 8).Select(CreateGoblin)]
-        });
+        Map.AddEntity(encounterRepository.CreateRandomEncounter(new Pos(7, 3)));
+        Map.AddEntity(encounterRepository.CreateRandomEncounter(new Pos(2, -3)));
+        Map.AddEntity(encounterRepository.CreateRandomEncounter(new Pos(-1, -8)));
+        Map.AddEntity(encounterRepository.CreateRandomEncounter(new Pos(2, 9)));
     }
-
-    private static Enemy CreateGoblin(int index) 
-        => new Enemy { 
-            Name = $"Goblin {index}", 
-            Health = 5, 
-            MaxHealth = 5, 
-            Strength = 3, 
-            Dexterity = 2, 
-            Intelligence = 1, 
-            Speed = 5, 
-            AsciiArt = [
-                @"  o   ",
-                @" .l-> ",  
-                @" /\   ",
-            ] 
-        };
 
     public void Update()
     {
