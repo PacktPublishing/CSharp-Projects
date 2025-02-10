@@ -7,6 +7,7 @@ namespace ConsoleRolePlayingGame.Domain;
 
 public class GameManager
 {
+    private readonly EncounterRepository _encounters;
     public GameStatus Status { get; internal set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
     public CommandRegistry Commands { get; } = new();
@@ -15,26 +16,34 @@ public class GameManager
 
     public GameManager()
     {
+        // TODO: DI container would be good here
         PartyRepository partyRepository = new();
         Party = partyRepository.Load();
         
         EnemyRepository enemyRepository = new();
-        EncounterRepository encounterRepository = new(enemyRepository);
+        _encounters = new(enemyRepository);
         
         MapGenerator generator = new();
         Map = new WorldMap(generator);
         Map.AddEntity(Party);
-        Map.AddEntity(encounterRepository.CreateRandomEncounter(new Pos(7, 3)));
-        Map.AddEntity(encounterRepository.CreateRandomEncounter(new Pos(2, -3)));
-        Map.AddEntity(encounterRepository.CreateRandomEncounter(new Pos(-1, -8)));
-        Map.AddEntity(encounterRepository.CreateRandomEncounter(new Pos(2, 9)));
+        
+        for (int i = 0; i < 5; i++)
+        {
+            SpawnNearbyEncounter();
+        }
+    }
+
+    private void SpawnNearbyEncounter()
+    {
+        Pos point = Map.GetOpenPositionNear(Party.Position, 5, 15);
+        Map.AddEntity(_encounters.CreateRandomEncounter(point));
     }
 
     public void Update()
     {
         if (Party.IsDead && Status != GameStatus.GameOver)
         {
-            TotalPartyWipe();
+            TriggerGameOver();
             return;
         } 
         
@@ -57,25 +66,23 @@ public class GameManager
         }
     }
 
-    private void EndBattle()
-    {
-        Battle = null;
-        Status = GameStatus.Overworld;
-        
-        // TODO: Spawn new enemies to replace the ones that were defeated
-    }
-
-    private void TotalPartyWipe()
-    {
-        Battle = null;
-        Status = GameStatus.GameOver;
-    }
-
     private void StartBattle(EnemyGroup enemies)
     {
         Map.RemoveEntity(enemies);
         Battle = new Battle(Party, enemies);
-        
         Status = GameStatus.Combat;
+    }
+    
+    private void EndBattle()
+    {
+        Battle = null;
+        Status = GameStatus.Overworld;
+        SpawnNearbyEncounter();
+    }
+
+    private void TriggerGameOver()
+    {
+        Battle = null;
+        Status = GameStatus.GameOver;
     }
 }

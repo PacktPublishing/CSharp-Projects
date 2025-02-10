@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace ConsoleRolePlayingGame.Domain.Overworld;
 
 public class WorldMap(MapGenerator mapGenerator)
@@ -20,9 +18,10 @@ public class WorldMap(MapGenerator mapGenerator)
         {
             throw new ArgumentException("Upper left corner must be above and to the left of lower right corner");
         }
-        
-        MapCell[,] mapWindow = new MapCell[lowerRightCorner.X - upperLeftCorner.X + 1, lowerRightCorner.Y - upperLeftCorner.Y + 1];
-        
+
+        MapCell[,] mapWindow = new MapCell[lowerRightCorner.X - upperLeftCorner.X + 1,
+            lowerRightCorner.Y - upperLeftCorner.Y + 1];
+
         for (int y = upperLeftCorner.Y; y <= lowerRightCorner.Y; y++)
         {
             for (int x = upperLeftCorner.X; x <= lowerRightCorner.X; x++)
@@ -32,12 +31,37 @@ public class WorldMap(MapGenerator mapGenerator)
                 mapWindow[x - upperLeftCorner.X, y - upperLeftCorner.Y] = cell;
             }
         }
-        
+
         return mapWindow;
     }
 
     public IEnumerable<IMapEntity> Entities => _entities;
-    
+
     public void AddEntity(IMapEntity entity) => _entities.Add(entity);
     public void RemoveEntity(IMapEntity entity) => _entities.Remove(entity);
+
+    public Pos GetOpenPositionNear(Pos centralPosition, int minDistance, int maxDistance)
+    {
+        Pos pos;
+        do
+        {
+            int offset = Random.Shared.Next(minDistance, maxDistance + 1);
+            int xOffset = (int)Math.Round(Random.Shared.NextDouble() * offset);
+            int yOffset = offset - xOffset;
+
+            // Randomly flip the offsets to negative
+            if (Random.Shared.NextDouble() < 0.5)
+            {
+                xOffset *= -1;
+            }
+            if (Random.Shared.NextDouble() < 0.5)
+            {
+                yOffset *= -1;
+            }
+
+            pos = new Pos(centralPosition.X + xOffset, centralPosition.Y + yOffset);
+        } while (_entities.Any(e => e.Position == pos));
+
+        return pos;
+    }
 }

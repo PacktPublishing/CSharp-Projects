@@ -11,13 +11,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Party.json">
+      <None Update="Data\Enemies.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Encounters.json">
+      <None Update="Data\Encounters.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Enemies.json">
+      <None Update="Data\Party.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

@@ -7,7 +7,7 @@ public class EncounterRepository(EnemyRepository enemyRepository) : FileReposito
 {
     public EnemyGroup CreateRandomEncounter(Pos position)
     {
-        List<EncounterInformation> encounters = LoadManyFromJsonFile<EncounterInformation>("Encounters.json");
+        List<EncounterInformation> encounters = LoadManyFromJsonFile<EncounterInformation>("Data/Encounters.json");
         
         // Select a random element of encounters
         EncounterInformation encounter = encounters[Random.Shared.Next(encounters.Count)];
@@ -31,16 +31,4 @@ public class EncounterRepository(EnemyRepository enemyRepository) : FileReposito
             .ToList()
         };
     }
-}
-
-public class EncounterInformation
-{
-    public required string Name { get; init; }
-    public required List<EncounterEnemyInformation> Enemies { get; init; } = [];
-}
-
-public class EncounterEnemyInformation
-{
-    public required string Name { get; init; }
-    public required int Count { get; init; }
 }

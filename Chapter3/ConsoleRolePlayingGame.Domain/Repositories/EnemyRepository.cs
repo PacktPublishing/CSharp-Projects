@@ -6,7 +6,7 @@ public class EnemyRepository : FileRepositoryBase
 {
     public Enemy GetByName(string enemyName)
     {
-        List<Enemy> enemies = LoadManyFromJsonFile<Enemy>("Enemies.json");
+        List<Enemy> enemies = LoadManyFromJsonFile<Enemy>("Data/Enemies.json");
 
         Enemy enemy = enemies.First(e => enemyName.Equals(e.Name, StringComparison.OrdinalIgnoreCase));
         
