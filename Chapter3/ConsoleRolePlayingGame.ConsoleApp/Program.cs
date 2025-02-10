@@ -1,13 +1,28 @@
 ﻿using ConsoleRolePlayingGame.ConsoleApp.Screens;
 using ConsoleRolePlayingGame.Domain;
 using ConsoleRolePlayingGame.Domain.Commands;
+using ConsoleRolePlayingGame.Domain.Overworld;
+using ConsoleRolePlayingGame.Domain.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
 try
 {
-    GameManager game = new();
-    OverworldScreen overworldScreen = new(game);
-    BattleScreen battleScreen = new(game);
+    ServiceCollection services = new();
+    services.AddSingleton<GameManager>();
+    services.AddSingleton<OverworldScreen>();
+    services.AddSingleton<BattleScreen>();
+    services.AddScoped<PerlinNoiseProvider>();
+    services.AddScoped<EncounterRepository>();
+    services.AddScoped<EnemyRepository>();
+    services.AddScoped<PartyRepository>();
+    services.AddScoped<MapGenerator>();
+    services.AddScoped<WorldMap>();
+    services.AddScoped<Random>();
+    
+    ServiceProvider provider = services.BuildServiceProvider();
+
+    GameManager game = provider.GetRequiredService<GameManager>();
 
     while (game.Status != GameStatus.Terminated)
     {
@@ -17,10 +32,12 @@ try
         switch (game.Status)
         {
             case GameStatus.Overworld:
+                OverworldScreen overworldScreen = provider.GetRequiredService<OverworldScreen>();
                 AnsiConsole.Write(overworldScreen.GenerateVisual());
                 break;
             
             case GameStatus.Combat:
+                BattleScreen battleScreen = provider.GetRequiredService<BattleScreen>();
                 AnsiConsole.Write(battleScreen.GenerateVisual());
                 break;         
             

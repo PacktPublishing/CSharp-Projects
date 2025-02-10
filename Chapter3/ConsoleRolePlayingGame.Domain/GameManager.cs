@@ -14,19 +14,16 @@ public class GameManager
     public Party Party { get; }
     public Battle? Battle { get; private set; }
 
-    public GameManager()
+    public GameManager(PartyRepository partyRepository, 
+                       EncounterRepository encounterRepository,
+                       WorldMap map)
     {
-        // TODO: DI container would be good here
-        PartyRepository partyRepository = new();
+        _encounters = encounterRepository;
         Party = partyRepository.Load();
-        
-        EnemyRepository enemyRepository = new();
-        _encounters = new(enemyRepository);
-        
-        MapGenerator generator = new();
-        Map = new WorldMap(generator);
+        Map = map;
         Map.AddEntity(Party);
         
+        // Spawn a few initial encounters
         for (int i = 0; i < 5; i++)
         {
             SpawnNearbyEncounter();
@@ -35,7 +32,7 @@ public class GameManager
 
     private void SpawnNearbyEncounter()
     {
-        Pos point = Map.GetOpenPositionNear(Party.Position, 5, 15);
+        Pos point = Map.GetOpenPositionNear(Party.Position, 5, 10);
         Map.AddEntity(_encounters.CreateRandomEncounter(point));
     }
 
