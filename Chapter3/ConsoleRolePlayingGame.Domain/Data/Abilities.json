@@ -1,0 +1,12 @@
+[
+  {
+    "Id": "Attack",
+    "Name": "Attack",
+    "TargetsSingle": true,
+    "IsHeal": false,
+    "Attribute": 1,
+    "MinMultiplier": 0.8,
+    "MaxMultiplier": 1.2,
+    "ManaCost": 0
+  }
+]

@@ -1,6 +1,6 @@
 namespace ConsoleRolePlayingGame.Domain.Combat;
 
-public record class GameCharacter
+public record GameCharacter
 {
     public required string Name { get; init; }
     public required string[] AsciiArt { get; init; }
@@ -15,4 +15,7 @@ public record class GameCharacter
     public int Speed { get; set; }
     
     public bool IsDead => Health <= 0;
+
+    public IEnumerable<string> AbilityIds { get; init; } = [];
+    public IEnumerable<Ability> Abilities { get; set; } = [];
 }

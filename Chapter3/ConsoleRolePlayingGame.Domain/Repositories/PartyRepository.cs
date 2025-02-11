@@ -8,7 +8,7 @@ public class PartyRepository : FileRepositoryBase
     public Party Load()
     {
         IEnumerable<PlayerCharacter> characters =
-            LoadManyFromJsonFile<PlayerCharacter>("Data/Party.json")
+            LoadManyFromJsonFile<PlayerCharacter>("Party.json")
                 .Take(4)
                 .Select(c => c with
                 {

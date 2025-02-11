@@ -1,6 +1,6 @@
 namespace ConsoleRolePlayingGame.Domain.Overworld;
 
-public class WorldMap(MapGenerator mapGenerator)
+public class WorldMap(MapGenerator mapGenerator, Random random)
 {
     private readonly List<IMapEntity> _entities = new();
 
@@ -45,16 +45,16 @@ public class WorldMap(MapGenerator mapGenerator)
         Pos pos;
         do
         {
-            int offset = Random.Shared.Next(minDistance, maxDistance + 1);
-            int xOffset = (int)Math.Round(Random.Shared.NextDouble() * offset);
+            int offset = random.Next(minDistance, maxDistance + 1);
+            int xOffset = (int)Math.Round(random.NextDouble() * offset);
             int yOffset = offset - xOffset;
 
             // Randomly flip the offsets to negative
-            if (Random.Shared.NextDouble() < 0.5)
+            if (random.NextDouble() < 0.5)
             {
                 xOffset *= -1;
             }
-            if (Random.Shared.NextDouble() < 0.5)
+            if (random.NextDouble() < 0.5)
             {
                 yOffset *= -1;
             }

@@ -16,6 +16,7 @@ try
     services.AddScoped<EncounterRepository>();
     services.AddScoped<EnemyRepository>();
     services.AddScoped<PartyRepository>();
+    services.AddScoped<AbilityRepository>();
     services.AddScoped<MapGenerator>();
     services.AddScoped<WorldMap>();
     services.AddScoped<Random>();

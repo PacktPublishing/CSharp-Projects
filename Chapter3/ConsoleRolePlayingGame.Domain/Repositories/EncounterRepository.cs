@@ -3,14 +3,17 @@ using ConsoleRolePlayingGame.Domain.Overworld;
 
 namespace ConsoleRolePlayingGame.Domain.Repositories;
 
-public class EncounterRepository(EnemyRepository enemyRepository) : FileRepositoryBase
+public class EncounterRepository(
+    EnemyRepository enemyRepository, 
+    AbilityRepository abilityRepository,
+    Random random) : FileRepositoryBase
 {
     public EnemyGroup CreateRandomEncounter(Pos position)
     {
-        List<EncounterInformation> encounters = LoadManyFromJsonFile<EncounterInformation>("Data/Encounters.json");
+        List<EncounterInformation> encounters = LoadManyFromJsonFile<EncounterInformation>("Encounters.json");
         
         // Select a random element of encounters
-        EncounterInformation encounter = encounters[Random.Shared.Next(encounters.Count)];
+        EncounterInformation encounter = encounters[random.Next(encounters.Count)];
         
         return new EnemyGroup(position)
         {
@@ -24,7 +27,8 @@ public class EncounterRepository(EnemyRepository enemyRepository) : FileReposito
                     {
                         Name = e.Count == 1 
                             ? enemyTemplate.Name 
-                            : $"{enemyTemplate.Name} {index}"
+                            : $"{enemyTemplate.Name} {index}",
+                        Abilities = abilityRepository.GetAbilities(enemyTemplate.AbilityIds)
                     });
             })
             .Cast<GameCharacter>()

@@ -6,7 +6,7 @@ public abstract class FileRepositoryBase
 {
     protected static List<T> LoadManyFromJsonFile<T>(string fileName)
     {
-        string filePath = Path.Combine(Environment.CurrentDirectory, fileName);
+        string filePath = Path.Combine(Environment.CurrentDirectory, "Data", fileName);
         if (!File.Exists(filePath))
         {
             throw new FileNotFoundException($"Could not find {filePath}");
