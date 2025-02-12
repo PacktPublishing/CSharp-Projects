@@ -3,7 +3,7 @@ using ConsoleRolePlayingGame.Domain.Combat;
 
 namespace ConsoleRolePlayingGame.Domain.Repositories;
 
-public class PartyRepository : FileRepositoryBase
+public class PartyRepository(AbilityRepository abilities) : FileRepositoryBase
 {
     public Party Load()
     {
@@ -13,7 +13,8 @@ public class PartyRepository : FileRepositoryBase
                 .Select(c => c with
                 {
                     Health = c.MaxHealth,
-                    Mana = c.MaxMana
+                    Mana = c.MaxMana,
+                    Abilities = abilities.GetAbilities(c.AbilityIds)
                 });
         
         return new Party

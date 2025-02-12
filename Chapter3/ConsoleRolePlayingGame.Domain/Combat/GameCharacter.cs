@@ -18,4 +18,18 @@ public record GameCharacter
 
     public IEnumerable<string> AbilityIds { get; init; } = [];
     public IEnumerable<Ability> Abilities { get; set; } = [];
+
+    public int TimeUntilTurn { get; internal set; }
+
+    public void AdvanceTime()
+    {
+        if (IsDead || TimeUntilTurn <= 0)
+        {
+            return;
+        }
+        
+        TimeUntilTurn -= Speed;
+    }
+    
+    public bool IsReady => TimeUntilTurn <= 0 && !IsDead;
 }

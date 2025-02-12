@@ -1,5 +1,4 @@
 using ConsoleRolePlayingGame.Domain.Combat;
-using ConsoleRolePlayingGame.Domain.Commands;
 using ConsoleRolePlayingGame.Domain.Overworld;
 using ConsoleRolePlayingGame.Domain.Repositories;
 
@@ -8,9 +7,8 @@ namespace ConsoleRolePlayingGame.Domain;
 public class GameManager
 {
     private readonly EncounterRepository _encounters;
-    public GameStatus Status { get; internal set; } = GameStatus.Overworld;
+    public GameStatus Status { get; private set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
-    public CommandRegistry Commands { get; } = new();
     public Party Party { get; }
     public Battle? Battle { get; private set; }
 
@@ -66,7 +64,7 @@ public class GameManager
     private void StartBattle(EnemyGroup enemies)
     {
         Map.RemoveEntity(enemies);
-        Battle = new Battle(Party, enemies);
+        Battle = new Battle(Party, enemies).Start();
         Status = GameStatus.Combat;
     }
     
@@ -82,4 +80,7 @@ public class GameManager
         Battle = null;
         Status = GameStatus.GameOver;
     }
+
+    public void Quit() 
+        => Status = GameStatus.Terminated;
 }

@@ -1,6 +1,5 @@
 ﻿using ConsoleRolePlayingGame.ConsoleApp.Screens;
 using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Commands;
 using ConsoleRolePlayingGame.Domain.Overworld;
 using ConsoleRolePlayingGame.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,28 +34,18 @@ try
             case GameStatus.Overworld:
                 OverworldScreen overworldScreen = provider.GetRequiredService<OverworldScreen>();
                 AnsiConsole.Write(overworldScreen.GenerateVisual());
+                await overworldScreen.HandlePlayerInputAsync();
                 break;
             
             case GameStatus.Combat:
                 BattleScreen battleScreen = provider.GetRequiredService<BattleScreen>();
                 AnsiConsole.Write(battleScreen.GenerateVisual());
+                await battleScreen.HandlePlayerInputAsync();
                 break;         
             
             case GameStatus.GameOver:
                 AnsiConsole.MarkupLine("[red]Game Over[/]");
                 break;
-        }
-
-        // Get input from the user
-        // TODO: This is probably only needed on the overworld
-        AnsiConsole.Markup("[Yellow]>[/] ");
-        ConsoleKeyInfo? keyInfo = AnsiConsole.Console.Input.ReadKey(intercept: true);
-
-        if (keyInfo.HasValue)
-        {
-            // TODO: Commands should be specific to the current game state
-            Command? command = game.Commands.GetCommandForKey(keyInfo.Value.Key);
-            command?.Execute(game);
         }
 
         game.Update();

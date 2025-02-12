@@ -4,13 +4,17 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class CombatGroupRenderer(ICombatGroup group, bool includeStats = false) : IVisualGenerator
+public class CombatGroupRenderer(ICombatGroup group, 
+    GameCharacter? activeCharacter, 
+    bool includeStats = false) : IVisualGenerator
 {
     private IRenderable GenerateCharacterVisual(GameCharacter c)
     {
         List<IRenderable> visuals = [
+            // TODO: If dead, use a different artwork
             ..c.AsciiArt.Select(l => new Markup(l).Justify(Justify.Center)), 
-            new Text(c.Name).Justify(Justify.Center)
+            new Markup(activeCharacter == c ? $"[bold yellow]{c.Name}[/]" :c.Name)
+                .Justify(Justify.Center)
         ];
         
         if (includeStats)
