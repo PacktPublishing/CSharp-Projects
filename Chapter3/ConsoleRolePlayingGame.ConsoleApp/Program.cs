@@ -45,6 +45,9 @@ try
             
             case GameStatus.GameOver:
                 AnsiConsole.MarkupLine("[red]Game Over[/]");
+                AnsiConsole.MarkupLine("[yellow]Press any key to exit...[/]");
+                Console.ReadKey();
+                game.Quit();
                 break;
         }
 

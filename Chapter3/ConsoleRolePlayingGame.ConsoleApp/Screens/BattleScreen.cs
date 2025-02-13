@@ -28,6 +28,7 @@ public class BattleScreen(GameManager game) : IVisualGenerator
 
     public async Task HandlePlayerInputAsync()
     {
+        string? message = null;
         AnsiConsole.Cursor.SetPosition(0, 26);
         Battle battle = game.Battle!;
 
@@ -42,7 +43,7 @@ public class BattleScreen(GameManager game) : IVisualGenerator
         }
         else if (battle.ActiveMember is Enemy e)
         {
-            battle.RunAiTurn(e);
+            message = battle.RunAiTurn(e);
         }
         else if (battle.ActiveMember is PlayerCharacter pc)
         {
@@ -50,17 +51,28 @@ public class BattleScreen(GameManager game) : IVisualGenerator
                 .Title($"Select an action for [yellow]{pc.Name}[/]")
                 .AddChoices(pc.Abilities)
                 .UseConverter(a => a.Name));
-
-            GameCharacter? target = null;
+            
+            IEnumerable<GameCharacter> targets = ability.IsHeal ? battle.Party.Members : battle.Enemies.Members;
             if (ability.TargetsSingle)
             {
-                target = AnsiConsole.Prompt(new SelectionPrompt<GameCharacter>()
+                GameCharacter target = AnsiConsole.Prompt(new SelectionPrompt<GameCharacter>()
                     .Title("Select a target")
-                    .AddChoices(ability.IsHeal ? battle.Party.Members : battle.Enemies.Members)
+                    .PageSize(3)
+                    .AddChoices(targets.Where(t => !t.IsDead))
                     .UseConverter(c => c.Name));
+
+                targets = [target];
             }
             
-            battle.RunTurn(pc, ability, target);
+            message = battle.RunTurn(pc, ability, targets);
+        }
+        
+        // The user may need to see the results of their turn or the AI's actions
+        if (!string.IsNullOrEmpty(message))
+        {
+            AnsiConsole.WriteLine(message);
+            AnsiConsole.MarkupLine("[Yellow]Press any key to continue.[/] ");
+            AnsiConsole.Console.Input.ReadKey(true);
         }
     }
 }

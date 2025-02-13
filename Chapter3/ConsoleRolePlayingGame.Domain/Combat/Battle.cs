@@ -1,11 +1,14 @@
+using System.Text;
+
 namespace ConsoleRolePlayingGame.Domain.Combat;
 
-public class Battle(Party party, EnemyGroup enemies)
+public class Battle(Party party, EnemyGroup enemies, Random random)
 {
     public EnemyGroup Enemies => enemies;
     public Party Party => party;
     
-    public IEnumerable<GameCharacter> AllCharacters => [..party.Members, ..enemies.Members];
+    public IEnumerable<GameCharacter> AllCharacters 
+        => [..party.Members, ..enemies.Members];
     
     public GameCharacter? ActiveMember => AllCharacters
             .Where(c => c.IsReady)
@@ -31,17 +34,81 @@ public class Battle(Party party, EnemyGroup enemies)
         }
     }
 
-    public void RunAiTurn(Enemy enemy)
+    public string RunAiTurn(Enemy enemy)
     {
-        // TODO: Implement AI
+        // Select a random ability
+        Ability ability = enemy.Abilities
+            .OrderBy(_ => random.Next())
+            .First();
         
-        enemy.TimeUntilTurn = TimeBetweenTurns;
+        IEnumerable<GameCharacter> targets = ability.IsHeal
+            ? Enemies.Members.Where(c => !c.IsDead).ToArray()
+            : Party.Members.Where(c => !c.IsDead).ToArray();
+      
+        // Select a random target if the ability is targeted
+        if (ability.TargetsSingle)
+        {
+            targets = targets
+                .OrderBy(_ => random.Next())
+                .Take(1);
+        }
+        
+        // Execute the command
+        return RunTurn(enemy, ability, targets);
     }
 
-    public void RunTurn(GameCharacter character, Ability ability, GameCharacter? target)
+    public string RunTurn(GameCharacter character, Ability ability, IEnumerable<GameCharacter> targets)
     {
-        // TODO: Actually handle this
+        if (ability.ManaCost > 0 && character.Mana < ability.ManaCost)
+        {
+            return $"{character.Name} does not have enough mana to use {ability.Name}!";
+        }
         
+        character.Mana -= ability.ManaCost;
+        
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine($"{character.Name} uses {ability.Name}!");
+
+        int multiplier = ability.Attribute switch
+        {
+            Trait.Strength => character.Strength,
+            Trait.Dexterity => character.Dexterity,
+            Trait.Intelligence => character.Intelligence,
+            _ => 1
+        };
+            
+        float amount = random.Next(
+            (int)(ability.MinMultiplier * multiplier),
+            (int)(ability.MaxMultiplier * multiplier));
+        
+        foreach (var target in targets)
+        {
+            if (target.IsDead)
+            {
+                continue;
+            }
+            
+            if (ability.IsHeal)
+            {
+                target.Health = Math.Min(target.MaxHealth, target.Health + (int)amount);
+                sb.AppendLine($"{target.Name} heals for {amount}!");
+            }
+            else
+            {
+                target.Health = Math.Max(0, target.Health - (int)amount);
+                if (target.IsDead)
+                {
+                    sb.AppendLine($"{target.Name} takes {amount} damage and dies!");
+                }
+                else
+                {
+                    sb.AppendLine($"{target.Name} takes {amount} damage.");
+                }
+            }
+        }
+
         character.TimeUntilTurn = TimeBetweenTurns;
+
+        return sb.ToString();
     }
 }

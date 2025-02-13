@@ -11,8 +11,7 @@ public class CombatGroupRenderer(ICombatGroup group,
     private IRenderable GenerateCharacterVisual(GameCharacter c)
     {
         List<IRenderable> visuals = [
-            // TODO: If dead, use a different artwork
-            ..c.AsciiArt.Select(l => new Markup(l).Justify(Justify.Center)), 
+            ..c.AsciiArt.Select(l => new Markup(c.IsDead ? " " : l).Justify(Justify.Center)), 
             new Markup(activeCharacter == c ? $"[bold yellow]{c.Name}[/]" :c.Name)
                 .Justify(Justify.Center)
         ];
