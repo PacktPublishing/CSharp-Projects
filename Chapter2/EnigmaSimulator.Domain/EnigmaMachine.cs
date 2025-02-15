@@ -4,29 +4,24 @@ namespace EnigmaSimulator.Domain;
 
 public class EnigmaMachine : IEnigmaModule
 {
-    public EnigmaMachine(Plugboard plugboard, Rotor[] rotors, Reflector reflector)
+    public EnigmaMachine(params IEnigmaModule[] modules)
     {
-        // We'll want to filter out non-letters, ensure capitalization, and always advance
-        InputFilter filter = new();
-        NextModule = filter;
-        InputNormalizer normalizer = new();
-        filter.NextModule = normalizer;
-        RotorAdvancer advancer = new(rotors);
-        normalizer.NextModule = advancer;
-
-        // Connect the plugboard
-        advancer.NextModule = plugboard;
-        IEnigmaModule lastModule = plugboard;
-
-        // We enter rotors from the right but think about them left to right
-        foreach (var rotor in rotors.Reverse())
+        // Auto-add standard filters and advancers if not present
+        if (!modules.OfType<RotorAdvancer>().Any())
         {
-            lastModule.NextModule = rotor;
-            lastModule = rotor;
+            modules = [
+                new InputFilter(),
+                new InputNormalizer(),
+                new RotorAdvancer(),
+                ..modules
+            ];
         }
-
-        // Our last module should always be the reflector
-        lastModule.NextModule = reflector;
+        
+        NextModule = modules[0];
+        for (int i = 0; i < modules.Length - 1; i++)
+        {
+            modules[i].NextModule = modules[i + 1];
+        }
     }
 
     public IEnigmaModule? NextModule { get; set; }
