@@ -1,14 +1,16 @@
 using EnigmaSimulator.Domain;
+using EnigmaSimulator.Tests.Helpers;
 using Shouldly;
 
 namespace EnigmaSimulator.Tests;
 
 public class EnigmaMachineTests
 {
-    [TestCase('A', 'B')]
-    [TestCase('G', 'X')]
-    [TestCase('X', 'G')]
-    [TestCase('Z', 'U')]
+    [Theory]
+    [InlineData('A', 'B')]
+    [InlineData('G', 'X')]
+    [InlineData('X', 'G')]
+    [InlineData('Z', 'U')]
     public void EnigmaShouldProduceCorrectOutputForFirstKeystroke(char input, char expected)
     {
         // Arrange
@@ -25,7 +27,8 @@ public class EnigmaMachineTests
         output.ShouldBe(expected);
     }
 
-    [TestCase('Z', 'E')]
+    [Theory]
+    [InlineData('Z', 'E')]
     public void EnigmaShouldReachReflectorWithCorrectOutputForFirstKeystroke(char input, char expected)
     {
         // Arrange
@@ -43,8 +46,11 @@ public class EnigmaMachineTests
         reflector.LastInput.ShouldBe(expected);
     }
 
-    [TestCase("HELLO", "ILBDA")]
-    [TestCase("THEENIGMAMACHINEISENCODINGPROPERLY", "OPCWCLZNLVKKGQONYNOZVDFUSNKXJGUJOZ")]
+    [Theory]
+    [InlineData("HELLO", "ILBDA")]
+    [InlineData("ILBDA", "HELLO")]
+    [InlineData("THEENIGMAMACHINEISENCODINGPROPERLY", "OPCWCLZNLVKKGQONYNOZVDFUSNKXJGUJOZ")]
+    [InlineData("OPCWCLZNLVKKGQONYNOZVDFUSNKXJGUJOZ", "THEENIGMAMACHINEISENCODINGPROPERLY")]
     public void EnigmaShouldEncodeStringsCorrectly(string input, string expected)
     {
         // Arrange
@@ -62,8 +68,9 @@ public class EnigmaMachineTests
     }
 
 
-    [TestCase("HELLO", "IQBDA")]
-    [TestCase("THEENIGMAMACHINEISENCODINGPROPERLY", "GPOSRLZELVKKGQSNYEYPVDFUCEKTJGFJOZ")]
+    [Theory]
+    [InlineData("HELLO", "IQBDA")]
+    [InlineData("THEENIGMAMACHINEISENCODINGPROPERLY", "GPOSRLZELVKKGQSNYEYPVDFUCEKTJGFJOZ")]
     public void EnigmaShouldEncodeStringsCorrectlyWithPlugboard(string input, string expected)
     {
         // Arrange

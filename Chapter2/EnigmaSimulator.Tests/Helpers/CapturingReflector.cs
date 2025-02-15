@@ -1,6 +1,6 @@
 using EnigmaSimulator.Domain;
 
-namespace EnigmaSimulator.Tests;
+namespace EnigmaSimulator.Tests.Helpers;
 
 public class CapturingReflector(string inputMapping) : Reflector(inputMapping)
 {

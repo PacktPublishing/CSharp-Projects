@@ -5,10 +5,11 @@ namespace EnigmaSimulator.Tests;
 
 public class ReflectorTests
 {
-    [TestCase('A', 'Y')]
-    [TestCase('J', 'X')]
-    [TestCase('X', 'J')]
-    [TestCase('F', 'S')]
+    [Theory]
+    [InlineData('A', 'Y')]
+    [InlineData('J', 'X')]
+    [InlineData('X', 'J')]
+    [InlineData('F', 'S')]
     public void ReflectorShouldMapInputCorrectly(char input, char expected)
     {
         // Arrange

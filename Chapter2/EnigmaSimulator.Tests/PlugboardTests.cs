@@ -5,7 +5,7 @@ namespace EnigmaSimulator.Tests;
 
 public class PlugboardTests
 {
-    [Test]
+    [Fact]
     public void ConnectionPresentAfterBeingConfigured()
     {
         // Arrange
@@ -18,9 +18,10 @@ public class PlugboardTests
         output.ShouldBe('I');
     }
     
-    [TestCase('N')]
-    [TestCase('E')]
-    [TestCase('T')]
+    [Theory]
+    [InlineData('N')]
+    [InlineData('E')]
+    [InlineData('T')]
     public void PegboardShouldReturnInputWhenNotConnected(char input)
     {
         // Arrange
@@ -33,7 +34,7 @@ public class PlugboardTests
         output.ShouldBe(input);
     }
     
-    [Test]
+    [Fact]
     public void DuplicateConnectionsAreNotAllowed()
     {
         Should.Throw<ArgumentException>(

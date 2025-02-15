@@ -6,12 +6,13 @@ namespace EnigmaSimulator.Tests;
 
 public class BidirectionalCharEncoderTests
 {
-    [TestCase('A', true, 0, 'E')]
-    [TestCase('E', false, 0, 'A')]    
-    [TestCase('A', true, 1, 'J')]
-    [TestCase('E', false, 1, 'C')]
-    [TestCase('A', true, 25, 'K')]
-    [TestCase('E', false, 25, 'H')]
+    [Theory]
+    [InlineData('A', true, 0, 'E')]
+    [InlineData('E', false, 0, 'A')]    
+    [InlineData('A', true, 1, 'J')]
+    [InlineData('E', false, 1, 'C')]
+    [InlineData('A', true, 25, 'K')]
+    [InlineData('E', false, 25, 'H')]
     public void ShouldEncodeBidirectionally(char input, bool isForward, int offset, char expected)
     {
         // Arrange
