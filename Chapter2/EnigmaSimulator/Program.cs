@@ -16,11 +16,11 @@ try
     // Define dependency injection
     ServiceCollection services = new();
     services.AddScoped<EnigmaMachine>(_ => new EnigmaMachine(
-        new Plugboard("AM", "FI", "NV", "PS", "TU", "WZ"),             
-        new Rotor(RotorSets.Enigma1, 1),
-        new Rotor(RotorSets.Enigma2, 1),
+        new Plugboard(),             
         new Rotor(RotorSets.Enigma3, 1), 
-        new Reflector(Reflector.ReflectorB)));
+        new Rotor(RotorSets.Enigma2, 1),
+        new Rotor(RotorSets.Enigma1, 1),
+        new Reflector(ReflectorSets.ReflectorB)));
 
     // Define the command line parameters
     CommandApp app = new(new TypeRegistrar(services));

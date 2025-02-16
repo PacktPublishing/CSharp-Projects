@@ -7,8 +7,9 @@ public class BidirectionalCharEncoder
 
     public BidirectionalCharEncoder(string mapping)
     {
-        _mappings = new Dictionary<char, char>(new CaseInsensitiveCharComparer());
-        _reverseMappings = new Dictionary<char, char>(new CaseInsensitiveCharComparer());
+        CaseInsensitiveCharComparer comparer = new();
+        _mappings = new Dictionary<char, char>(comparer);
+        _reverseMappings = new Dictionary<char, char>(comparer);
 
         for (int i = 0; i < mapping.Length; i++)
         {
@@ -29,14 +30,18 @@ public class BidirectionalCharEncoder
     {
         const int numLetters = 26; // Length of the alphabet
         input = char.ToUpper(input);
-        
+
         // Adjust the input character for the offset
-        int adjustedInput = ((input - 'A') + offset + numLetters) % numLetters + 'A';
+        int inputIndex = input - 'A';
+        int adjustedIndex = (inputIndex + offset + numLetters) % numLetters;
+        char adjustedInput = (char)(adjustedIndex + 'A');
+
         Dictionary<char, char> mappings = isForward ? _mappings : _reverseMappings;
-        char encodedChar = mappings.GetValueOrDefault((char)adjustedInput, input);
+        char encodedChar = mappings.GetValueOrDefault(adjustedInput, input);
 
         // Adjust the encoded character back for the offset
-        int adjustedOutput = ((encodedChar - 'A') - offset + numLetters) % numLetters + 'A';
-        return (char)adjustedOutput;
+        int encodedIndex = encodedChar - 'A';
+        int finalIndex = (encodedIndex - offset + numLetters) % numLetters;
+        return (char)(finalIndex + 'A');
     }
 }

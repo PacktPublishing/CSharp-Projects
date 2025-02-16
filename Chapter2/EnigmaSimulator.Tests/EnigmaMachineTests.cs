@@ -18,7 +18,7 @@ public class EnigmaMachineTests
             new Rotor(RotorSets.Enigma3),
             new Rotor(RotorSets.Enigma2),
             new Rotor(RotorSets.Enigma1),
-            new Reflector(Reflector.ReflectorB));
+            new Reflector(ReflectorSets.ReflectorB));
 
         // Act
         char output = enigma.Process(input);
@@ -32,7 +32,7 @@ public class EnigmaMachineTests
     public void EnigmaShouldReachReflectorWithCorrectOutputForFirstKeystroke(char input, char expected)
     {
         // Arrange
-        CapturingReflector reflector = new(Reflector.ReflectorB);
+        CapturingReflector reflector = new(ReflectorSets.ReflectorB);
         EnigmaMachine enigma = new(new Plugboard(),
             new Rotor(RotorSets.Enigma3),
             new Rotor(RotorSets.Enigma2),
@@ -58,7 +58,7 @@ public class EnigmaMachineTests
             new Rotor(RotorSets.Enigma3),
             new Rotor(RotorSets.Enigma2),
             new Rotor(RotorSets.Enigma1),
-            new Reflector(Reflector.ReflectorB));
+            new Reflector(ReflectorSets.ReflectorB));
 
         // Act
         string output = enigma.Encode(input);
@@ -78,7 +78,7 @@ public class EnigmaMachineTests
             new Rotor(RotorSets.Enigma3),
             new Rotor(RotorSets.Enigma2),
             new Rotor(RotorSets.Enigma1),
-            new Reflector(Reflector.ReflectorB));
+            new Reflector(ReflectorSets.ReflectorB));
 
         // Act
         string output = enigma.Encode(input);

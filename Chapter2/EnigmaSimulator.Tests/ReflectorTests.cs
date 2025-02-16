@@ -13,7 +13,7 @@ public class ReflectorTests
     public void ReflectorShouldMapInputCorrectly(char input, char expected)
     {
         // Arrange
-        Reflector reflector = new(Reflector.ReflectorB);
+        Reflector reflector = new(ReflectorSets.ReflectorB);
         
         // Act
         char output = reflector.Encode(input, isForward: true);
