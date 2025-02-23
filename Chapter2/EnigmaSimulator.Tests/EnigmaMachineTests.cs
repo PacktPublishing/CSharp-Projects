@@ -11,7 +11,7 @@ public class EnigmaMachineTests
     [InlineData('G', 'X')]
     [InlineData('X', 'G')]
     [InlineData('Z', 'U')]
-    public void EnigmaShouldProduceCorrectOutputForFirstKeystroke(char input, char expected)
+    public void EnigmaShouldProduceCorrectOutput(char input, char expected)
     {
         // Arrange
         EnigmaMachine enigma = new(new Plugboard(),
@@ -21,7 +21,7 @@ public class EnigmaMachineTests
             new Reflector(ReflectorSets.ReflectorB));
 
         // Act
-        char output = enigma.Process(input);
+        char output = enigma.Encode(input);
 
         // Assert
         output.ShouldBe(expected);
@@ -40,7 +40,7 @@ public class EnigmaMachineTests
             reflector);
 
         // Act
-        _ = enigma.Process(input);
+        _ = enigma.Encode(input);
 
         // Assert
         reflector.LastInput.ShouldBe(expected);

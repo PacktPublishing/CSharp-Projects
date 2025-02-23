@@ -8,7 +8,7 @@ public class InteractiveEnigmaCommand(EnigmaMachine enigma) : Command
 {
     public override int Execute(CommandContext context)
     {
-        AnsiConsole.MarkupLine("Enigma will encode letters you type. Press [yellow bold]Enter[/] to exit.");
+        AnsiConsole.MarkupLine("Enigma will encode until you press [cyan]Enter[/].");
         AnsiConsole.WriteLine();
 
         char output;
@@ -17,7 +17,7 @@ public class InteractiveEnigmaCommand(EnigmaMachine enigma) : Command
             ConsoleKeyInfo? keyInfo = AnsiConsole.Console.Input.ReadKey(intercept: true);
 
             char input = keyInfo.GetValueOrDefault().KeyChar;
-            output = enigma.Process(input);
+            output = enigma.Encode(input);
 
             if (!char.IsWhiteSpace(output))
             {

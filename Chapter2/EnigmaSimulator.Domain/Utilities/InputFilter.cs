@@ -4,13 +4,10 @@ public class InputFilter : IEnigmaModule
 {
     public IEnigmaModule? NextModule { get; set; }
 
-    public char Process(char input)
-    {
-        if (!char.IsLetter(input))
-        {
-            return input;
-        }
-
-        return NextModule?.Process(input) ?? input;
-    }
+    public char Encode(char input, bool isForward) => input;
+    
+    public char Process(char input) 
+        => NextModule is not null && char.IsLetter(input) 
+            ? NextModule.Process(input) 
+            : input;
 }

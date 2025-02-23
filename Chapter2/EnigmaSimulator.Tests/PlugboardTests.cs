@@ -5,17 +5,21 @@ namespace EnigmaSimulator.Tests;
 
 public class PlugboardTests
 {
-    [Fact]
-    public void ConnectionPresentAfterBeingConfigured()
+    [Theory]
+    [InlineData('H', 'O')]
+    [InlineData('O', 'H')]
+    [InlineData('A', 'W')]
+    [InlineData('X', 'X')]
+    public void ConnectionPresentAfterBeingConfigured(char input, char expected)
     {
         // Arrange
-        Plugboard plugboard = new("HI");
+        Plugboard plugboard = new("OH", "WA");
         
         // Act
-        char output = plugboard.Encode('H', isForward:true);
+        char output = plugboard.Encode(input);
         
         // Assert
-        output.ShouldBe('I');
+        output.ShouldBe(expected);
     }
     
     [Theory]
@@ -28,7 +32,7 @@ public class PlugboardTests
         Plugboard plugboard = new();
         
         // Act
-        char output = plugboard.Encode(input, isForward: true);
+        char output = plugboard.Encode(input);
         
         // Assert
         output.ShouldBe(input);

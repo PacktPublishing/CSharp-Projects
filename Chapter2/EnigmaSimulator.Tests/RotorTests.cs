@@ -10,22 +10,21 @@ public class RotorTests
     [InlineData(5,6, false)]
     [InlineData(17,18, true)] // Notch at Q on Enigma 1
     [InlineData(26,1, false)]
-    public void RotorShouldAdvanceCorrectly(int initialPosition, int expectedPosition, bool expectedNotch)
+    public void RotorShouldAdvance(int position, int expectedPosition, bool expectNotch)
     {
         // Arrange
-        Rotor rotor = new(RotorSets.Enigma1, initialPosition);
+        Rotor rotor = new(RotorSets.Enigma1, position);
         
         // Act
         bool encounteredNotch = rotor.Advance();
         
         // Assert
         rotor.Position.ShouldBe(expectedPosition);
-        encounteredNotch.ShouldBe(expectedNotch);
+        encounteredNotch.ShouldBe(expectNotch);
     }
     
     [Theory]
     [InlineData('A', RotorSets.Enigma1, 1, true, 'E')] // 1st letter of sequence
-    [InlineData('a', RotorSets.Enigma1, 1, true, 'E')]
     [InlineData('A', RotorSets.Enigma1, 2, true, 'J')] // 2nd letter of sequence
     [InlineData('Z', RotorSets.Enigma1, 1, true, 'J')]
     [InlineData('Z', RotorSets.Enigma1, 2, true, 'D')] // Should wrap back to 1st

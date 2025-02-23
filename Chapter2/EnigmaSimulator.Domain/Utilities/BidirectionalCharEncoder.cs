@@ -2,19 +2,16 @@ namespace EnigmaSimulator.Domain.Utilities;
 
 public class BidirectionalCharEncoder
 {
-    private readonly Dictionary<char, char> _mappings;
-    private readonly Dictionary<char, char> _reverseMappings;
+    private readonly Dictionary<char, char> _mappings = new();
+    private readonly Dictionary<char, char> _reverseMappings = new();
 
     public BidirectionalCharEncoder(string mapping)
     {
-        CaseInsensitiveCharComparer comparer = new();
-        _mappings = new Dictionary<char, char>(comparer);
-        _reverseMappings = new Dictionary<char, char>(comparer);
-
+        mapping = mapping.ToUpper();
         for (int i = 0; i < mapping.Length; i++)
         {
             char input = (char)('A' + i);
-            char output = char.ToUpper(mapping[i]);
+            char output = mapping[i];
             _mappings.Add(input, output);
             _reverseMappings.Add(output, input);
         }
@@ -29,7 +26,6 @@ public class BidirectionalCharEncoder
     public char Encode(char input, bool isForward, int offset = 0)
     {
         const int numLetters = 26; // Length of the alphabet
-        input = char.ToUpper(input);
 
         // Adjust the input character for the offset
         int inputIndex = input - 'A';

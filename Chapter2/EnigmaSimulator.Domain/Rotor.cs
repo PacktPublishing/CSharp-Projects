@@ -15,13 +15,8 @@ public class Rotor : IEnigmaModule
         string[] parts = characterMapping.Split('-');
         _mappings = new BidirectionalCharEncoder(parts[0]);
 
-        _notches = parts.Length > 1
-            ? new HashSet<char>(parts[1], new CaseInsensitiveCharComparer())
-            : [];
+        _notches = parts.Length > 1 ? [..parts[1]] : [];
     }
-
-    public bool HasNotch(int position)
-        => _notches.Contains((char)('A' + position - 1));
 
     public int Position { get; private set; }
 
@@ -29,19 +24,18 @@ public class Rotor : IEnigmaModule
 
     public char Encode(char input, bool isForward) 
         => _mappings.Encode(input, isForward, offset: Position - 1);
+    
+    public bool HasNotch(int position)
+        => _notches.Contains((char)('A' + position - 1));
 
     public bool Advance()
     {
-        const int numLetters = 26;
-        int initialPosition = Position;
+        bool hadNotch = HasNotch(Position);
 
-        Position++;
-        while (Position > numLetters)
-        {
-            Position -= numLetters;
-        }
+        // Increment the position and ensure it wraps around
+        const int numLetters = 26;
+        Position = (Position % numLetters) + 1;
         
-        // Check if the rotor was at a notch position
-        return HasNotch(initialPosition);
+        return hadNotch;
     }
 }

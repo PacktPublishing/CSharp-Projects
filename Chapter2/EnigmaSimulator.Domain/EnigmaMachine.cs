@@ -2,7 +2,7 @@ using EnigmaSimulator.Domain.Utilities;
 
 namespace EnigmaSimulator.Domain;
 
-public class EnigmaMachine : IEnigmaModule
+public class EnigmaMachine
 {
     public EnigmaMachine(params IEnigmaModule[] modules)
     {
@@ -26,9 +26,15 @@ public class EnigmaMachine : IEnigmaModule
 
     public IEnigmaModule? NextModule { get; set; }
 
-    public string Encode(string input) 
-        => new string(input.Select(Process).ToArray());
+    public char Encode(char input) => NextModule?.Process(input) ?? input;
+    public string Encode(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input) || NextModule is null)
+        {
+            return input;
+        }
 
-    public char Process(char input) 
-        => NextModule?.Process(input) ?? input;
+        char[] encodedLetters = input.Select(NextModule.Process).ToArray();
+        return new string(encodedLetters);
+    }
 }

@@ -16,7 +16,7 @@ public class ReflectorTests
         Reflector reflector = new(ReflectorSets.ReflectorB);
         
         // Act
-        char output = reflector.Encode(input, isForward: true);
+        char output = reflector.Encode(input);
         
         // Assert
         output.ShouldBe(expected);

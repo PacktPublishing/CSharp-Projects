@@ -4,12 +4,10 @@ namespace EnigmaSimulator.Domain;
 
 public class Plugboard : IEnigmaModule
 {
-    private readonly Dictionary<char, char> _mappings;
+    private readonly Dictionary<char, char> _mappings = new();
 
     public Plugboard(params string[] pairs)
     {
-        _mappings = new Dictionary<char, char>(new CaseInsensitiveCharComparer());
-        
         foreach (string pair in pairs)
         {
             if (pair.Length != 2)
@@ -24,8 +22,8 @@ public class Plugboard : IEnigmaModule
 
     public override string ToString() => "Plugboard";
 
-    public char Encode(char input, bool isForward) 
-        => _mappings.GetValueOrDefault(input, input);
+    public char Encode(char input, bool isForward = true) 
+        => _mappings.GetValueOrDefault(input, defaultValue: input);
 
     public IEnigmaModule? NextModule { get; set; }
 }
