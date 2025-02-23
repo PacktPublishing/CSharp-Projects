@@ -6,39 +6,24 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Screens;
 
-public class OverworldScreen : IVisualGenerator
+public class OverworldScreen(GameManager game, IAnsiConsole console) : IVisualGenerator
 {
-    private readonly GameManager _game;
-    private readonly InstructionsRenderer _helpRenderer;
-    private readonly CanvasMapRenderer _mapRenderer;
-    private readonly PartyMemberListRenderer _partyRenderer;
-    private readonly Layout _layout;
-
-    public OverworldScreen(GameManager game)
-    {
-        _game = game;
-        
-        // Instantiate our renderers that will be used to render the UI
-        _partyRenderer = new PartyMemberListRenderer(game.Party);
-        _mapRenderer = new CanvasMapRenderer(game, 21, 21);
-        _helpRenderer = new InstructionsRenderer();
-
-        // Build out the structure of the main layout as well as the parts that won't update
-        _layout = new Layout("Root").SplitRows(
-            new Layout("Header").Size(1),
-            new Layout("Content").Size(_mapRenderer.Height)
-                .SplitColumns(
-                    new Layout("Main").Size(_mapRenderer.Width * 2),
-                    new Layout("Sidebar")
-                )
-        );
-        _layout["Header"].Update(new Markup("[bold yellow]Console Role Playing Game[/] by [cyan]Matt Eland[/]"));
-    }
+    private readonly InstructionsRenderer _helpRenderer = new();
+    private readonly CanvasMapRenderer _mapRenderer = new(game, 21, 21);
+    private readonly PartyMemberListRenderer _partyRenderer = new(game.Party);
+    
+    private readonly Layout _layout = new Layout("Root").SplitRows(
+        new Layout("Header").Size(1).Update(new Markup("[bold yellow]Console Role Playing Game[/] by [cyan]Matt Eland[/]")),
+        new Layout("Content").Size(21)
+            .SplitColumns(
+                new Layout("Main").Size(42),
+                new Layout("Sidebar")
+            )
+    );
 
     public IRenderable GenerateVisual()
     {
         _layout["Main"].Update(_mapRenderer.GenerateVisual());
-
         _layout["Sidebar"].Update(new Rows(
             _partyRenderer.GenerateVisual(),
             _helpRenderer.GenerateVisual()
@@ -49,12 +34,12 @@ public class OverworldScreen : IVisualGenerator
 
     public async Task HandlePlayerInputAsync()
     {
-        AnsiConsole.Markup("[Yellow]>[/] ");
-        ConsoleKeyInfo? keyInfo = await AnsiConsole.Console.Input.ReadKeyAsync(true, CancellationToken.None);
+        console.Markup("[Yellow]>[/] ");
+        ConsoleKeyInfo? keyInfo = await console.Input.ReadKeyAsync(true, CancellationToken.None);
 
         if (keyInfo.HasValue)
         {
-            CombatGroup party = _game.Party;
+            CombatGroup party = game.Party;
             switch (keyInfo.Value.Key)
             {
                 case ConsoleKey.A:
@@ -75,7 +60,7 @@ public class OverworldScreen : IVisualGenerator
                     break;
                 case ConsoleKey.Q:
                 case ConsoleKey.Escape:
-                    _game.Quit();
+                    game.Quit();
                     break;
             }
         }

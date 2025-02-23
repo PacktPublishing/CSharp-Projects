@@ -28,29 +28,30 @@ try
     ServiceProvider provider = services.BuildServiceProvider();
 
     GameManager game = provider.GetRequiredService<GameManager>();
+    IAnsiConsole console = provider.GetRequiredService<IAnsiConsole>();
 
     while (game.Status != GameStatus.Terminated)
     {
         // Ensures the app is rendered at a consistent size
-        AnsiConsole.Clear();
+        console.Clear();
 
         switch (game.Status)
         {
             case GameStatus.Overworld:
                 OverworldScreen overworldScreen = provider.GetRequiredService<OverworldScreen>();
-                AnsiConsole.Write(overworldScreen.GenerateVisual());
+                console.Write(overworldScreen.GenerateVisual());
                 await overworldScreen.HandlePlayerInputAsync();
                 break;
             
             case GameStatus.Combat:
                 BattleScreen battleScreen = provider.GetRequiredService<BattleScreen>();
-                AnsiConsole.Write(battleScreen.GenerateVisual());
+                console.Write(battleScreen.GenerateVisual());
                 await battleScreen.HandlePlayerInputAsync();
                 break;         
             
             case GameStatus.GameOver:
-                AnsiConsole.MarkupLine("[red]Game Over[/]");
-                AnsiConsole.MarkupLine("[yellow]Press any key to exit...[/]");
+                console.MarkupLine("[red]Game Over[/]");
+                console.MarkupLine("[yellow]Press any key to exit...[/]");
                 Console.ReadKey();
                 game.Quit();
                 break;

@@ -6,7 +6,7 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Screens;
 
-public class BattleScreen(GameManager game) : IVisualGenerator
+public class BattleScreen(GameManager game, IAnsiConsole console) : IVisualGenerator
 {
     private readonly Layout _layout = new Layout()
         .SplitRows(
@@ -29,13 +29,13 @@ public class BattleScreen(GameManager game) : IVisualGenerator
     public async Task HandlePlayerInputAsync()
     {
         string? message = null;
-        AnsiConsole.Cursor.SetPosition(0, 26);
+        console.Cursor.SetPosition(0, 26);
         Battle battle = game.Battle!;
 
-        Combatant combatant = battle.ActiveMember;
+        Combatant? combatant = battle.ActiveMember;
         if (combatant is null)
         {
-            await AnsiConsole.Status()
+            await console.Status()
                 .StartAsync("Wait for next combatant...", async ctx =>
             {
                 await Task.Delay(250);
@@ -50,9 +50,9 @@ public class BattleScreen(GameManager game) : IVisualGenerator
         // The user may need to see the results of their turn or the AI's actions
         if (!string.IsNullOrEmpty(message))
         {
-            AnsiConsole.WriteLine(message);
-            AnsiConsole.MarkupLine("[Yellow]Press any key to continue.[/] ");
-            AnsiConsole.Console.Input.ReadKey(true);
+            console.WriteLine(message);
+            console.MarkupLine("[Yellow]Press any key to continue.[/] ");
+            console.Input.ReadKey(true);
         }
     }
 }
