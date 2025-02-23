@@ -1,8 +1,9 @@
 using ConsoleRolePlayingGame.Domain.Combat;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ConsoleRolePlayingGame.Domain.Repositories;
 
-public class EnemyRepository : FileRepositoryBase
+public class EnemyRepository([FromKeyedServices("Enemy")] IBattleStrategy strategy) : FileRepositoryBase
 {
     public Combatant GetByName(string enemyName)
     {
@@ -14,6 +15,7 @@ public class EnemyRepository : FileRepositoryBase
         {
             Health = enemy.MaxHealth,
             Mana = enemy.MaxMana,
+            Strategy = strategy,
             IsPlayer = false
         };
     }

@@ -2,58 +2,41 @@ using System.Text;
 
 namespace ConsoleRolePlayingGame.Domain.Combat;
 
-public class Battle(CombatGroup party, CombatGroup enemies, Random random)
+public class Battle
 {
-    public CombatGroup Enemies => enemies;
-    public CombatGroup Party => party;
-    
-    public IEnumerable<Combatant> AllCharacters => [..party.Members, ..enemies.Members];
-    
-    public Combatant? ActiveMember => AllCharacters
-            .Where(c => c.IsReady)
-            .OrderBy(c => c.TimeUntilTurn)
-            .FirstOrDefault();
+    private readonly CombatGroup _party;
+    private readonly CombatGroup _enemies;
+    private readonly Random _random;
 
-    private const int TimeBetweenTurns = 100;
-    
-    public Battle Start()
+    public Battle(CombatGroup party, CombatGroup enemies, Random random)
     {
+        _party = party;
+        _enemies = enemies;
+        _random = random;
+        
         foreach (var member in AllCharacters)
         {
             member.TimeUntilTurn = TimeBetweenTurns;
         }
-        return this;
-    }
-    
-    public void AdvanceTime()
-    {
-        foreach (var member in AllCharacters)
-        {
-            member.AdvanceTime();
-        }
     }
 
-    public string RunAiTurn(Combatant enemy)
+    public CombatGroup Enemies => _enemies;
+    public CombatGroup Party => _party;
+    public IEnumerable<Combatant> AllCharacters => [.._party.Members, .._enemies.Members];
+
+    public Combatant? ActiveMember => AllCharacters
+        .Where(c => c.IsReady)
+        .OrderBy(c => c.TimeUntilTurn)
+        .FirstOrDefault();
+
+    private const int TimeBetweenTurns = 100;
+
+    public void AdvanceTime()
     {
-        // Select a random ability
-        Ability ability = enemy.Abilities
-            .OrderBy(_ => random.Next())
-            .First();
-        
-        IEnumerable<Combatant> targets = ability.IsHeal
-            ? Enemies.Members.Where(c => !c.IsDead).ToArray()
-            : Party.Members.Where(c => !c.IsDead).ToArray();
-      
-        // Select a random target if the ability is targeted
-        if (ability.TargetsSingle)
+        foreach (var member in AllCharacters.Where(m => !m.IsDead))
         {
-            targets = targets
-                .OrderBy(_ => random.Next())
-                .Take(1);
+            member.TimeUntilTurn -= member.Speed;
         }
-        
-        // Execute the command
-        return RunTurn(enemy, ability, targets);
     }
 
     public string RunTurn(Combatant character, Ability ability, IEnumerable<Combatant> targets)
@@ -62,52 +45,35 @@ public class Battle(CombatGroup party, CombatGroup enemies, Random random)
         {
             return $"{character.Name} does not have enough mana to use {ability.Name}!";
         }
-        
+
         character.Mana -= ability.ManaCost;
-        
+        character.TimeUntilTurn = TimeBetweenTurns;
+
         StringBuilder sb = new StringBuilder();
         sb.AppendLine($"{character.Name} uses {ability.Name}!");
 
-        int multiplier = ability.Attribute switch
+        foreach (var target in targets.Where(t => !t.IsDead))
         {
-            Trait.Strength => character.Strength,
-            Trait.Dexterity => character.Dexterity,
-            Trait.Intelligence => character.Intelligence,
-            _ => 1
-        };
-            
-        float amount = random.Next(
-            (int)(ability.MinMultiplier * multiplier),
-            (int)(ability.MaxMultiplier * multiplier));
-        
-        foreach (var target in targets)
-        {
-            if (target.IsDead)
-            {
-                continue;
-            }
-            
-            if (ability.IsHeal)
-            {
-                target.Health = Math.Min(target.MaxHealth, target.Health + (int)amount);
-                sb.AppendLine($"{target.Name} heals for {amount}!");
-            }
-            else
-            {
-                target.Health = Math.Max(0, target.Health - (int)amount);
-                if (target.IsDead)
-                {
-                    sb.AppendLine($"{target.Name} takes {amount} damage and dies!");
-                }
-                else
-                {
-                    sb.AppendLine($"{target.Name} takes {amount} damage.");
-                }
-            }
+            string message = ActivateAbilityOnTarget(character, ability, target);
+            sb.AppendLine(message);
         }
 
-        character.TimeUntilTurn = TimeBetweenTurns;
-
         return sb.ToString();
+    }
+
+    private string ActivateAbilityOnTarget(Combatant character, Ability ability, Combatant target)
+    {
+        int amount = ability.CalculateAmount(character, target, _random);
+
+        if (ability.IsHeal)
+        {
+            target.Health = Math.Min(target.MaxHealth, target.Health + (int)amount);
+            return $"{target.Name} heals for {amount}!";
+        }
+
+        target.Health = Math.Max(0, target.Health - (int)amount);
+        return target.IsDead
+            ? $"{target.Name} takes {amount} damage and dies!"
+            : $"{target.Name} takes {amount} damage.";
     }
 }

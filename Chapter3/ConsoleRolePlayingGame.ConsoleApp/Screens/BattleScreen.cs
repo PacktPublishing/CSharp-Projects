@@ -32,7 +32,8 @@ public class BattleScreen(GameManager game) : IVisualGenerator
         AnsiConsole.Cursor.SetPosition(0, 26);
         Battle battle = game.Battle!;
 
-        if (battle.ActiveMember is null)
+        Combatant combatant = battle.ActiveMember;
+        if (combatant is null)
         {
             await AnsiConsole.Status()
                 .StartAsync("Wait for next combatant...", async ctx =>
@@ -41,30 +42,9 @@ public class BattleScreen(GameManager game) : IVisualGenerator
                 battle.AdvanceTime();
             });
         }
-        else if (battle.ActiveMember.IsPlayer)
-        {
-            Ability ability = AnsiConsole.Prompt(new SelectionPrompt<Ability>()
-                .Title($"Select an action for [yellow]{battle.ActiveMember.Name}[/]")
-                .AddChoices(battle.ActiveMember.Abilities)
-                .UseConverter(a => a.Name));
-            
-            IEnumerable<Combatant> targets = ability.IsHeal ? battle.Party.Members : battle.Enemies.Members;
-            if (ability.TargetsSingle)
-            {
-                Combatant target = AnsiConsole.Prompt(new SelectionPrompt<Combatant>()
-                    .Title("Select a target")
-                    .PageSize(3)
-                    .AddChoices(targets.Where(t => !t.IsDead))
-                    .UseConverter(c => c.Name));
-
-                targets = [target];
-            }
-            
-            message = battle.RunTurn(battle.ActiveMember, ability, targets);
-        }
         else
         {
-            message = battle.RunAiTurn(battle.ActiveMember);
+            message = combatant.Strategy.Execute(battle, combatant);
         }
         
         // The user may need to see the results of their turn or the AI's actions

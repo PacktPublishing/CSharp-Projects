@@ -79,7 +79,7 @@ public class GameManager
     private void StartBattle(CombatGroup enemies)
     {
         Map.RemoveEntity(enemies);
-        Battle = new Battle(Party, enemies, _random).Start();
+        Battle = new Battle(Party, enemies, _random);
         Status = GameStatus.Combat;
     }
     

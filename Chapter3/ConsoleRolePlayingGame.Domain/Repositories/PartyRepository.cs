@@ -1,10 +1,11 @@
 
 using ConsoleRolePlayingGame.Domain.Combat;
 using ConsoleRolePlayingGame.Domain.Overworld;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ConsoleRolePlayingGame.Domain.Repositories;
 
-public class PartyRepository(AbilityRepository abilities) : FileRepositoryBase
+public class PartyRepository(AbilityRepository abilities, [FromKeyedServices("Player")] IBattleStrategy strategy) : FileRepositoryBase
 {
     public CombatGroup Load() => new CombatGroup()
         {
@@ -13,6 +14,7 @@ public class PartyRepository(AbilityRepository abilities) : FileRepositoryBase
             Members = LoadManyFromJsonFile<Combatant>("Party.json")
                 .Select(c => c with
                 {
+                    Strategy = strategy,
                     Health = c.MaxHealth,
                     Mana = c.MaxMana,
                     IsPlayer = true,
