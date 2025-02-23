@@ -1,8 +1,10 @@
+using ConsoleRolePlayingGame.Domain.Combat;
+
 namespace ConsoleRolePlayingGame.Domain.Overworld;
 
 public class WorldMap(MapGenerator mapGenerator, Random random)
 {
-    private readonly List<IMapEntity> _entities = new();
+    private readonly List<CombatGroup> _entities = new();
 
     private MapCell GetMapCell(Pos position)
     {
@@ -35,10 +37,10 @@ public class WorldMap(MapGenerator mapGenerator, Random random)
         return mapWindow;
     }
 
-    public IEnumerable<IMapEntity> Entities => _entities;
+    public IEnumerable<CombatGroup> Entities => _entities;
 
-    public void AddEntity(IMapEntity entity) => _entities.Add(entity);
-    public void RemoveEntity(IMapEntity entity) => _entities.Remove(entity);
+    public void AddEntity(CombatGroup entity) => _entities.Add(entity);
+    public void RemoveEntity(CombatGroup entity) => _entities.Remove(entity);
 
     public Pos GetOpenPositionNear(Pos centralPosition, int minDistance, int maxDistance)
     {
@@ -60,7 +62,7 @@ public class WorldMap(MapGenerator mapGenerator, Random random)
             }
 
             pos = new Pos(centralPosition.X + xOffset, centralPosition.Y + yOffset);
-        } while (_entities.Any(e => e.Position == pos));
+        } while (_entities.Any(e => e.MapPos == pos));
 
         return pos;
     }

@@ -8,30 +8,30 @@ public class EncounterRepository(
     AbilityRepository abilityRepository,
     Random random) : FileRepositoryBase
 {
-    public EnemyGroup CreateRandomEncounter(Pos position)
+    public CombatGroup CreateRandomEncounter(Pos position)
     {
         List<EncounterInformation> encounters = LoadManyFromJsonFile<EncounterInformation>("Encounters.json");
         
         // Select a random element of encounters
         EncounterInformation encounter = encounters[random.Next(encounters.Count)];
         
-        return new EnemyGroup(position)
+        return new CombatGroup()
         {
             Name = encounter.Name,
+            MapPos = position,
             Members = encounter.Enemies.SelectMany(e =>
             {
-                Enemy enemyTemplate = enemyRepository.GetByName(e.Name);
+                Combatant template = enemyRepository.GetByName(e.Name);
 
                 return Enumerable.Range(1, e.Count)
-                    .Select(index => enemyTemplate with
+                    .Select(index => template with
                     {
                         Name = e.Count == 1 
-                            ? enemyTemplate.Name 
-                            : $"{enemyTemplate.Name} {index}",
-                        Abilities = abilityRepository.GetAbilities(enemyTemplate.AbilityIds)
+                            ? template.Name 
+                            : $"{template.Name} {index}",
+                        Abilities = abilityRepository.GetAbilities(template.AbilityIds)
                     });
             })
-            .Cast<GameCharacter>()
             .ToList()
         };
     }

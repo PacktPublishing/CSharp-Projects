@@ -1,6 +1,6 @@
 using ConsoleRolePlayingGame.ConsoleApp.Visuals;
 using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Overworld;
+using ConsoleRolePlayingGame.Domain.Combat;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 
@@ -54,7 +54,7 @@ public class OverworldScreen : IVisualGenerator
 
         if (keyInfo.HasValue)
         {
-            IMapEntity party = _game.Party;
+            CombatGroup party = _game.Party;
             switch (keyInfo.Value.Key)
             {
                 case ConsoleKey.A:

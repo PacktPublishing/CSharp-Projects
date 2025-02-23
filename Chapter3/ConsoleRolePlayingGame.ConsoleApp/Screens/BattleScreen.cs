@@ -41,21 +41,17 @@ public class BattleScreen(GameManager game) : IVisualGenerator
                 battle.AdvanceTime();
             });
         }
-        else if (battle.ActiveMember is Enemy e)
-        {
-            message = battle.RunAiTurn(e);
-        }
-        else if (battle.ActiveMember is PlayerCharacter pc)
+        else if (battle.ActiveMember.IsPlayer)
         {
             Ability ability = AnsiConsole.Prompt(new SelectionPrompt<Ability>()
-                .Title($"Select an action for [yellow]{pc.Name}[/]")
-                .AddChoices(pc.Abilities)
+                .Title($"Select an action for [yellow]{battle.ActiveMember.Name}[/]")
+                .AddChoices(battle.ActiveMember.Abilities)
                 .UseConverter(a => a.Name));
             
-            IEnumerable<GameCharacter> targets = ability.IsHeal ? battle.Party.Members : battle.Enemies.Members;
+            IEnumerable<Combatant> targets = ability.IsHeal ? battle.Party.Members : battle.Enemies.Members;
             if (ability.TargetsSingle)
             {
-                GameCharacter target = AnsiConsole.Prompt(new SelectionPrompt<GameCharacter>()
+                Combatant target = AnsiConsole.Prompt(new SelectionPrompt<Combatant>()
                     .Title("Select a target")
                     .PageSize(3)
                     .AddChoices(targets.Where(t => !t.IsDead))
@@ -64,7 +60,11 @@ public class BattleScreen(GameManager game) : IVisualGenerator
                 targets = [target];
             }
             
-            message = battle.RunTurn(pc, ability, targets);
+            message = battle.RunTurn(battle.ActiveMember, ability, targets);
+        }
+        else
+        {
+            message = battle.RunAiTurn(battle.ActiveMember);
         }
         
         // The user may need to see the results of their turn or the AI's actions

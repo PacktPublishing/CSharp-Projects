@@ -10,7 +10,7 @@ public class GameManager
     private readonly Random _random;
     public GameStatus Status { get; private set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
-    public Party Party { get; }
+    public CombatGroup Party { get; }
     public Battle? Battle { get; private set; }
 
     public GameManager(PartyRepository partyRepository, 
@@ -33,7 +33,7 @@ public class GameManager
 
     private void SpawnNearbyEncounter()
     {
-        Pos point = Map.GetOpenPositionNear(Party.Position, 5, 10);
+        Pos point = Map.GetOpenPositionNear(Party.MapPos, 5, 10);
         Map.AddEntity(_encounters.CreateRandomEncounter(point));
     }
 
@@ -54,8 +54,8 @@ public class GameManager
         {
             case GameStatus.Overworld:
             {
-                EnemyGroup? encounter = Map.Entities.OfType<EnemyGroup>()
-                    .FirstOrDefault(g => g.Position == Party.Position);
+                CombatGroup? encounter = Map.Entities
+                    .FirstOrDefault(g => g != Party && g.MapPos == Party.MapPos);
             
                 if (encounter is not null)
                 {
@@ -76,7 +76,7 @@ public class GameManager
         }
     }
 
-    private void StartBattle(EnemyGroup enemies)
+    private void StartBattle(CombatGroup enemies)
     {
         Map.RemoveEntity(enemies);
         Battle = new Battle(Party, enemies, _random).Start();

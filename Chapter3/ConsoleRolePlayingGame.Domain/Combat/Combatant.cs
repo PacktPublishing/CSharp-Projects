@@ -1,6 +1,6 @@
 namespace ConsoleRolePlayingGame.Domain.Combat;
 
-public record GameCharacter
+public record Combatant
 {
     public required string Name { get; init; }
     public required string[] AsciiArt { get; init; }
@@ -32,4 +32,5 @@ public record GameCharacter
     }
     
     public bool IsReady => TimeUntilTurn <= 0 && !IsDead;
+    public bool IsPlayer { get; set; }
 }

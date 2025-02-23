@@ -5,11 +5,11 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class PartyMemberListRenderer(Party party) : IVisualGenerator
+public class PartyMemberListRenderer(CombatGroup party) : IVisualGenerator
 {
     public IRenderable GenerateVisual()
     {
-        IEnumerable<GameCharacter> team = party.Members;
+        IEnumerable<Combatant> team = party.Members;
         int maxHealth = team.Max(c => c.MaxHealth);
         int maxMana = team.Max(c => c.MaxMana);
         

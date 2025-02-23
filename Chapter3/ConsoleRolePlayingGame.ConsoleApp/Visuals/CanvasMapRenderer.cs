@@ -1,4 +1,5 @@
 using ConsoleRolePlayingGame.Domain;
+using ConsoleRolePlayingGame.Domain.Combat;
 using ConsoleRolePlayingGame.Domain.Overworld;
 using Spectre.Console;
 using Spectre.Console.Rendering;
@@ -12,7 +13,7 @@ public class CanvasMapRenderer(GameManager game, int availableWidth, int availab
     
     public IRenderable GenerateVisual()
     {
-        Pos center = game.Party.Position;
+        Pos center = game.Party.MapPos;
         int offsetX = (int)Math.Ceiling(availableWidth / 2.0);
         int offsetY = (int)Math.Ceiling(availableHeight / 2.0);
         Pos mapUpperLeft = new Pos(center.X - offsetX, center.Y - offsetY);
@@ -27,23 +28,21 @@ public class CanvasMapRenderer(GameManager game, int availableWidth, int availab
             for (int x = 0; x < mapWindow.GetLength(0); x++)
             {
                 MapCell cell = mapWindow[x,y];
-                IMapEntity? entity = game.Map.Entities.FirstOrDefault(e => cell.Position == e.Position);
-                
-                Color color = entity switch
-                {
-                    Party => Color.Yellow1,
-                    EnemyGroup => Color.Red,
-                    _ => ToColor(cell.Terrain)
-                };
-                canvas.SetPixel(x, y, color);
+                CombatGroup? entity = game.Map.Entities.FirstOrDefault(e => cell.Position == e.MapPos);
+                canvas.SetPixel(x, y, GetCellColor(entity, cell.Terrain));
             }
         }
 
         return canvas;
     }
 
-    private static Color ToColor(TerrainType terrainType) 
-        => terrainType switch
+    private Color GetCellColor(CombatGroup? entity, TerrainType terrain)
+    {
+        if (entity is not null) return entity == game.Party 
+            ? Color.Yellow1 
+            : Color.Red;
+        
+        return terrain switch
         {
             TerrainType.Grass => Color.Green,
             TerrainType.Water => Color.Blue,
@@ -51,6 +50,7 @@ public class CanvasMapRenderer(GameManager game, int availableWidth, int availab
             TerrainType.Mountain => new Color(128, 128, 128),
             TerrainType.Forest => Color.DarkGreen,
             TerrainType.Desert => Color.MistyRose1,
-            _ => Color.HotPink // Highlight the problem
+            _ => throw new NotSupportedException($"Unsupported terrain: {terrain}")
         };
+    }
 }

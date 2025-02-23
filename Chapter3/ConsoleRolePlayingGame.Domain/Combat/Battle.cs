@@ -2,15 +2,14 @@ using System.Text;
 
 namespace ConsoleRolePlayingGame.Domain.Combat;
 
-public class Battle(Party party, EnemyGroup enemies, Random random)
+public class Battle(CombatGroup party, CombatGroup enemies, Random random)
 {
-    public EnemyGroup Enemies => enemies;
-    public Party Party => party;
+    public CombatGroup Enemies => enemies;
+    public CombatGroup Party => party;
     
-    public IEnumerable<GameCharacter> AllCharacters 
-        => [..party.Members, ..enemies.Members];
+    public IEnumerable<Combatant> AllCharacters => [..party.Members, ..enemies.Members];
     
-    public GameCharacter? ActiveMember => AllCharacters
+    public Combatant? ActiveMember => AllCharacters
             .Where(c => c.IsReady)
             .OrderBy(c => c.TimeUntilTurn)
             .FirstOrDefault();
@@ -34,14 +33,14 @@ public class Battle(Party party, EnemyGroup enemies, Random random)
         }
     }
 
-    public string RunAiTurn(Enemy enemy)
+    public string RunAiTurn(Combatant enemy)
     {
         // Select a random ability
         Ability ability = enemy.Abilities
             .OrderBy(_ => random.Next())
             .First();
         
-        IEnumerable<GameCharacter> targets = ability.IsHeal
+        IEnumerable<Combatant> targets = ability.IsHeal
             ? Enemies.Members.Where(c => !c.IsDead).ToArray()
             : Party.Members.Where(c => !c.IsDead).ToArray();
       
@@ -57,7 +56,7 @@ public class Battle(Party party, EnemyGroup enemies, Random random)
         return RunTurn(enemy, ability, targets);
     }
 
-    public string RunTurn(GameCharacter character, Ability ability, IEnumerable<GameCharacter> targets)
+    public string RunTurn(Combatant character, Ability ability, IEnumerable<Combatant> targets)
     {
         if (ability.ManaCost > 0 && character.Mana < ability.ManaCost)
         {

@@ -4,11 +4,11 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class CombatGroupRenderer(ICombatGroup group, 
-    GameCharacter? activeCharacter, 
+public class CombatGroupRenderer(CombatGroup group, 
+    Combatant? activeCharacter, 
     bool includeStats = false) : IVisualGenerator
 {
-    private IRenderable GenerateCharacterVisual(GameCharacter c)
+    private IRenderable GenerateCharacterVisual(Combatant c)
     {
         List<IRenderable> visuals = [
             ..c.AsciiArt.Select(l => new Markup(c.IsDead ? " " : l).Justify(Justify.Center)), 
