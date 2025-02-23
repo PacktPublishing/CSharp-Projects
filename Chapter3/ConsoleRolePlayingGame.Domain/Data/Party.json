@@ -13,7 +13,9 @@
       "|/ \\ "
     ],
     "AbilityIds": [
-      "Attack"
+      "Attack",
+      "Fireball",
+      "Healing Wind"
     ]
   },
   {
@@ -30,7 +32,9 @@
       " / \\  "
     ],
     "AbilityIds": [
-      "Attack"
+      "Attack",
+      "Smite",
+      "Heal"
     ]
   },
   {
@@ -47,7 +51,8 @@
       "| /\\ g~ g~"
     ],
     "AbilityIds": [
-      "Attack"
+      "Attack",
+      "Goat Swarm"
     ]
   },
   {
@@ -64,7 +69,8 @@
       " / \\  "
     ],
     "AbilityIds": [
-      "Attack"
+      "Attack",
+      "Knife Swarm"
     ]
   }
 ]
