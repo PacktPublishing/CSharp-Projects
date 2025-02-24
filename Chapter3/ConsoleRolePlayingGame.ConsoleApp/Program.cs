@@ -7,61 +7,43 @@ using ConsoleRolePlayingGame.Domain.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
+IAnsiConsole console = AnsiConsole.Console;
 try
 {
     ServiceCollection services = new();
+    
+    // Singleton means one will be shared across the entire application
     services.AddSingleton<GameManager>();
-    services.AddSingleton<OverworldScreen>();
-    services.AddSingleton<BattleScreen>();
-    services.AddSingleton<IAnsiConsole>(_ => AnsiConsole.Console);
-    services.AddScoped<PerlinNoiseProvider>();
-    services.AddScoped<EncounterRepository>();
-    services.AddScoped<EnemyRepository>();
-    services.AddScoped<PartyRepository>();
-    services.AddScoped<AbilityRepository>();
-    services.AddScoped<MapGenerator>();
-    services.AddScoped<WorldMap>();
-    services.AddScoped<Random>();
-    services.AddKeyedScoped<IBattleStrategy, EnemyTurnStrategy>("Enemy");
-    services.AddKeyedScoped<IBattleStrategy, PlayerTurnStrategy>("Player");
+    services.AddSingleton<IAnsiConsole>(console);
+    services.AddSingleton<PerlinNoiseProvider>();
+    services.AddSingleton<EncounterRepository>();
+    services.AddSingleton<EnemyRepository>();
+    services.AddSingleton<PartyRepository>();
+    services.AddSingleton<AbilityRepository>();
+    services.AddSingleton<MapGenerator>();
+    services.AddSingleton<WorldMap>();
+    services.AddSingleton<Random>();
+    
+    // Transients will be created each time they are requested
+    services.AddTransient<ScreenManager>();
+    services.AddTransient<OverworldScreen>();
+    services.AddTransient<BattleScreen>();
+    services.AddKeyedTransient<IBattleStrategy, EnemyTurnStrategy>("Enemy");
+    services.AddKeyedTransient<IBattleStrategy, PlayerTurnStrategy>("Player");
     
     ServiceProvider provider = services.BuildServiceProvider();
-
     GameManager game = provider.GetRequiredService<GameManager>();
-    IAnsiConsole console = provider.GetRequiredService<IAnsiConsole>();
 
     while (game.Status != GameStatus.Terminated)
     {
-        // Ensures the app is rendered at a consistent size
-        console.Clear();
-
-        switch (game.Status)
-        {
-            case GameStatus.Overworld:
-                OverworldScreen overworldScreen = provider.GetRequiredService<OverworldScreen>();
-                console.Write(overworldScreen.GenerateVisual());
-                await overworldScreen.HandlePlayerInputAsync();
-                break;
-            
-            case GameStatus.Combat:
-                BattleScreen battleScreen = provider.GetRequiredService<BattleScreen>();
-                console.Write(battleScreen.GenerateVisual());
-                await battleScreen.HandlePlayerInputAsync();
-                break;         
-            
-            case GameStatus.GameOver:
-                console.MarkupLine("[red]Game Over[/]");
-                console.MarkupLine("[yellow]Press any key to exit...[/]");
-                Console.ReadKey();
-                game.Quit();
-                break;
-        }
+        ScreenManager screens = provider.GetRequiredService<ScreenManager>();
+        await screens.RunAsync();
 
         game.Update();
     }
 }
 catch (Exception ex)
 {
-    AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
-    Console.ReadKey();
+    console.WriteException(ex, ExceptionFormats.ShortenEverything);
+    console.Input.ReadKey(intercept: false);
 }
