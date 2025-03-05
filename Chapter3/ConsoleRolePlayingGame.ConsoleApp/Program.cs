@@ -28,15 +28,15 @@ try
     services.AddTransient<ScreenManager>();
     services.AddTransient<OverworldScreen>();
     services.AddTransient<BattleScreen>();
-    services.AddKeyedTransient<IBattleStrategy, EnemyTurnStrategy>("Enemy");
-    services.AddKeyedTransient<IBattleStrategy, PlayerTurnStrategy>("Player");
+    services.AddKeyedTransient<IBattleStrategy, EnemyTurnStrategy>(serviceKey: "Enemy");
+    services.AddKeyedTransient<IBattleStrategy, PlayerTurnStrategy>(serviceKey: "Player");
     
     ServiceProvider provider = services.BuildServiceProvider();
     GameManager game = provider.GetRequiredService<GameManager>();
-
+    ScreenManager screens = provider.GetRequiredService<ScreenManager>();
+    
     while (game.Status != GameStatus.Terminated)
     {
-        ScreenManager screens = provider.GetRequiredService<ScreenManager>();
         await screens.RunAsync();
 
         game.Update();

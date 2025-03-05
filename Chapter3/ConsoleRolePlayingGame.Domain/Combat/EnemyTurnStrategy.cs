@@ -10,8 +10,8 @@ public class EnemyTurnStrategy(Random random) : IBattleStrategy
             .First();
         
         IEnumerable<Combatant> targets = ability.IsHeal
-            ? battle.Enemies.Members.Where(c => !c.IsDead).ToArray()
-            : battle.Party.Members.Where(c => !c.IsDead).ToArray();
+            ? battle.Enemies.Members.Where(c => !c.IsDead)
+            : battle.Party.Members.Where(c => !c.IsDead);
       
         // Select a random target if the ability is targeted
         if (ability.TargetsSingle)

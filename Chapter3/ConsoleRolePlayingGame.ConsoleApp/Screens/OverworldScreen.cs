@@ -6,21 +6,23 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Screens;
 
-public class OverworldScreen(GameManager game, IAnsiConsole console) : IVisualGenerator
+public class OverworldScreen(GameManager game, IAnsiConsole console)
 {
-    private readonly InstructionsRenderer _helpRenderer = new();
-    private readonly CanvasMapRenderer _mapRenderer = new(game, 21, 21);
-    private readonly PartyMemberListRenderer _partyRenderer = new(game.Party);
-    
+    public const int width = 21;
     private readonly Layout _layout = new Layout("Root").SplitRows(
-        new Layout("Header").Size(1).Update(new Markup("[bold yellow]Console Role Playing Game[/] by [cyan]Matt Eland[/]")),
-        new Layout("Content").Size(21)
+        new Layout("Header").Size(1)
+            .Update(new Markup("[bold yellow]Console Role Playing Game[/] by [cyan]Matt Eland[/]")),
+        new Layout("Content").Size(width)
             .SplitColumns(
-                new Layout("Main").Size(42),
+                new Layout("Main").Size(width * 2),
                 new Layout("Sidebar")
             )
     );
 
+    private readonly HelpRenderer _helpRenderer = new();
+    private readonly MapRenderer _mapRenderer = new(game, width, width);
+    private readonly PartyRenderer _partyRenderer = new(game.Party);
+    
     public IRenderable GenerateVisual()
     {
         _layout["Main"].Update(_mapRenderer.GenerateVisual());

@@ -53,7 +53,6 @@ public class GameManager
         switch (Status)
         {
             case GameStatus.Overworld:
-            {
                 CombatGroup? encounter = Map.Entities
                     .FirstOrDefault(g => g != Party && g.MapPos == Party.MapPos);
             
@@ -63,16 +62,13 @@ public class GameManager
                 }
 
                 break;
-            }
+            
             case GameStatus.Combat:
-            {
                 if (Battle is not null && Battle.Enemies.IsDead)
                 {
                     EndBattle();
                 }
-
                 break;
-            }
         }
     }
 
@@ -90,12 +86,7 @@ public class GameManager
         SpawnNearbyEncounter();
     }
 
-    private void TriggerGameOver()
-    {
-        Battle = null;
-        Status = GameStatus.GameOver;
-    }
+    public void Quit() => Status = GameStatus.Terminated;
 
-    public void Quit() 
-        => Status = GameStatus.Terminated;
+    private void TriggerGameOver() => Status = GameStatus.GameOver;
 }

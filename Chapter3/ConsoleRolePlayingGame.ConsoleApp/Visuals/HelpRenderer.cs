@@ -3,7 +3,7 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class InstructionsRenderer : IVisualGenerator
+public class HelpRenderer
 {
     public IRenderable GenerateVisual() 
         => new Panel(new Rows(

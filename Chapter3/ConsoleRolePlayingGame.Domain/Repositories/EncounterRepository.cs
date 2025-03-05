@@ -5,7 +5,6 @@ namespace ConsoleRolePlayingGame.Domain.Repositories;
 
 public class EncounterRepository(
     EnemyRepository enemyRepository, 
-    AbilityRepository abilityRepository,
     Random random) : FileRepositoryBase
 {
     public CombatGroup CreateRandomEncounter(Pos position)
@@ -21,15 +20,12 @@ public class EncounterRepository(
             MapPos = position,
             Members = encounter.Enemies.SelectMany(e =>
             {
-                Combatant template = enemyRepository.GetByName(e.Name);
+                Combatant enemy = enemyRepository.GetByName(e.Name);
 
                 return Enumerable.Range(1, e.Count)
-                    .Select(index => template with
+                    .Select(index => enemy with
                     {
-                        Name = e.Count == 1 
-                            ? template.Name 
-                            : $"{template.Name} {index}",
-                        Abilities = abilityRepository.GetAbilities(template.AbilityIds)
+                        Name = e.Count == 1 ? enemy.Name : $"{enemy.Name} {index}"
                     });
             })
             .ToList()

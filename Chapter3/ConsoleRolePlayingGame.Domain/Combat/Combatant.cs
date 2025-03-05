@@ -2,8 +2,22 @@ namespace ConsoleRolePlayingGame.Domain.Combat;
 
 public record Combatant
 {
-    public required string Name { get; init; }
-    public required string[] AsciiArt { get; init; }
+    public Combatant(CombatantData data)
+    {
+        Name = data.Name;
+        AsciiArt = data.AsciiArt;
+        MaxHealth = data.MaxHealth;
+        Health = MaxHealth;
+        MaxMana = data.MaxMana;
+        Mana = MaxMana;
+        Strength = data.Strength;
+        Dexterity = data.Dexterity;
+        Intelligence = data.Intelligence;
+        Speed = data.Speed;
+    }
+
+    public string Name { get; init; }
+    public string[] AsciiArt { get; init; }
     
     public int Health { get; set; }
     public int MaxHealth { get; set; }
@@ -15,13 +29,11 @@ public record Combatant
     public int Speed { get; set; }
     
     public bool IsDead => Health <= 0;
-
-    public IEnumerable<string> AbilityIds { get; init; } = [];
     public IEnumerable<Ability> Abilities { get; set; } = [];
 
     public int TimeUntilTurn { get; internal set; }
     
     public bool IsReady => TimeUntilTurn <= 0 && !IsDead;
     public bool IsPlayer { get; set; }
-    public IBattleStrategy Strategy { get; init; }
+    public required IBattleStrategy Strategy { get; init; }
 }

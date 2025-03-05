@@ -4,10 +4,12 @@ namespace ConsoleRolePlayingGame.Domain.Repositories;
 
 public class AbilityRepository : FileRepositoryBase
 {
+    public IEnumerable<Ability> GetAbilities() 
+        => LoadManyFromJsonFile<Ability>("Abilities.json");
+
     public IEnumerable<Ability> GetAbilities(IEnumerable<string> ids)
     {
-        List<Ability> abilities = LoadManyFromJsonFile<Ability>("Abilities.json");
-
+        IEnumerable<Ability> abilities = GetAbilities();
         return ids.Select(id => abilities.First(a => id == a.Id));
-    }
+    }    
 }

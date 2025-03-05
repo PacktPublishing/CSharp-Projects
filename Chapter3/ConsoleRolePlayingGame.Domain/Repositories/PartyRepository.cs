@@ -11,14 +11,12 @@ public class PartyRepository(AbilityRepository abilities, [FromKeyedServices("Pl
         {
             Name = "The Party",
             MapPos = new Pos(0, 0),
-            Members = LoadManyFromJsonFile<Combatant>("Party.json")
-                .Select(c => c with
+            Members = LoadManyFromJsonFile<CombatantData>("Party.json")
+                .Select(c => new Combatant(c)
                 {
-                    Strategy = strategy,
-                    Health = c.MaxHealth,
-                    Mana = c.MaxMana,
                     IsPlayer = true,
-                    Abilities = abilities.GetAbilities(c.AbilityIds)
+                    Strategy = strategy,
+                    Abilities = abilities.GetAbilities(c.AbilityIds),
                 }).ToList(),
 
         };

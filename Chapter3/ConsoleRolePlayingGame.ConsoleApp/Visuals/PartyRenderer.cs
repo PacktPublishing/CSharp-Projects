@@ -5,8 +5,7 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class PartyMemberListRenderer(CombatGroup party) : IVisualGenerator
-{
+public class PartyRenderer(CombatGroup party) {
     public IRenderable GenerateVisual()
     {
         IEnumerable<Combatant> team = party.Members;

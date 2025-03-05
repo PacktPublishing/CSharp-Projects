@@ -6,7 +6,7 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Screens;
 
-public class BattleScreen(GameManager game, IAnsiConsole console) : IVisualGenerator
+public class BattleScreen(GameManager game, IAnsiConsole console)
 {
     private readonly Layout _layout = new Layout()
         .SplitRows(
@@ -36,7 +36,7 @@ public class BattleScreen(GameManager game, IAnsiConsole console) : IVisualGener
         if (combatant is null)
         {
             await console.Status()
-                .StartAsync("Wait for next combatant...", async ctx =>
+                .StartAsync("Wait for next combatant...", async _ =>
             {
                 await Task.Delay(250);
                 battle.AdvanceTime();

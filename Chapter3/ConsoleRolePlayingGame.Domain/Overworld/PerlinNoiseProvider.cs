@@ -10,7 +10,7 @@ public class PerlinNoiseProvider(int seed, float scale = 0.05f)
     {
         float result;
         
-        using (_lock.EnterScope())
+        lock (_lock)
         {
             Noise.Seed = seed;
             result = Noise.CalcPixel2D(x, y, scale);

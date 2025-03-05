@@ -1,5 +1,3 @@
 namespace ConsoleRolePlayingGame.Domain.Overworld;
 
-public record Pos(int X, int Y)
-{
-}
+public record Pos(int X, int Y);

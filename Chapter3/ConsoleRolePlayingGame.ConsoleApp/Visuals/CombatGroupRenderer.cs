@@ -4,24 +4,29 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class CombatGroupRenderer(CombatGroup group, 
-    Combatant? activeCharacter, 
-    bool includeStats = false) : IVisualGenerator
+public class CombatGroupRenderer(CombatGroup group, Combatant? activeCharacter, bool includeStats = false)
 {
+    public IRenderable GenerateVisual()
+    {
+        IEnumerable<IRenderable> items = group.Members.Select(GenerateCharacterVisual);
+        return new Panel(new Columns(items))
+            .Header($"[Yellow] {group.Name} [/]")
+            .RoundedBorder()
+            .Expand();
+    }
+    
     private IRenderable GenerateCharacterVisual(Combatant c)
     {
         List<IRenderable> visuals = [
-            ..c.AsciiArt.Select(l => new Markup(c.IsDead ? " " : l).Justify(Justify.Center)), 
-            new Markup(activeCharacter == c ? $"[bold yellow]{c.Name}[/]" :c.Name)
+            ..c.AsciiArt.Select(l => new Markup(c.IsDead ? " " : l)
+                .Justify(Justify.Center)), 
+            new Markup(activeCharacter == c ? $"[bold yellow]{c.Name}[/]" : c.Name)
                 .Justify(Justify.Center)
         ];
         
         if (includeStats)
         {
-            string statsText = $"[red]HP: {c.Health}/{c.MaxHealth}[/] " +
-                               $"[blue]MP: {c.Mana}/{c.MaxMana}[/]";
-            
-            visuals.Add(new Markup(statsText).Justify(Justify.Center));
+            visuals.Add(BuildStatsBlock(c));
         }
 
         return new Padder(
@@ -29,14 +34,11 @@ public class CombatGroupRenderer(CombatGroup group,
             new Padding(1, 0, 1, 1)
         );
     }
-    
-    public IRenderable GenerateVisual()
+
+    private IRenderable BuildStatsBlock(Combatant c)
     {
-        IRenderable content = new Columns(group.Members.Select(GenerateCharacterVisual));
-        
-        return new Panel(content)
-            .Header($"[Yellow] {group.Name} [/]")
-            .RoundedBorder()
-            .Expand();
+        string statsText = $"[red]HP: {c.Health}/{c.MaxHealth}[/] " +
+                           $"[blue]MP: {c.Mana}/{c.MaxMana}[/]";
+        return new Markup(statsText).Justify(Justify.Center);
     }
 }

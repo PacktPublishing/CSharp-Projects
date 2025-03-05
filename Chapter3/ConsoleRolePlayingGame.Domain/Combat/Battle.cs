@@ -45,12 +45,12 @@ public class Battle
         {
             return $"{character.Name} does not have enough mana to use {ability.Name}!";
         }
-
-        character.Mana -= ability.ManaCost;
-        character.TimeUntilTurn = TimeBetweenTurns;
-
+        
         StringBuilder sb = new StringBuilder();
         sb.AppendLine($"{character.Name} uses {ability.Name}!");
+        
+        character.Mana -= ability.ManaCost;
+        character.TimeUntilTurn = TimeBetweenTurns;
 
         foreach (var target in targets.Where(t => !t.IsDead))
         {

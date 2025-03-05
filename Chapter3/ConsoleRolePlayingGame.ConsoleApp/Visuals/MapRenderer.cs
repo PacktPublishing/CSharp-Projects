@@ -6,19 +6,16 @@ using Spectre.Console.Rendering;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class CanvasMapRenderer(GameManager game, int availableWidth, int availableHeight) : IVisualGenerator
+public class MapRenderer(GameManager game, int width, int height)
 {
-    public int Width => availableWidth;
-    public int Height => availableHeight;
     
     public IRenderable GenerateVisual()
     {
         Pos center = game.Party.MapPos;
-        int offsetX = (int)Math.Ceiling(availableWidth / 2.0);
-        int offsetY = (int)Math.Ceiling(availableHeight / 2.0);
-        Pos mapUpperLeft = new Pos(center.X - offsetX, center.Y - offsetY);
-        Pos mapLowerRight = new Pos(mapUpperLeft.X + availableWidth, mapUpperLeft.Y + availableHeight);
-        MapCell[,] mapWindow = game.Map.GetMapWindow(mapUpperLeft, mapLowerRight);
+        int offsetX = (int)Math.Ceiling(width / 2.0);
+        int offsetY = (int)Math.Ceiling(height / 2.0);
+        Pos mapTopLeft = new Pos(center.X - offsetX, center.Y - offsetY);
+        MapCell[,] mapWindow = game.Map.GetMapWindow(mapTopLeft, width, height);
         
         Canvas canvas = new(mapWindow.GetLength(0), mapWindow.GetLength(1));
         
