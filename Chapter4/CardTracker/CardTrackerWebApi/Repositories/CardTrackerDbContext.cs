@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace CardTrackerWebApi.Models
+namespace CardTrackerWebApi.Repositories
 {
     public class CardTrackerDbContext(DbContextOptions<CardTrackerDbContext> options) : DbContext(options)
     {
