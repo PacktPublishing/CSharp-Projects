@@ -4,3 +4,17 @@ GET {{CardTrackerWebApi_HostAddress}}/decks/
 Accept: application/json
 
 ###
+
+GET {{CardTrackerWebApi_HostAddress}}/users
+Accept: application/json
+X-API-KEY: REPLACE_IN_PRODUCTION
+
+###
+
+POST {{CardTrackerWebApi_HostAddress}}/users
+Content-Type: application/json
+X-API-KEY: REPLACE_IN_PRODUCTION
+
+{
+  "username": "meland"
+}
