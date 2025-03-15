@@ -1,0 +1,6 @@
+@CardTrackerWebApi_HostAddress = http://localhost:5197
+
+GET {{CardTrackerWebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
