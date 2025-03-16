@@ -16,4 +16,10 @@ public class UserRepository(CardTrackerDbContext context)
     {
         return await context.Users.ToListAsync();
     }
+
+    public async Task<User?> GetUserAsync(string loginRequestUsername)
+    {
+        return await context.Users.FirstOrDefaultAsync(u =>
+            string.Equals(u.Username, loginRequestUsername, StringComparison.OrdinalIgnoreCase));
+    }
 }

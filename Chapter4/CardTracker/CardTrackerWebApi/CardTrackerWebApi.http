@@ -1,20 +1,21 @@
 @CardTrackerWebApi_HostAddress = http://localhost:5197
 
+### Get all decks (Anonymous)
 GET {{CardTrackerWebApi_HostAddress}}/decks/
 Accept: application/json
 
-###
-
+### Get all users (requires admin role)
 GET {{CardTrackerWebApi_HostAddress}}/users
 Accept: application/json
 X-API-KEY: REPLACE_IN_PRODUCTION
 
-###
-
+### Create user
 POST {{CardTrackerWebApi_HostAddress}}/users
 Content-Type: application/json
 X-API-KEY: REPLACE_IN_PRODUCTION
 
 {
-  "username": "meland"
+  "username": "admin",
+  "password": "PacktBooks",
+  "isAdmin": true
 }
