@@ -7,23 +7,33 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CardTrackerWebApi.Services;
 
-public class JwtGenerationService(IOptionsSnapshot<AuthSettings> authSettings) : ITokenGenerationService
+public class JwtGenerationService(IOptionsSnapshot<AuthSettings> jwtSettings) : ITokenGenerationService
 {
+    private readonly AuthSettings _jwtSettings = jwtSettings.Value;
+
     public string GenerateToken(string username, string role)
     {
-        JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-        byte[] key = Encoding.UTF8.GetBytes(authSettings.Value.Key);
-        SecurityTokenDescriptor tokenDescriptor = new()
-        {
-            Subject = new ClaimsIdentity([
-                new Claim(ClaimTypes.Name, username), 
-                new Claim(ClaimTypes.Role, role)
-            ]),
-            Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+        Claim[] claims =
+        [
+            new(JwtRegisteredClaimNames.Sub, username),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(ClaimTypes.Role, role)
+        ];
+
+        string secret = _jwtSettings.Secret ?? throw new InvalidOperationException("Secret is not set");
         
-        return tokenHandler.WriteToken(token);
+        // Convert the key to a byte array
+        byte[] keyBytes = Encoding.UTF8.GetBytes(secret);
+        SymmetricSecurityKey key = new(keyBytes);
+        SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha256);
+        
+        JwtSecurityToken token = new JwtSecurityToken(
+            issuer: _jwtSettings.Issuer ?? throw new InvalidOperationException("Issuer is not set"),
+            audience: _jwtSettings.Audience ?? throw new InvalidOperationException("Audience is not set"),
+            claims: claims,
+            expires: DateTime.Now.AddDays(7),
+            signingCredentials: creds);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

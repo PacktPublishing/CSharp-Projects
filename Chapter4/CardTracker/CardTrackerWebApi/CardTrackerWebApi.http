@@ -4,18 +4,43 @@
 GET {{CardTrackerWebApi_HostAddress}}/decks/
 Accept: application/json
 
-### Get all users (requires admin role)
-GET {{CardTrackerWebApi_HostAddress}}/users
-Accept: application/json
-X-API-KEY: REPLACE_IN_PRODUCTION
-
-### Create user
-POST {{CardTrackerWebApi_HostAddress}}/users
+### Login
+POST {{CardTrackerWebApi_HostAddress}}/login
 Content-Type: application/json
-X-API-KEY: REPLACE_IN_PRODUCTION
 
 {
   "username": "admin",
+  "password": "PacktBooks"
+}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+### Check if we're logged in
+GET {{CardTrackerWebApi_HostAddress}}/login/authcheck
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Check if we're admin
+GET {{CardTrackerWebApi_HostAddress}}/login/admincheck
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Create user (Requires admin)
+POST {{CardTrackerWebApi_HostAddress}}/users
+Content-Type: application/json
+
+{
+  "username": "testuser",
   "password": "PacktBooks",
   "isAdmin": true
 }
+
+### Get User (requires admin)
+GET {{CardTrackerWebApi_HostAddress}}/users/testuser
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+### Get all users (requires admin)
+GET {{CardTrackerWebApi_HostAddress}}/users
+Accept: application/json
+Authorization: Bearer {{auth_token}}

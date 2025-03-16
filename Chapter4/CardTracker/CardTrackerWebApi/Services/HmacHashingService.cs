@@ -7,11 +7,11 @@ public class HmacHashingService : IHashingService
 {
     public byte[] ComputeHash(string inputString, byte[] salt)
     {
-        using HashAlgorithm hmac = new HMACSHA512();
+        using HMACSHA256 hmac = new HMACSHA256(salt);
+        byte[] inputBytes = Encoding.UTF8.GetBytes(inputString);
+        byte[] hashBytes = hmac.ComputeHash(inputBytes);
         
-        byte[] saltedInput = new byte[salt.Length + Encoding.UTF8.GetByteCount(inputString)];
-        
-        return hmac.ComputeHash(saltedInput);
+        return hashBytes;
     }
 
     public byte[] GenerateSalt()
