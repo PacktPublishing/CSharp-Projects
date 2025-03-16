@@ -7,9 +7,15 @@ namespace CardTrackerWebApi.Repositories
 {
     public class CardTrackerDbContext(DbContextOptions<CardTrackerDbContext> options, IHashingService hasher, IOptionsSnapshot<AuthSettings> authSettings) : DbContext(options)
     {
-        public DbSet<Deck> Decks { get; set; }
-        public DbSet<Card> Cards { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Deck> Decks { get; set; }
+        
+        public DbSet<Card> Cards { get; set; }
+        public DbSet<ActionCard> ActionCards { get; set; }
+        public DbSet<ChallengeCard> ChallengeCards { get; set; }
+        public DbSet<FriendCard> FriendCards { get; set; }
+        public DbSet<LocationCard> LocationCards { get; set; }
+        public DbSet<PlanCard> PlanCards { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

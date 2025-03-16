@@ -2,9 +2,11 @@
 
 namespace CardTrackerWebApi.Models;
 
-public record Card
+public abstract record Card
 {
     [Key]
     public int Id { get; set; }
     public required string Name { get; set; }
+    public string? Description { get; set; }
+    public string? ImagePath { get; set; }
 }

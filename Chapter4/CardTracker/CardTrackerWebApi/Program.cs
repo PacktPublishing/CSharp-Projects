@@ -1,5 +1,6 @@
 using System.Text;
 using CardTrackerWebApi.Configuration;
+using CardTrackerWebApi.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -28,24 +29,10 @@ builder.Services.AddScoped<ITokenGenerationService, JwtGenerationService>();
 
 // Configure authentication
 AuthSettings jwtSettings = builder.Configuration.GetRequiredSection("Auth").Get<AuthSettings>()!;
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings.Issuer ?? throw new InvalidOperationException("Issuer is not set"),
-        ValidAudience = jwtSettings.Audience ?? throw new InvalidOperationException("Audience is not set"),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret ?? throw new InvalidOperationException("Secret is not set")))
-    });
-builder.Services.AddAuthorization(options =>
+builder.Services.AddJwtAuthentication(jwtSettings);
+builder.Services.AddAuthorization(o =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    o.AddPolicy("AdminOnly", p => p.RequireRole("Admin"));
 });
 
 WebApplication app = builder.Build();
@@ -65,7 +52,6 @@ app.UseHttpsRedirection();
 
 // Endpoints
 
-// Login endpoint
 app.MapPost("/login", async (LoginRequest loginRequest, UserRepository users, IHashingService hasher, ITokenGenerationService tokenGenerator) =>
     {
         User? user = await users.GetUserAsync(loginRequest.Username);
@@ -91,16 +77,6 @@ app.MapPost("/login", async (LoginRequest loginRequest, UserRepository users, IH
     .WithName("Login")
     .WithDescription("Login a user")
     .AllowAnonymous();
-    
-app.MapGet("/login/authcheck", () => Results.Ok("Authenticated"))
-    .WithName("AuthCheck")
-    .WithDescription("Check if the user is authenticated")
-    .RequireAuthorization(); 
-
-app.MapGet("/login/admincheck", () => Results.Ok("Authenticated and Authorized"))
-    .WithName("AdminCheck")
-    .WithDescription("Check if the user is authenticated and authorized in the Admin role")
-    .RequireAuthorization("AdminOnly");
 
 app.MapGet("/decks", (DeckRepository decks) => decks.GetAllDecks())
    .WithName("GetDecks")

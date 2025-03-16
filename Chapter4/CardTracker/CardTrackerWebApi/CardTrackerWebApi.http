@@ -15,14 +15,8 @@ Content-Type: application/json
 
 > {% client.global.set("auth_token", response.body.token); %}
 
-### Check if we're logged in
-GET {{CardTrackerWebApi_HostAddress}}/login/authcheck
-Accept: application/json
-Authorization: Bearer {{auth_token}}
-
-### Check if we're admin
-GET {{CardTrackerWebApi_HostAddress}}/login/admincheck
-Accept: application/json
+### Get all users (requires admin)
+GET {{CardTrackerWebApi_HostAddress}}/users
 Authorization: Bearer {{auth_token}}
 
 ### Create user (Requires admin)
@@ -37,10 +31,4 @@ Content-Type: application/json
 
 ### Get User (requires admin)
 GET {{CardTrackerWebApi_HostAddress}}/users/testuser
-Content-Type: application/json
-Authorization: Bearer {{auth_token}}
-
-### Get all users (requires admin)
-GET {{CardTrackerWebApi_HostAddress}}/users
-Accept: application/json
 Authorization: Bearer {{auth_token}}
