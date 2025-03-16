@@ -33,35 +33,15 @@ builder.Services.AddAuthentication(options =>
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddJwtBearer(options =>
+    .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings.Issuer ?? throw new InvalidOperationException("Issuer is not set"),
-            ValidAudience = jwtSettings.Audience ?? throw new InvalidOperationException("Audience is not set"),
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret ?? throw new InvalidOperationException("Secret is not set")))
-        };
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                // Get the token from the header and print it out in the console
-                string? token = context.Request.Headers["Authorization"].ToString().Split(" ").Last();
-                context.Token = token;
-                Console.WriteLine($"Received JWT: {context.Token}");
-                return Task.CompletedTask;
-            },
-            OnAuthenticationFailed = context =>
-            {
-                Console.WriteLine($"Authentication failed: {context.Exception.Message}");
-                Console.WriteLine(context.Exception.StackTrace);;
-                return Task.CompletedTask;
-            }
-        };
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.Issuer ?? throw new InvalidOperationException("Issuer is not set"),
+        ValidAudience = jwtSettings.Audience ?? throw new InvalidOperationException("Audience is not set"),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret ?? throw new InvalidOperationException("Secret is not set")))
     });
 builder.Services.AddAuthorization(options =>
 {

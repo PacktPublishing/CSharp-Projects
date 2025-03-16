@@ -21,8 +21,6 @@ public class JwtGenerationService(IOptionsSnapshot<AuthSettings> jwtSettings) : 
         ];
 
         string secret = _jwtSettings.Secret ?? throw new InvalidOperationException("Secret is not set");
-        
-        // Convert the key to a byte array
         byte[] keyBytes = Encoding.UTF8.GetBytes(secret);
         SymmetricSecurityKey key = new(keyBytes);
         SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha256);
