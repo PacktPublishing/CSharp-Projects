@@ -15,18 +15,25 @@ namespace CardTrackerWebApi.Repositories
         public DbSet<ChallengeCard> ChallengeCards { get; set; }
         public DbSet<FriendCard> FriendCards { get; set; }
         public DbSet<LocationCard> LocationCards { get; set; }
-        public DbSet<PlanCard> PlanCards { get; set; }
+        public DbSet<EventCard> EventCards { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Define one to many relationship between User and Deck
             modelBuilder.Entity<Deck>()
                 .HasOne(d => d.User)
                 .WithMany()
                 .HasForeignKey("UserId");
-
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Username)
-                .IsUnique();
+            
+            // Define many-to-many relationships where each deck has multiple cards and each card can belong to multiple decks
+            // See https://learn.microsoft.com/en-us/ef/core/modeling/relationships/many-to-many
+            modelBuilder.Entity<Deck>()
+                .HasMany(d => d.Cards)
+                .WithMany(); // Unidirectional - cards don't need to navigate back to decks they're in
+            
+            // Use Table per Concrete Type mapping strategy for inheritance
+            modelBuilder.Entity<Deck>().UseTpcMappingStrategy();
+            modelBuilder.Entity<Card>().UseTpcMappingStrategy();
             
             // The system requires an admin user to be present for most things, so seed a starter one here
             byte[] salt = "AdminUserUsesAHardcodedSaltToPreventEFErrors"u8.ToArray();

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CardTrackerWebApi.Models;
 
+[Index(nameof(Username), IsUnique = true)]
 public record User
 {
     [Key]

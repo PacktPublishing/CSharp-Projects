@@ -11,5 +11,8 @@ public record Deck
     
     [ForeignKey("UserId")]
     public User User { get; set; } = null!;
+    
+    public DeckType DeckType { get; set; }
+    
     public List<Card> Cards { get; set; } = new();
 }
