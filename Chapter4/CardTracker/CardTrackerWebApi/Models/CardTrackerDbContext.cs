@@ -1,9 +1,7 @@
-using System.Text;
 using CardTrackerWebApi.Configuration;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace CardTrackerWebApi.Repositories
+namespace CardTrackerWebApi.Models
 {
     public class CardTrackerDbContext(DbContextOptions<CardTrackerDbContext> options, IHashingService hasher, IOptionsSnapshot<AuthSettings> authSettings) : DbContext(options)
     {
@@ -12,14 +10,11 @@ namespace CardTrackerWebApi.Repositories
         
         public DbSet<Card> Cards { get; set; }
         public DbSet<ActionCard> ActionCards { get; set; }
-        public DbSet<ChallengeCard> ChallengeCards { get; set; }
-        public DbSet<FriendCard> FriendCards { get; set; }
-        public DbSet<LocationCard> LocationCards { get; set; }
-        public DbSet<EventCard> EventCards { get; set; }
+        public DbSet<CreatureCard> CreatureCards { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Define one to many relationship between User and Deck
+            // Define one-to-many relationship between User and Deck
             modelBuilder.Entity<Deck>()
                 .HasOne(d => d.User)
                 .WithMany()
@@ -32,6 +27,7 @@ namespace CardTrackerWebApi.Repositories
                 .WithMany(); // Unidirectional - cards don't need to navigate back to decks they're in
             
             // Use Table per Concrete Type mapping strategy for inheritance
+            // See https://learn.microsoft.com/en-us/ef/core/modeling/inheritance
             modelBuilder.Entity<Deck>().UseTpcMappingStrategy();
             modelBuilder.Entity<Card>().UseTpcMappingStrategy();
             

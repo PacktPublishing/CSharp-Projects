@@ -1,6 +1,6 @@
 namespace CardTrackerWebApi.Models;
 
-public record FriendCard : Card
+public record CreatureCard : Card
 {
     public string? SummonEffect { get; set; }
     public string? PerTurnEffect { get; set; }

@@ -1,11 +1,12 @@
-@CardTrackerWebApi_HostAddress = http://localhost:5197
+### View OpenAPI Specification - see https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi
+GET {{BaseUrl}}/openapi/v1.json
 
 ### Get all decks (Anonymous)
-GET {{CardTrackerWebApi_HostAddress}}/decks/
+GET {{BaseUrl}}/decks/
 Accept: application/json
 
 ### Login
-POST {{CardTrackerWebApi_HostAddress}}/login
+POST {{BaseUrl}}/login
 Content-Type: application/json
 
 {
@@ -16,11 +17,11 @@ Content-Type: application/json
 > {% client.global.set("auth_token", response.body.token); %}
 
 ### Get all users (requires admin)
-GET {{CardTrackerWebApi_HostAddress}}/users
+GET {{BaseUrl}}/users
 Authorization: Bearer {{auth_token}}
 
 ### Create user (Requires admin)
-POST {{CardTrackerWebApi_HostAddress}}/users
+POST {{BaseUrl}}/users
 Content-Type: application/json
 
 {
@@ -30,5 +31,5 @@ Content-Type: application/json
 }
 
 ### Get User (requires admin)
-GET {{CardTrackerWebApi_HostAddress}}/users/testuser
+GET {{BaseUrl}}/users/testuser
 Authorization: Bearer {{auth_token}}
