@@ -2,6 +2,7 @@
 using CardTrackerWebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CardTrackerWebApi.Migrations
 {
     [DbContext(typeof(CardTrackerDbContext))]
-    partial class CardTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250320023143_NavigabilityToDecksFromCard")]
+    partial class NavigabilityToDecksFromCard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.3");

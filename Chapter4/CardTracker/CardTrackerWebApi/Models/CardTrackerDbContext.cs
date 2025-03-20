@@ -24,7 +24,8 @@ namespace CardTrackerWebApi.Models
             // See https://learn.microsoft.com/en-us/ef/core/modeling/relationships/many-to-many
             modelBuilder.Entity<Deck>()
                 .HasMany(d => d.Cards)
-                .WithMany(); // Unidirectional - cards don't need to navigate back to decks they're in
+                .WithMany(c => c.Decks)
+                .UsingEntity<CardDeck>();
             
             // Use Table per Concrete Type mapping strategy for inheritance
             // See https://learn.microsoft.com/en-us/ef/core/modeling/inheritance

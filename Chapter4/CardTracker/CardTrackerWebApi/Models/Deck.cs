@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CardTrackerWebApi.Models;
 
@@ -12,4 +11,5 @@ public record Deck
     public required User User { get; set; } = null!;
     
     public List<Card> Cards { get; set; } = new();
+    public List<CardDeck> CardDecks { get; set; } = new();
 }

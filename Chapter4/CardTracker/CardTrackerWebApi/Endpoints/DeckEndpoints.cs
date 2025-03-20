@@ -53,10 +53,17 @@ public static class DeckEndpoints
         foreach (var group in cardIds.GroupBy(c => c))
         {
             Card? card = db.Cards.FirstOrDefault(c => c.Id == group.Key);
-            if (card is not null)
+            if (card is null)
             {
-                deck.Cards.AddRange(Enumerable.Repeat(card, group.Count()));
+                throw new InvalidOperationException($"Card {group.Key} not found");
             }
+
+            deck.CardDecks.Add(new CardDeck()
+            {
+                CardId = card.Id,
+                DeckId = deck.Id,
+                Count = group.Count()
+            });
         }
     }
 
@@ -119,9 +126,9 @@ public static class DeckEndpoints
                 Deck deck = new()
                 {
                     Name = request.Name,
-                    User = user
+                    User = user,
+                    // We don't set the cards here. We first create a deck, then the user can add cards to it
                 };
-                SetDeckCards(deck, request.CardIds, db);
                 
                 db.Decks.Add(deck);
                 db.SaveChanges();

@@ -9,4 +9,5 @@ public abstract record Card
     public required string Name { get; set; }
     public string? Description { get; set; }
     public string? ImagePath { get; set; }
+    public List<Deck> Decks { get; set; } = new();
 }
