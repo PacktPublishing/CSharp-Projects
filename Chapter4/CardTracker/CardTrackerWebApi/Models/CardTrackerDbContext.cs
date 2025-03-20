@@ -1,4 +1,4 @@
-using CardTrackerWebApi.Configuration;
+using CardTrackerWebApi.Settings;
 using Microsoft.Extensions.Options;
 
 namespace CardTrackerWebApi.Models

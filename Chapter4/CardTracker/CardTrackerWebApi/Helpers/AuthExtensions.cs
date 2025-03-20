@@ -1,5 +1,5 @@
 using System.Text;
-using CardTrackerWebApi.Configuration;
+using CardTrackerWebApi.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -7,7 +7,7 @@ namespace CardTrackerWebApi.Helpers;
 
 public static class AuthExtensions
 {
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, AuthSettings jwtSettings)
+    public static void AddJwtAuthentication(this IServiceCollection services, AuthSettings jwtSettings)
     {
         if (string.IsNullOrWhiteSpace(jwtSettings.Audience) || 
             string.IsNullOrWhiteSpace(jwtSettings.Issuer) ||
@@ -31,7 +31,9 @@ public static class AuthExtensions
                 ValidAudience = jwtSettings.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
             });
-
-        return services;
     }
+
+    public static string GetCurrentUsername(this HttpContext httpContext) 
+        => httpContext.User.Identity?.Name 
+           ?? throw new InvalidOperationException("User is not authenticated.");
 }

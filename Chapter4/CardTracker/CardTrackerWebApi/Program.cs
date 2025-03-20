@@ -1,5 +1,5 @@
-using CardTrackerWebApi.Configuration;
 using CardTrackerWebApi.Helpers;
+using CardTrackerWebApi.Settings;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

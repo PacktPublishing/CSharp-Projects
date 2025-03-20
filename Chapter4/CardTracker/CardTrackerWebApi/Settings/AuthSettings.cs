@@ -1,4 +1,4 @@
-namespace CardTrackerWebApi.Configuration;
+namespace CardTrackerWebApi.Settings;
 
 public class AuthSettings
 {

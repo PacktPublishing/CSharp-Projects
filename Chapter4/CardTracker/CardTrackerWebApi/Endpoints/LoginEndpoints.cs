@@ -31,6 +31,7 @@ public static class LoginEndpoints
                 })
             .WithName("Login")
             .WithDescription("Login a user")
-            .AllowAnonymous();
+            .AllowAnonymous()
+            .Produces<LoginResponse>();
     }
 }

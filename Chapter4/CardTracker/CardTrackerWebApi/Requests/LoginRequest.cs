@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+namespace CardTrackerWebApi.Requests;
+
 public class LoginRequest
 {
     [Required]

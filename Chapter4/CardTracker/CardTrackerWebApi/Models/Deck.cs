@@ -9,8 +9,7 @@ public record Deck
     public int Id { get; set; }
     public required string Name { get; set; }
     
-    [ForeignKey("UserId")]
-    public User User { get; set; } = null!;
+    public required User User { get; set; } = null!;
     
     public List<Card> Cards { get; set; } = new();
 }
