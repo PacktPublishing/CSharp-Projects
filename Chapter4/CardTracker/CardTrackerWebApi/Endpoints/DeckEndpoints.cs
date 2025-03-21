@@ -19,7 +19,7 @@ public static class DeckEndpoints
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
                 
                 Deck? deck = db.Decks
-                    .Include(d => d.Cards)
+                    .Include(d => d.CardDecks)
                     .FirstOrDefault(d => d.Id == id);
                 
                 if (deck is null) return Results.NotFound();
@@ -48,7 +48,7 @@ public static class DeckEndpoints
 
     private static void SetDeckCards(Deck deck, IEnumerable<int> cardIds, CardTrackerDbContext db)
     {
-        deck.Cards.Clear();
+        deck.CardDecks.Clear();
         foreach (var group in cardIds.GroupBy(c => c))
         {
             Card? card = db.Cards.FirstOrDefault(c => c.Id == group.Key);
@@ -57,6 +57,7 @@ public static class DeckEndpoints
                 throw new InvalidOperationException($"Card {group.Key} not found");
             }
 
+            
             deck.CardDecks.Add(new CardDeck
             {
                 CardId = card.Id,
@@ -71,7 +72,7 @@ public static class DeckEndpoints
         app.MapGet("/decks/{id}", (int id, CardTrackerDbContext db, HttpContext http) =>
             {
                 Deck? deck = db.Decks
-                    .Include(d => d.Cards)
+                    .Include(d => d.CardDecks)
                     .AsNoTracking()
                     .FirstOrDefault(d => d.Id == id);
 

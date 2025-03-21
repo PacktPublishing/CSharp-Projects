@@ -23,7 +23,7 @@ namespace CardTrackerWebApi.Models
             // Define many-to-many relationships where each deck has multiple cards and each card can belong to multiple decks
             // See https://learn.microsoft.com/en-us/ef/core/modeling/relationships/many-to-many
             modelBuilder.Entity<Deck>()
-                .HasMany(d => d.Cards)
+                .HasMany<Card>()
                 .WithMany(c => c.Decks)
                 .UsingEntity<CardDeck>();
             

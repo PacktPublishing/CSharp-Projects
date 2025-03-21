@@ -6,6 +6,8 @@ public static class CardEndpoints
     {
         AddGetCardEndpoint(app);
         AddGetAllCardsEndpoint(app);
+        AddGetAllCreatureCardsEndpoint(app);
+        AddGetAllActionCardsEndpoint(app);
         AddCreateCreatureCardEndpoint(app);
         AddCreateActionCardEndpoint(app);
         AddDeleteCardEndpoint(app);
@@ -40,10 +42,28 @@ public static class CardEndpoints
             .AllowAnonymous()
             .Produces<List<Card>>();
     }
+    
+    private static void AddGetAllCreatureCardsEndpoint(WebApplication app)
+    {
+        app.MapGet("/cards/creatures", (CardTrackerDbContext db) => db.CreatureCards.AsNoTracking().ToList())
+            .WithName("GetAllCreatureCards")
+            .WithDescription("Gets all creature cards")
+            .AllowAnonymous()
+            .Produces<List<CreatureCard>>();
+    }
+    
+    private static void AddGetAllActionCardsEndpoint(WebApplication app)
+    {
+        app.MapGet("/cards/actions", (CardTrackerDbContext db) => db.ActionCards.AsNoTracking().ToList())
+            .WithName("GetAllActionCards")
+            .WithDescription("Gets all action cards")
+            .AllowAnonymous()
+            .Produces<List<ActionCard>>();
+    }
 
     private static void AddCreateActionCardEndpoint(WebApplication app)
     {
-        app.MapPost("/cards/action", (CreateActionCardRequest request, CardTrackerDbContext db) =>
+        app.MapPost("/cards/actions", (CreateActionCardRequest request, CardTrackerDbContext db) =>
             {
                 ActionCard card = new() // TODO: Automapper would help here
                 {
@@ -67,7 +87,7 @@ public static class CardEndpoints
     
     private static void AddCreateCreatureCardEndpoint(WebApplication app)
     {
-        app.MapPost("/cards/creature", (CreateCreatureCardRequest request, CardTrackerDbContext db) =>
+        app.MapPost("/cards/creatures", (CreateCreatureCardRequest request, CardTrackerDbContext db) =>
             {
                 CreatureCard card = new() // TODO: Automapper would help here
                 {

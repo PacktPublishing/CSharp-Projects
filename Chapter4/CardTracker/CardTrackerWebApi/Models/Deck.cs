@@ -11,6 +11,5 @@ public class Deck
     
     public required int UserId { get; set; }
     
-    public List<Card> Cards { get; set; } = new();
     public List<CardDeck> CardDecks { get; set; } = new();
 }

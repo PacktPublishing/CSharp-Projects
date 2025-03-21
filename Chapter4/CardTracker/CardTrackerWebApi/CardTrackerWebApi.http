@@ -34,7 +34,61 @@ Authorization: Bearer {{auth_token}}
 
 ### CARD ENDPOINTS ########################################################################################
 
+### Get all cards
+GET {{BaseUrl}}/cards
+Accept: application/json
+
+### Get all creature cards
+GET {{BaseUrl}}/cards/creatures
+Accept: application/json
+
+### Get all action cards
+GET {{BaseUrl}}/cards/actions
+Accept: application/json
+
+### Get a specific card
+GET {{BaseUrl}}/cards/1
+Accept: application/json
+
+### Create a creature card
+POST {{BaseUrl}}/cards/creatures
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Sally the Squirrel",
+  "description": "An adorable squirrel squirrel",
+  "imagePath": "SQUIRREL.png",
+  "effect": "Looks cute while pecking at monsters",
+  "cost": 1,
+  "power": 1,
+  "canFly": true,
+  "canSwim": false,
+  "canClimb": true,
+  "summonEffect": "You feel awesome because you now have a squirrel",
+  "perTurnEffect": "Be distracted by the squirrel"
+}
+
+### Create an action card
+POST {{BaseUrl}}/cards/actions
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Test Action",
+  "description": "For when you really need to win",
+  "imagePath": "SomeImage.png",
+  "effect": "Automatically wins the game",
+  "cost": 1
+}
+
+### Delete a card
+DELETE {{BaseUrl}}/cards/1
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
 ### DECK ENDPOINTS ########################################################################################
+
 ### Get all decks
 GET {{BaseUrl}}/decks/
 Accept: application/json
@@ -55,6 +109,14 @@ Accept: application/json
 Authorization: Bearer {{auth_token}}
 
 ### Update a specific deck and add cards
+PUT {{BaseUrl}}/decks/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Edited Deck",
+  "cardIds": [1,1,2,2,2,3]
+}
 
 ### DELETE a specific deck
 DELETE {{BaseUrl}}/decks/0
