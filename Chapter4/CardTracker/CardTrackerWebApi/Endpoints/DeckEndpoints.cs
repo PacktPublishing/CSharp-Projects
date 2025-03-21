@@ -19,13 +19,12 @@ public static class DeckEndpoints
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
                 
                 Deck? deck = db.Decks
-                    .Include(d => d.User)
                     .Include(d => d.Cards)
                     .FirstOrDefault(d => d.Id == id);
                 
                 if (deck is null) return Results.NotFound();
                 
-                if (deck.User.Username != username && !user.IsAdmin)
+                if (deck.UserId != user.Id && !user.IsAdmin)
                 {
                     return Results.Forbid();
                 }
@@ -58,7 +57,7 @@ public static class DeckEndpoints
                 throw new InvalidOperationException($"Card {group.Key} not found");
             }
 
-            deck.CardDecks.Add(new CardDeck()
+            deck.CardDecks.Add(new CardDeck
             {
                 CardId = card.Id,
                 DeckId = deck.Id,
@@ -73,7 +72,6 @@ public static class DeckEndpoints
             {
                 Deck? deck = db.Decks
                     .Include(d => d.Cards)
-                    .Include(d => d.User)
                     .AsNoTracking()
                     .FirstOrDefault(d => d.Id == id);
 
@@ -85,7 +83,7 @@ public static class DeckEndpoints
                 string username = http.GetCurrentUsername();
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
 
-                if (deck.User.Id != user.Id && !user.IsAdmin)
+                if (deck.UserId != user.Id && !user.IsAdmin)
                 {
                     return Results.Forbid();
                 }
@@ -104,10 +102,10 @@ public static class DeckEndpoints
         app.MapGet("/decks", (CardTrackerDbContext db,  HttpContext http) =>
             {
                 string username = http.GetCurrentUsername();
+                User user = db.Users.AsNoTracking().First(u => u.Username == username);
                 
                 return db.Decks.AsNoTracking()
-                    .Include(d => d.User)
-                    .Where(d => d.User.Username == username)
+                    .Where(d => d.UserId == user.Id)
                     .ToList();
             })
             .WithName("GetDecks")
@@ -126,7 +124,7 @@ public static class DeckEndpoints
                 Deck deck = new()
                 {
                     Name = request.Name,
-                    User = user,
+                    UserId = user.Id,
                     // We don't set the cards here. We first create a deck, then the user can add cards to it
                 };
                 
@@ -138,7 +136,7 @@ public static class DeckEndpoints
             .WithName("AddDeck")
             .WithDescription("Adds a new deck to the system")
             .RequireAuthorization()
-            .Produces(StatusCodes.Status201Created); // Any authenticated user
+            .Produces(StatusCodes.Status201Created);
     }
     
     private static void AddDeleteDeckEndpoint(IEndpointRouteBuilder app)
@@ -149,12 +147,11 @@ public static class DeckEndpoints
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
                 
                 Deck? deck = db.Decks
-                    .Include(d => d.User)
                     .FirstOrDefault(d => d.Id == id);
                 
                 if (deck is null) return Results.NotFound();
                 
-                if (deck.User.Username != username && !user.IsAdmin)
+                if (deck.UserId != user.Id && !user.IsAdmin)
                 {
                     return Results.Forbid();
                 }
@@ -164,8 +161,8 @@ public static class DeckEndpoints
 
                 return Results.NoContent();
             })
-            .WithName("AddDeck")
-            .WithDescription("Adds a new deck to the system")
+            .WithName("DeleteDeck")
+            .WithDescription("Deletes an existing deck from the system")
             .RequireAuthorization()
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status403Forbidden)

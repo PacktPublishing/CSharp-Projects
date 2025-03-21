@@ -15,9 +15,9 @@ public class JwtGenerationService(IOptionsSnapshot<AuthSettings> jwtSettings) : 
     {
         Claim[] claims =
         [
-            new(JwtRegisteredClaimNames.Sub, username),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(ClaimTypes.Role, role)
+            new(ClaimTypes.Role, role),
+            new(ClaimTypes.Name, username),
         ];
 
         string secret = _jwtSettings.Secret ?? throw new InvalidOperationException("Secret is not set");

@@ -33,7 +33,9 @@ public static class AuthExtensions
             });
     }
 
-    public static string GetCurrentUsername(this HttpContext httpContext) 
-        => httpContext.User.Identity?.Name 
-           ?? throw new InvalidOperationException("User is not authenticated.");
+    public static string GetCurrentUsername(this HttpContext httpContext)
+    {
+        return httpContext.User.Identity?.Name
+               ?? throw new InvalidOperationException("User is not authenticated.");
+    }
 }

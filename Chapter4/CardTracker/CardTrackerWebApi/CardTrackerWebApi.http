@@ -1,10 +1,7 @@
 ### View OpenAPI Specification - see https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi
 GET {{BaseUrl}}/openapi/v1.json
 
-### Get all decks (Anonymous)
-GET {{BaseUrl}}/decks/
-Accept: application/json
-
+### LOGIN ENDPOINTS #######################################################################################
 ### Login
 POST {{BaseUrl}}/login
 Content-Type: application/json
@@ -16,6 +13,7 @@ Content-Type: application/json
 
 > {% client.global.set("auth_token", response.body.token); %}
 
+### USERS ENDPOINTS #######################################################################################
 ### Get all users (requires admin)
 GET {{BaseUrl}}/users
 Authorization: Bearer {{auth_token}}
@@ -32,4 +30,33 @@ Content-Type: application/json
 
 ### Get User (requires admin)
 GET {{BaseUrl}}/users/testuser
+Authorization: Bearer {{auth_token}}
+
+### CARD ENDPOINTS ########################################################################################
+
+### DECK ENDPOINTS ########################################################################################
+### Get all decks
+GET {{BaseUrl}}/decks/
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Create a deck
+POST {{BaseUrl}}/decks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Test Deck 3"
+}
+
+### Get a specific deck
+GET {{BaseUrl}}/decks/1
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Update a specific deck and add cards
+
+### DELETE a specific deck
+DELETE {{BaseUrl}}/decks/0
+Accept: application/json
 Authorization: Bearer {{auth_token}}

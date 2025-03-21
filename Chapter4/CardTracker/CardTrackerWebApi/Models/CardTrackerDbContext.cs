@@ -16,7 +16,7 @@ namespace CardTrackerWebApi.Models
         {
             // Define one-to-many relationship between User and Deck
             modelBuilder.Entity<Deck>()
-                .HasOne(d => d.User)
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey("UserId");
             
@@ -27,10 +27,10 @@ namespace CardTrackerWebApi.Models
                 .WithMany(c => c.Decks)
                 .UsingEntity<CardDeck>();
             
-            // Use Table per Concrete Type mapping strategy for inheritance
+            // Use Table per Hierarchy mapping strategy for inheritance
             // See https://learn.microsoft.com/en-us/ef/core/modeling/inheritance
-            modelBuilder.Entity<Deck>().UseTpcMappingStrategy();
-            modelBuilder.Entity<Card>().UseTpcMappingStrategy();
+            modelBuilder.Entity<Deck>().UseTphMappingStrategy();
+            modelBuilder.Entity<Card>().UseTphMappingStrategy();
             
             // The system requires an admin user to be present for most things, so seed a starter one here
             byte[] salt = "AdminUserUsesAHardcodedSaltToPreventEFErrors"u8.ToArray();

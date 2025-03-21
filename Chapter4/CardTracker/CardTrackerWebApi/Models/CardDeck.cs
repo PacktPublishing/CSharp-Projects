@@ -1,5 +1,6 @@
 namespace CardTrackerWebApi.Models;
 
+[PrimaryKey(nameof(CardId), nameof(DeckId))]
 public class CardDeck
 {
     public required int CardId { get; set; }

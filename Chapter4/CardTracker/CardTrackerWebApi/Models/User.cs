@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CardTrackerWebApi.Models;
 
 [Index(nameof(Username), IsUnique = true)]
-public record User
+public class User
 {
-    [Key]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public required string Username { get; set; }
     public required byte[] PasswordHash { get; set; }
