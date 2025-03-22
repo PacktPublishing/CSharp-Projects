@@ -14,6 +14,12 @@ builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("Auth"
 builder.Services.AddScoped<IHashingService, HmacHashingService>();
 builder.Services.AddScoped<ITokenGenerationService, JwtGenerationService>();
 
+// Configure automapper
+builder.Services.AddAutoMapper(map =>
+{
+    map.CreateMap<User, UserResponse>();
+});
+
 // Configure authentication
 AuthSettings jwtSettings = builder.Configuration.GetRequiredSection("Auth").Get<AuthSettings>()!;
 builder.Services.AddJwtAuthentication(jwtSettings);

@@ -1,13 +1,19 @@
+using AutoMapper;
+
 namespace CardTrackerWebApi.Endpoints;
 
-public static class UsersEndpoints
+public static class UserEndpoints
 {
     public static void AddUsersEndpoints(this WebApplication app)
     {
         AddGetUserEndpoint(app);
         AddGetUsersEndpoint(app);
+        AddCreateUserEndpoint(app);
+    }
 
-        app.MapPost("/users", (CreateUserRequest userRequest, CardTrackerDbContext context, IHashingService hasher) =>
+    private static void AddCreateUserEndpoint(WebApplication app)
+    {
+        app.MapPost("/users", (CreateUserRequest userRequest, CardTrackerDbContext context, IMapper auto, IHashingService hasher) =>
             {
                 userRequest.Username = userRequest.Username.ToLowerInvariant();
                 if (context.Users.AsNoTracking().Any(u => u.Username == userRequest.Username)) 
@@ -28,16 +34,18 @@ public static class UsersEndpoints
                 context.Users.Add(user);
                 context.SaveChanges();
         
-                return Results.Created($"/users/{userRequest.Username}", user.Id);
+                UserResponse userResponse = auto.Map<UserResponse>(user);
+                return Results.Created($"/users/{userRequest.Username}", userResponse);
             })
             .WithName("AddUser")
             .WithDescription("Adds a new user to the system")
-            .AllowAnonymous();
+            .AllowAnonymous()
+            .Produces<UserResponse>(StatusCodes.Status204NoContent);
     }
 
     private static void AddGetUserEndpoint(WebApplication app)
     {
-        app.MapGet("/users/{username}", (string username, CardTrackerDbContext context) =>
+        app.MapGet("/users/{username}", (string username, IMapper auto, CardTrackerDbContext context) =>
             {
                 User? user = context.Users.AsNoTracking()
                     .FirstOrDefault(u => u.Username == username.ToLowerInvariant());
@@ -47,21 +55,28 @@ public static class UsersEndpoints
                     return Results.NotFound();
                 }
 
-                return Results.Ok(user);
+                UserResponse result = auto.Map<UserResponse>(user);
+                return Results.Ok(result);
             })
             .WithName("GetUserByUsername")
             .WithDescription("Gets a specific user by their username")
             .RequireAuthorization("AdminOnly")
-            .Produces<User>()
+            .Produces<UserResponse>()
             .Produces(StatusCodes.Status404NotFound);
     }
 
     private static void AddGetUsersEndpoint(this WebApplication app)
     {
-        app.MapGet("/users", async (CardTrackerDbContext context) => await context.Users.AsNoTracking().ToListAsync())
+        app.MapGet("/users", (CardTrackerDbContext context, IMapper auto) =>
+            {
+                IQueryable<User> users = context.Users.AsNoTracking();
+                
+                List<UserResponse> usersResponse = auto.Map<List<UserResponse>>(users);
+                return usersResponse;
+            })
             .WithName("GetUsers")
             .WithDescription("Get all registered users")
             .RequireAuthorization("AdminOnly")
-            .Produces<List<User>>();
+            .Produces<List<UserResponse>>();
     }
 }
