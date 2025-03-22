@@ -24,14 +24,14 @@ public static class LoginEndpoints
 
                     // Generate and return a signed JWT
                     string role = user.IsAdmin ? "Admin" : "User";
-                    return Results.Ok(new LoginResponse
-                    {
-                        Token = tokenGenerator.GenerateToken(request.Username, role)
-                    });
+                    string jwt = tokenGenerator.GenerateToken(request.Username, role);
+                    
+                    return Results.Ok(new LoginResponse(jwt));
                 })
             .WithName("Login")
             .WithDescription("Login a user")
             .AllowAnonymous()
-            .Produces<LoginResponse>();
+            .Produces<LoginResponse>()
+            .Produces(StatusCodes.Status400BadRequest);
     }
 }

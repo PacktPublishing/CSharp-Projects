@@ -1,3 +1,5 @@
+using AutoMapper;
+
 namespace CardTrackerWebApi.Endpoints;
 
 public static class DeckEndpoints
@@ -13,7 +15,7 @@ public static class DeckEndpoints
 
     private static void AddModifyDeckEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut("/decks/{id}", (int id, EditDeckRequest request, CardTrackerDbContext db, HttpContext http) =>
+        app.MapPut("/decks/{id}", (int id, EditDeckRequest request, CardTrackerDbContext db, IMapper auto, HttpContext http) =>
             {
                 string username = http.GetCurrentUsername();
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
@@ -30,46 +32,40 @@ public static class DeckEndpoints
                 }
 
                 deck.Name = request.Name;
-                SetDeckCards(deck, request.CardIds, db);
+                deck.CardDecks.Clear();
+                foreach (var group in request.CardIds.GroupBy(c => c))
+                {
+                    Card? card = db.Cards.FirstOrDefault(c => c.Id == group.Key);
+                    if (card is null)
+                    {
+                        return Results.BadRequest($"Card {group.Key} not found");
+                    }
+            
+                    deck.CardDecks.Add(new CardDeck
+                    {
+                        CardId = card.Id,
+                        DeckId = deck.Id,
+                        Count = group.Count()
+                    });
+                }
 
                 db.Decks.Update(deck);
                 db.SaveChanges();
 
-                return Results.Ok(deck); // TODO: Map to a return object?
+                return Results.Ok(auto.Map<DeckResponse>(deck));
             })
             .WithName("ModifyDeck")
             .WithDescription("Modifies a deck in the system")
             .RequireAuthorization()
-            .Produces<Deck>()
+            .Produces<DeckResponse>()
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status403Forbidden)
             .Produces(StatusCodes.Status404NotFound);
     }
 
-    private static void SetDeckCards(Deck deck, IEnumerable<int> cardIds, CardTrackerDbContext db)
-    {
-        deck.CardDecks.Clear();
-        foreach (var group in cardIds.GroupBy(c => c))
-        {
-            Card? card = db.Cards.FirstOrDefault(c => c.Id == group.Key);
-            if (card is null)
-            {
-                throw new InvalidOperationException($"Card {group.Key} not found");
-            }
-
-            
-            deck.CardDecks.Add(new CardDeck
-            {
-                CardId = card.Id,
-                DeckId = deck.Id,
-                Count = group.Count()
-            });
-        }
-    }
-
     private static void AddGetDeckEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/decks/{id}", (int id, CardTrackerDbContext db, HttpContext http) =>
+        app.MapGet("/decks/{id}", (int id, CardTrackerDbContext db, HttpContext http, IMapper auto) =>
             {
                 Deck? deck = db.Decks
                     .Include(d => d.CardDecks)
@@ -89,35 +85,36 @@ public static class DeckEndpoints
                     return Results.Forbid();
                 }
 
-                return Results.Ok(deck); // TODO: Map to a return object
+                return Results.Ok(auto.Map<DeckResponse>(deck));
             })
             .WithName("GetDeck")
             .WithDescription("Get a single deck by its ID")
             .RequireAuthorization()
-            .Produces<Deck>()
+            .Produces<DeckResponse>()
             .Produces(StatusCodes.Status403Forbidden);
     }
 
     private static void AddGetAllDecksEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/decks", (CardTrackerDbContext db,  HttpContext http) =>
+        app.MapGet("/decks", (CardTrackerDbContext db,  HttpContext http, IMapper auto) =>
             {
                 string username = http.GetCurrentUsername();
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
+
+                IQueryable<Deck> decks = db.Decks.AsNoTracking()
+                    .Where(d => d.UserId == user.Id);
                 
-                return db.Decks.AsNoTracking()
-                    .Where(d => d.UserId == user.Id)
-                    .ToList();
+                return Results.Ok(auto.Map<List<Deck>>(decks));
             })
             .WithName("GetDecks")
             .WithDescription("Get all registered decks for your current user")
             .RequireAuthorization()
-            .Produces<List<Deck>>();
+            .Produces<List<DeckResponse>>();
     }
 
     private static void AddCreateDeckEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/decks", (CreateDeckRequest request, CardTrackerDbContext db, HttpContext http) =>
+        app.MapPost("/decks", (CreateDeckRequest request, CardTrackerDbContext db, HttpContext http, IMapper auto) =>
             {
                 string username = http.GetCurrentUsername();
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
@@ -132,7 +129,7 @@ public static class DeckEndpoints
                 db.Decks.Add(deck);
                 db.SaveChanges();
         
-                return Results.Created($"/decks/{deck.Id}", deck.Id);
+                return Results.Created($"/decks/{deck.Id}", auto.Map<DeckResponse>(deck));
             })
             .WithName("AddDeck")
             .WithDescription("Adds a new deck to the system")

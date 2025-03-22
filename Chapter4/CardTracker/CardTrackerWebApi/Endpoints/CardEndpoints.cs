@@ -1,3 +1,5 @@
+using AutoMapper;
+
 namespace CardTrackerWebApi.Endpoints;
 
 public static class CardEndpoints
@@ -36,7 +38,11 @@ public static class CardEndpoints
 
     private static void AddGetAllCardsEndpoint(WebApplication app)
     {
-        app.MapGet("/cards", (CardTrackerDbContext db) => db.Cards.AsNoTracking().ToList())
+        app.MapGet("/cards", (CardTrackerDbContext db, IMapper auto) =>
+            {
+                List<Card> cards = db.Cards.AsNoTracking().ToList();
+                return auto.Map<List<Card>, List<CardResponse>>(cards);
+            })
             .WithName("GetAllCards")
             .WithDescription("Gets all cards")
             .AllowAnonymous()
@@ -45,16 +51,24 @@ public static class CardEndpoints
     
     private static void AddGetAllCreatureCardsEndpoint(WebApplication app)
     {
-        app.MapGet("/cards/creatures", (CardTrackerDbContext db) => db.CreatureCards.AsNoTracking().ToList())
+        app.MapGet("/cards/creatures", (CardTrackerDbContext db, IMapper auto) =>
+            {
+                IQueryable<CreatureCard> cards = db.CreatureCards.AsNoTracking();
+                return auto.Map<IEnumerable<CreatureCardResponse>>(cards);
+            })
             .WithName("GetAllCreatureCards")
             .WithDescription("Gets all creature cards")
             .AllowAnonymous()
-            .Produces<List<CreatureCard>>();
+            .Produces<List<CreatureCardResponse>>();
     }
     
     private static void AddGetAllActionCardsEndpoint(WebApplication app)
     {
-        app.MapGet("/cards/actions", (CardTrackerDbContext db) => db.ActionCards.AsNoTracking().ToList())
+        app.MapGet("/cards/actions", (CardTrackerDbContext db, IMapper auto) =>
+            {
+                IQueryable<ActionCard> cards = db.ActionCards.AsNoTracking();
+                return auto.Map<IEnumerable<ActionCardResponse>>(cards);
+            })
             .WithName("GetAllActionCards")
             .WithDescription("Gets all action cards")
             .AllowAnonymous()
@@ -63,55 +77,36 @@ public static class CardEndpoints
 
     private static void AddCreateActionCardEndpoint(WebApplication app)
     {
-        app.MapPost("/cards/actions", (CreateActionCardRequest request, CardTrackerDbContext db) =>
+        app.MapPost("/cards/actions", (CreateActionCardRequest request, IMapper auto, CardTrackerDbContext db) =>
             {
-                ActionCard card = new() // TODO: Automapper would help here
-                {
-                    Name = request.Name,
-                    Description = request.Description,
-                    ImagePath = request.ImagePath,
-                    Effect = request.Effect,
-                    Cost = request.Cost
-                };
+                ActionCard card = auto.Map<ActionCard>(request);
                 
                 db.ActionCards.Add(card);
                 db.SaveChanges();
 
-                return Results.Created($"/cards/{card.Id}", card);
+                return Results.Created($"/cards/{card.Id}", auto.Map<ActionCardResponse>(card));
             })
             .WithName("CreateActionCard")
             .WithDescription("Creates a new action card that can be included in future decks")
             .RequireAuthorization("AdminOnly")
-            .Produces<ActionCard>();
+            .Produces<ActionCardResponse>();
     }
     
     private static void AddCreateCreatureCardEndpoint(WebApplication app)
     {
-        app.MapPost("/cards/creatures", (CreateCreatureCardRequest request, CardTrackerDbContext db) =>
+        app.MapPost("/cards/creatures", (CreateCreatureCardRequest request, IMapper auto, CardTrackerDbContext db) =>
             {
-                CreatureCard card = new() // TODO: Automapper would help here
-                {
-                    Name = request.Name,
-                    Description = request.Description,
-                    ImagePath = request.ImagePath,
-                    SummonEffect = request.SummonEffect,
-                    PerTurnEffect = request.PerTurnEffect,
-                    SummonCost = request.Cost,
-                    Power = request.Power,
-                    CanFly = request.CanFly,
-                    CanSwim = request.CanSwim,
-                    CanClimb = request.CanClimb
-                };
+                CreatureCard card = auto.Map<CreatureCard>(request);
                 
                 db.CreatureCards.Add(card);
                 db.SaveChanges();
 
-                return Results.Created($"/cards/{card.Id}", card);
+                return Results.Created($"/cards/{card.Id}", auto.Map<CreatureCardResponse>(card));
             })
             .WithName("CreateCreatureCard")
             .WithDescription("Creates a new creature card that can be included in future decks")
             .RequireAuthorization("AdminOnly")
-            .Produces<CreatureCard>();
+            .Produces<CreatureCardResponse>();
     }
 
     private static void AddDeleteCardEndpoint(WebApplication app)

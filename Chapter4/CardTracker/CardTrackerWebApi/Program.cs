@@ -17,7 +17,22 @@ builder.Services.AddScoped<ITokenGenerationService, JwtGenerationService>();
 // Configure automapper
 builder.Services.AddAutoMapper(map =>
 {
+    // Simple mappings
     map.CreateMap<User, UserResponse>();
+    map.CreateMap<Deck, DeckResponse>();
+    map.CreateMap<CreateActionCardRequest, ActionCard>();
+    map.CreateMap<ActionCard, ActionCardResponse>();
+    
+    // We can customize property mappings if needed
+    map.CreateMap<CreatureCard, CreatureCardResponse>()
+        .ForMember(response => response.Cost, opt => opt.MapFrom(card => card.SummonCost));
+    map.CreateMap<CreateCreatureCardRequest, CreatureCard>()
+        .ForMember(card => card.SummonCost, opt => opt.MapFrom(request => request.Cost));
+    
+    // Set up polymorphic mapping
+    map.CreateMap<Card, CardResponse>()
+        .Include<ActionCard, ActionCardResponse>()
+        .Include<CreatureCard, CreatureCardResponse>();
 });
 
 // Configure authentication
