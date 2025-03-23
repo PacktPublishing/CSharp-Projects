@@ -4,7 +4,7 @@ using CardTrackerWebApi.Settings;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<CardTrackerDbContext>(options =>
+builder.Services.AddDbContext<CardsDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Bind the Auth settings to the configuration

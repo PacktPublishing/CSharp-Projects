@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CardTrackerWebApi.Models;
 
-public abstract record Card
+public abstract class Card
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
@@ -11,4 +11,5 @@ public abstract record Card
     public string? Description { get; set; }
     public string? ImagePath { get; set; }
     public List<Deck> Decks { get; set; } = new();
+    public string CardType => GetType().Name;
 }

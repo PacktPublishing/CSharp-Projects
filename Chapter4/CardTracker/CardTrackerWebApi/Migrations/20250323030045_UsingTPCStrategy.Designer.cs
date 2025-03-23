@@ -2,6 +2,7 @@
 using CardTrackerWebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CardTrackerWebApi.Migrations
 {
     [DbContext(typeof(CardsDbContext))]
-    partial class CardTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250323030045_UsingTPCStrategy")]
+    partial class UsingTPCStrategy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.3");
@@ -34,9 +37,9 @@ namespace CardTrackerWebApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cards");
+                    b.ToTable((string)null);
 
-                    b.UseTptMappingStrategy();
+                    b.UseTpcMappingStrategy();
                 });
 
             modelBuilder.Entity("CardTrackerWebApi.Models.CardDeck", b =>
@@ -178,24 +181,6 @@ namespace CardTrackerWebApi.Migrations
                     b.HasOne("CardTrackerWebApi.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CardTrackerWebApi.Models.ActionCard", b =>
-                {
-                    b.HasOne("CardTrackerWebApi.Models.Card", null)
-                        .WithOne()
-                        .HasForeignKey("CardTrackerWebApi.Models.ActionCard", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CardTrackerWebApi.Models.CreatureCard", b =>
-                {
-                    b.HasOne("CardTrackerWebApi.Models.Card", null)
-                        .WithOne()
-                        .HasForeignKey("CardTrackerWebApi.Models.CreatureCard", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

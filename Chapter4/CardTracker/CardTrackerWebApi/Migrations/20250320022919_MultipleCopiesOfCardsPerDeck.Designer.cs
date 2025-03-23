@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CardTrackerWebApi.Migrations
 {
-    [DbContext(typeof(CardTrackerDbContext))]
+    [DbContext(typeof(CardsDbContext))]
     [Migration("20250320022919_MultipleCopiesOfCardsPerDeck")]
     partial class MultipleCopiesOfCardsPerDeck
     {

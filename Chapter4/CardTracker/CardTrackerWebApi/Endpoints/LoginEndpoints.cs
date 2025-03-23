@@ -5,7 +5,7 @@ public static class LoginEndpoints
     public static void AddLoginEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/login",
-                (LoginRequest request, CardTrackerDbContext db, IHashingService hasher,
+                (LoginRequest request, CardsDbContext db, IHashingService hasher,
                     ITokenGenerationService tokenGenerator) =>
                 {
                     request.Username = request.Username.ToLowerInvariant();

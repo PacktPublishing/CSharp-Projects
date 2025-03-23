@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CardTrackerWebApi.Migrations
 {
-    [DbContext(typeof(CardTrackerDbContext))]
+    [DbContext(typeof(CardsDbContext))]
     [Migration("20250316022209_SaltAndHash")]
     partial class SaltAndHash
     {

@@ -13,7 +13,7 @@ public static class UserEndpoints
 
     private static void AddCreateUserEndpoint(WebApplication app)
     {
-        app.MapPost("/users", (CreateUserRequest userRequest, CardTrackerDbContext context, IMapper auto, IHashingService hasher) =>
+        app.MapPost("/users", (CreateUserRequest userRequest, CardsDbContext context, IMapper auto, IHashingService hasher) =>
             {
                 userRequest.Username = userRequest.Username.ToLowerInvariant();
                 if (context.Users.AsNoTracking().Any(u => u.Username == userRequest.Username)) 
@@ -45,7 +45,7 @@ public static class UserEndpoints
 
     private static void AddGetUserEndpoint(WebApplication app)
     {
-        app.MapGet("/users/{username}", (string username, IMapper auto, CardTrackerDbContext context) =>
+        app.MapGet("/users/{username}", (string username, IMapper auto, CardsDbContext context) =>
             {
                 User? user = context.Users.AsNoTracking()
                     .FirstOrDefault(u => u.Username == username.ToLowerInvariant());
@@ -67,7 +67,7 @@ public static class UserEndpoints
 
     private static void AddGetUsersEndpoint(this WebApplication app)
     {
-        app.MapGet("/users", (CardTrackerDbContext context, IMapper auto) =>
+        app.MapGet("/users", (CardsDbContext context, IMapper auto) =>
             {
                 IQueryable<User> users = context.Users.AsNoTracking();
                 

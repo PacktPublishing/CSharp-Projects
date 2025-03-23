@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CardTrackerWebApi.Migrations
 {
-    [DbContext(typeof(CardTrackerDbContext))]
+    [DbContext(typeof(CardsDbContext))]
     [Migration("20250316033523_SeedAdminUser")]
     partial class SeedAdminUser
     {

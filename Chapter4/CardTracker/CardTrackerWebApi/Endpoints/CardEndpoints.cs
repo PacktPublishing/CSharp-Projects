@@ -17,7 +17,7 @@ public static class CardEndpoints
 
     private static void AddGetCardEndpoint(WebApplication app)
     {
-        app.MapGet("/cards/{id}", (int id, CardTrackerDbContext db) =>
+        app.MapGet("/cards/{id}", (int id, CardsDbContext db, IMapper auto) =>
             {
                 Card? card = db.Cards.AsNoTracking()
                     .FirstOrDefault(c => c.Id == id);
@@ -27,7 +27,7 @@ public static class CardEndpoints
                     return Results.NotFound();
                 }
 
-                return Results.Ok(card);
+                return Results.Ok(auto.Map<CardResponse>(card));
             })
             .WithName("GetCardById")
             .WithDescription("Gets a specific card by its ID")
@@ -38,7 +38,7 @@ public static class CardEndpoints
 
     private static void AddGetAllCardsEndpoint(WebApplication app)
     {
-        app.MapGet("/cards", (CardTrackerDbContext db, IMapper auto) =>
+        app.MapGet("/cards", (CardsDbContext db, IMapper auto) =>
             {
                 List<Card> cards = db.Cards.AsNoTracking().ToList();
                 return auto.Map<List<Card>, List<CardResponse>>(cards);
@@ -51,7 +51,7 @@ public static class CardEndpoints
     
     private static void AddGetAllCreatureCardsEndpoint(WebApplication app)
     {
-        app.MapGet("/cards/creatures", (CardTrackerDbContext db, IMapper auto) =>
+        app.MapGet("/cards/creatures", (CardsDbContext db, IMapper auto) =>
             {
                 IQueryable<CreatureCard> cards = db.CreatureCards.AsNoTracking();
                 return auto.Map<IEnumerable<CreatureCardResponse>>(cards);
@@ -64,7 +64,7 @@ public static class CardEndpoints
     
     private static void AddGetAllActionCardsEndpoint(WebApplication app)
     {
-        app.MapGet("/cards/actions", (CardTrackerDbContext db, IMapper auto) =>
+        app.MapGet("/cards/actions", (CardsDbContext db, IMapper auto) =>
             {
                 IQueryable<ActionCard> cards = db.ActionCards.AsNoTracking();
                 return auto.Map<IEnumerable<ActionCardResponse>>(cards);
@@ -77,7 +77,7 @@ public static class CardEndpoints
 
     private static void AddCreateActionCardEndpoint(WebApplication app)
     {
-        app.MapPost("/cards/actions", (CreateActionCardRequest request, IMapper auto, CardTrackerDbContext db) =>
+        app.MapPost("/cards/actions", (CreateActionCardRequest request, IMapper auto, CardsDbContext db) =>
             {
                 ActionCard card = auto.Map<ActionCard>(request);
                 
@@ -94,7 +94,7 @@ public static class CardEndpoints
     
     private static void AddCreateCreatureCardEndpoint(WebApplication app)
     {
-        app.MapPost("/cards/creatures", (CreateCreatureCardRequest request, IMapper auto, CardTrackerDbContext db) =>
+        app.MapPost("/cards/creatures", (CreateCreatureCardRequest request, IMapper auto, CardsDbContext db) =>
             {
                 CreatureCard card = auto.Map<CreatureCard>(request);
                 
@@ -111,7 +111,7 @@ public static class CardEndpoints
 
     private static void AddDeleteCardEndpoint(WebApplication app)
     {
-        app.MapDelete("/cards/{id}", (int id, CardTrackerDbContext db) =>
+        app.MapDelete("/cards/{id}", (int id, CardsDbContext db) =>
             {
                 Card? card = db.Cards.Find(id);
 

@@ -15,7 +15,7 @@ public static class DeckEndpoints
 
     private static void AddModifyDeckEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut("/decks/{id}", (int id, EditDeckRequest request, CardTrackerDbContext db, IMapper auto, HttpContext http) =>
+        app.MapPut("/decks/{id}", (int id, EditDeckRequest request, CardsDbContext db, IMapper auto, HttpContext http) =>
             {
                 string username = http.GetCurrentUsername();
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
@@ -65,7 +65,7 @@ public static class DeckEndpoints
 
     private static void AddGetDeckEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/decks/{id}", (int id, CardTrackerDbContext db, HttpContext http, IMapper auto) =>
+        app.MapGet("/decks/{id}", (int id, CardsDbContext db, HttpContext http, IMapper auto) =>
             {
                 Deck? deck = db.Decks
                     .Include(d => d.CardDecks)
@@ -96,7 +96,7 @@ public static class DeckEndpoints
 
     private static void AddGetAllDecksEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/decks", (CardTrackerDbContext db,  HttpContext http, IMapper auto) =>
+        app.MapGet("/decks", (CardsDbContext db,  HttpContext http, IMapper auto) =>
             {
                 string username = http.GetCurrentUsername();
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
@@ -114,7 +114,7 @@ public static class DeckEndpoints
 
     private static void AddCreateDeckEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/decks", (CreateDeckRequest request, CardTrackerDbContext db, HttpContext http, IMapper auto) =>
+        app.MapPost("/decks", (CreateDeckRequest request, CardsDbContext db, HttpContext http, IMapper auto) =>
             {
                 string username = http.GetCurrentUsername();
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);
@@ -139,7 +139,7 @@ public static class DeckEndpoints
     
     private static void AddDeleteDeckEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/decks/{id}", (int id, CardTrackerDbContext db, HttpContext http) =>
+        app.MapDelete("/decks/{id}", (int id, CardsDbContext db, HttpContext http) =>
             {
                 string username = http.GetCurrentUsername();
                 User user = db.Users.AsNoTracking().First(u => u.Username == username);

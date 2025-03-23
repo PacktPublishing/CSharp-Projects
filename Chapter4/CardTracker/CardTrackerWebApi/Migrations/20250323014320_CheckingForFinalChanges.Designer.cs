@@ -2,6 +2,7 @@
 using CardTrackerWebApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CardTrackerWebApi.Migrations
 {
     [DbContext(typeof(CardsDbContext))]
-    partial class CardTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250323014320_CheckingForFinalChanges")]
+    partial class CheckingForFinalChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.3");
@@ -25,6 +28,11 @@ namespace CardTrackerWebApi.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ImagePath")
                         .HasColumnType("TEXT");
 
@@ -36,7 +44,9 @@ namespace CardTrackerWebApi.Migrations
 
                     b.ToTable("Cards");
 
-                    b.UseTptMappingStrategy();
+                    b.HasDiscriminator().HasValue("Card");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("CardTrackerWebApi.Models.CardDeck", b =>
@@ -75,6 +85,8 @@ namespace CardTrackerWebApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Decks");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("CardTrackerWebApi.Models.User", b =>
@@ -127,7 +139,7 @@ namespace CardTrackerWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("ActionCards");
+                    b.HasDiscriminator().HasValue("ActionCard");
                 });
 
             modelBuilder.Entity("CardTrackerWebApi.Models.CreatureCard", b =>
@@ -155,7 +167,7 @@ namespace CardTrackerWebApi.Migrations
                     b.Property<string>("SummonEffect")
                         .HasColumnType("TEXT");
 
-                    b.ToTable("CreatureCards");
+                    b.HasDiscriminator().HasValue("CreatureCard");
                 });
 
             modelBuilder.Entity("CardTrackerWebApi.Models.CardDeck", b =>
@@ -178,24 +190,6 @@ namespace CardTrackerWebApi.Migrations
                     b.HasOne("CardTrackerWebApi.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CardTrackerWebApi.Models.ActionCard", b =>
-                {
-                    b.HasOne("CardTrackerWebApi.Models.Card", null)
-                        .WithOne()
-                        .HasForeignKey("CardTrackerWebApi.Models.ActionCard", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CardTrackerWebApi.Models.CreatureCard", b =>
-                {
-                    b.HasOne("CardTrackerWebApi.Models.Card", null)
-                        .WithOne()
-                        .HasForeignKey("CardTrackerWebApi.Models.CreatureCard", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
