@@ -13,25 +13,21 @@ public class JwtGenerationService(IOptionsSnapshot<AuthSettings> jwtSettings) : 
 
     public string GenerateToken(string username, string role)
     {
-        Claim[] claims =
-        [
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(ClaimTypes.Role, role),
-            new(ClaimTypes.Name, username),
-        ];
-
         string secret = _jwtSettings.Secret ?? throw new InvalidOperationException("Secret is not set");
         byte[] keyBytes = Encoding.UTF8.GetBytes(secret);
         SymmetricSecurityKey key = new(keyBytes);
         SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha256);
-        
-        JwtSecurityToken token = new JwtSecurityToken(
-            issuer: _jwtSettings.Issuer ?? throw new InvalidOperationException("Issuer is not set"),
-            audience: _jwtSettings.Audience ?? throw new InvalidOperationException("Audience is not set"),
-            claims: claims,
-            expires: DateTime.Now.AddDays(7),
-            signingCredentials: creds);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return new JwtSecurityTokenHandler()
+            .WriteToken(new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer ?? throw new InvalidOperationException("Issuer is not set"),
+                audience: _jwtSettings.Audience ?? throw new InvalidOperationException("Audience is not set"),
+                claims: [
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.CreateVersion7().ToString()),
+                    new Claim(ClaimTypes.Role, role),
+                    new Claim(ClaimTypes.Name, username),
+                ],
+                expires: DateTime.Now.AddDays(7),
+                signingCredentials: creds));
     }
 }

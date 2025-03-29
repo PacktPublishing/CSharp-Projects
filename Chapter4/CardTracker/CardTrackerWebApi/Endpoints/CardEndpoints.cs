@@ -19,29 +19,11 @@ public static class CardEndpoints
             .AllowAnonymous()
             .Produces<List<Card>>();
         
-        app.MapGet("/cards/creatures", HandleGetAllCreatureCards)
-            .WithName("GetAllCreatureCards")
-            .WithDescription("Gets all creature cards")
-            .AllowAnonymous()
-            .Produces<List<CreatureCardResponse>>();
-        
-        app.MapGet("/cards/actions", HandleGetAllActionCards)
-            .WithName("GetAllActionCards")
-            .WithDescription("Gets all action cards")
-            .AllowAnonymous()
-            .Produces<List<ActionCard>>();
-        
-        app.MapPost("/cards/creatures", HandleCreateCreature)
-            .WithName("CreateCreatureCard")
-            .WithDescription("Creates a new creature card that can be included in future decks")
+        app.MapPost("/cards", HandleCreateCard)
+            .WithName("CreateCard")
+            .WithDescription("Creates a new card that can be included in future decks")
             .RequireAuthorization("AdminOnly")
-            .Produces<CreatureCardResponse>();
-        
-        app.MapPost("/cards/actions", HandleCreateAction)
-            .WithName("CreateActionCard")
-            .WithDescription("Creates a new action card that can be included in future decks")
-            .RequireAuthorization("AdminOnly")
-            .Produces<ActionCardResponse>();
+            .Produces<CardResponse>();
         
         app.MapDelete("/cards/{id}", HandleDeleteCard)
             .WithName("DeleteCard")
@@ -66,42 +48,23 @@ public static class CardEndpoints
         return Results.NoContent();
     }
 
-    private static IResult HandleCreateAction(CreateActionCardRequest request, IMapper auto, CardsDbContext db)
+    private static IResult HandleCreateCard(CreateCardRequest request, IMapper auto, CardsDbContext db)
     {
-        ActionCard card = auto.Map<ActionCard>(request);
+        // Use polymorphic mapping to create the correct card type
+        Card card = auto.Map<Card>(request);
 
-        db.ActionCards.Add(card);
+        // Add it to the database
+        db.Cards.Add(card);
         db.SaveChanges();
-
-        return Results.Created($"/cards/{card.Id}", auto.Map<ActionCardResponse>(card));
-    }
-
-    private static IResult HandleCreateCreature(CreateCreatureCardRequest request, IMapper auto, CardsDbContext db)
-    {
-        CreatureCard card = auto.Map<CreatureCard>(request);
-
-        db.CreatureCards.Add(card);
-        db.SaveChanges();
-
-        return Results.Created($"/cards/{card.Id}", auto.Map<CreatureCardResponse>(card));
-    }
-
-    private static IResult HandleGetAllActionCards(CardsDbContext db, IMapper auto)
-    {
-        IQueryable<ActionCard> cards = db.ActionCards.AsNoTracking();
-        return Results.Ok(auto.Map<IEnumerable<ActionCardResponse>>(cards));
-    }
-
-    private static IResult HandleGetAllCreatureCards(CardsDbContext db, IMapper auto)
-    {
-        IQueryable<CreatureCard> cards = db.CreatureCards.AsNoTracking();
-        return Results.Ok(auto.Map<IEnumerable<CreatureCardResponse>>(cards));
+        
+        return Results.Created($"/cards/{card.Id}", auto.Map<CardResponse>(card));
     }
 
     private static IResult HandleGetAllCards(CardsDbContext db, IMapper auto)
     {
         List<Card> cards = db.Cards.AsNoTracking().ToList();
-        return Results.Ok(auto.Map<List<Card>, List<CardResponse>>(cards));
+        List<CardResponse> responses = auto.Map<List<Card>, List<CardResponse>>(cards);
+        return Results.Ok(responses);
     }
 
     private static IResult HandleGetCardById(int id, CardsDbContext db, IMapper auto)
