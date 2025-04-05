@@ -2,7 +2,7 @@ namespace ConsoleAppAdventureGame.Engine;
 
 public record Choice(string Text)
 {
-    public string[] TextWhenChosen { get; init; } = [];
+    public string[] WhenChosen { get; init; } = [];
     public required string NextNodeId { get; init; }
 
     public void Execute(Adventure adventure, IAdventureRenderer renderer)

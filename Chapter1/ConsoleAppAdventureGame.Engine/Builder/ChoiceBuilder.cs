@@ -16,7 +16,7 @@ public class ChoiceBuilder(string text)
         
         return new Choice(text)
         {
-            TextWhenChosen = _lines.ToArray(),
+            WhenChosen = _lines.ToArray(),
             NextNodeId = _target
         };
     }

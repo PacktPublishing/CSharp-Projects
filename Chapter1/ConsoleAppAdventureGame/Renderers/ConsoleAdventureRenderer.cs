@@ -9,7 +9,6 @@ public class ConsoleAdventureRenderer : IAdventureRenderer
         foreach (var line in node.Text)
         {
             Console.WriteLine(line);
-            Console.WriteLine();
         }
     }
 
@@ -23,7 +22,8 @@ public class ConsoleAdventureRenderer : IAdventureRenderer
         {
             for (var i = 0; i < node.Choices.Length; i++)
             {
-                Console.WriteLine($"{i + 1}. {node.Choices[i].Text}");
+                string text = node.Choices[i].Text;
+                Console.WriteLine($"{i+1}. {text}");
             }
 
             Console.WriteLine();
@@ -37,7 +37,7 @@ public class ConsoleAdventureRenderer : IAdventureRenderer
             }
             else
             {
-                Console.WriteLine("Invalid choice. Please try again.");
+                Console.WriteLine("Invalid choice.");
             }
         } while (choice is null);
         
@@ -47,10 +47,9 @@ public class ConsoleAdventureRenderer : IAdventureRenderer
 
     public void RenderChoiceAction(Choice choice)
     {
-        foreach (var line in choice.TextWhenChosen)
+        foreach (var line in choice.Text)
         {
             Console.WriteLine(line);
-            Console.WriteLine();
         }
     }
 }

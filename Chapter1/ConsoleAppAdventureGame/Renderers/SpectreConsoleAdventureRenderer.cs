@@ -1,9 +1,10 @@
+using System.Text.RegularExpressions;
 using ConsoleAppAdventureGame.Engine;
 using Spectre.Console;
 
 namespace ConsoleAppAdventureGame.Renderers;
 
-public class SpectreConsoleAdventureRenderer : IAdventureRenderer
+public partial class SpectreConsoleAdventureRenderer : IAdventureRenderer
 {
     
     public Choice GetChoice(StoryNode node)
@@ -14,35 +15,37 @@ public class SpectreConsoleAdventureRenderer : IAdventureRenderer
             .UseConverter(c => c.Text));
         
         AnsiConsole.MarkupLineInterpolated($"[yellow]>[/] [bold blue]{choice.Text}[/]");
-        AnsiConsole.WriteLine();
         
         return choice;
     }
     
     public void Render(StoryNode node)
     {
-        // Write a horizontal line to help separate the text 
-        AnsiConsole.Write(new Rule($"[Yellow]{node.Id}[/]")
-            .LeftJustified()
-            .RuleStyle(new Style(foreground: Color.Blue)));
-        
         foreach (var line in node.Text)
         {
             AnsiConsole.MarkupLine(ReplaceLine(line));
-            AnsiConsole.WriteLine();
         }
     }
 
     public void RenderChoiceAction(Choice choice)
     {
-        foreach (var line in choice.TextWhenChosen)
+        foreach (var line in choice.WhenChosen)
         {
             AnsiConsole.MarkupLine(ReplaceLine(line));
-            AnsiConsole.WriteLine();
         }
     }
 
-    private string ReplaceLine(string line) => line
-            .Replace("“", "[bold cyan]“")
-            .Replace("”", "”[/]");
+    [GeneratedRegex(@"\*(.*?)\*")]
+    private static partial Regex ItalicsRegex();
+
+    [GeneratedRegex(@"\*\*(.*?)\*\*")]
+    private static partial Regex BoldRegex();
+
+    private static string ReplaceLine(string line)
+    {
+        line = ItalicsRegex().Replace(line, "[italic cyan]$1[/]");
+        line = BoldRegex().Replace(line, "[bold yellow]$1[/]");
+
+        return line;
+    }
 }

@@ -1,11 +1,11 @@
-﻿using ConsoleAppAdventureGame;
-using ConsoleAppAdventureGame.Renderers;
+﻿using ConsoleAppAdventureGame.Renderers;
 using ConsoleAppAdventureGame.Engine;
 using Spectre.Console;
+using ConsoleAppAdventureGame.Stories;
 
 try
 {
-    Adventure adventure = SampleAdventureBuilder.BuildSampleAdventure();
+    Adventure adventure = SampleAdventure.BuildMinimalAdventureUsingBuilder();
     SpectreConsoleAdventureRenderer renderer = new();
     adventure.Run(renderer);
 }
