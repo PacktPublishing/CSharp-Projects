@@ -1,7 +1,8 @@
 namespace ConsoleAppAdventureGame.Engine;
 
-public record StoryNode(string Id)
+public class StoryNode(string id)
 {
+    public string Id => id;
     public required string[] Text { get; init; }
     public Choice[] Choices { get; init; } = [];
 }

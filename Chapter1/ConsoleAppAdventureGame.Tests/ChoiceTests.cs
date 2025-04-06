@@ -1,10 +1,27 @@
 using ConsoleAppAdventureGame.Engine;
 using ConsoleAppAdventureGame.Engine.Builder;
+using ConsoleAppAdventureGame.Stories;
 
 namespace ConsoleAppAdventureGame.Tests;
 
 public class ChoiceTests
 {
+    [Fact]
+    public void MakingAChoiceShouldAdvanceTheStory()
+    {
+        // Arrange
+        Adventure story = SampleAdventure.BuildAdventure();
+        StoryNode startNode = story.CurrentNode!;
+        Choice firstChoice = startNode.Choices.First();
+        TestAdventureRenderer renderer = new();
+
+        // Act
+        firstChoice.Execute(story, renderer);
+
+        // Assert
+        story.CurrentNode.ShouldNotBe(startNode);
+    }
+
     [Fact]
     public void ExecutingAChoiceShouldAdvanceTheStoryToTargetNode()
     {

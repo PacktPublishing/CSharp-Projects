@@ -5,7 +5,10 @@ using ConsoleAppAdventureGame.Stories;
 
 try
 {
-    Adventure adventure = SampleAdventure.BuildMinimalAdventureUsingBuilder();
+    // Use rich encoding for Spectre.Console output to allow for bold and italic styling
+    Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+    Adventure adventure = SampleAdventure.BuildAdventure();
     SpectreConsoleAdventureRenderer renderer = new();
     adventure.Run(renderer);
 }

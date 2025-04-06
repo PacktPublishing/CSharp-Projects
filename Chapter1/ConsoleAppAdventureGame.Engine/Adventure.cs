@@ -1,15 +1,18 @@
+using System.Collections.Immutable;
+
 namespace ConsoleAppAdventureGame.Engine;
 
 public class Adventure
 {
     public const string StartNodeId = "Start";
-    private readonly Dictionary<string, StoryNode> _nodes;
+    private readonly ImmutableDictionary<string, StoryNode> _nodes;
 
     public StoryNode? CurrentNode { get; internal set; }
 
     public Adventure(IEnumerable<StoryNode> nodes, string startNodeId = StartNodeId)
     {
-        _nodes = nodes.ToDictionary(n => n.Id);
+        StringComparer comparison = StringComparer.OrdinalIgnoreCase;
+        _nodes = nodes.ToImmutableDictionary(n => n.Id, comparison);
         CurrentNode = _nodes[startNodeId];
     }
 

@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using ConsoleAppAdventureGame.Engine;
 using Spectre.Console;
 
@@ -23,7 +22,7 @@ public partial class SpectreConsoleAdventureRenderer : IAdventureRenderer
     {
         foreach (var line in node.Text)
         {
-            AnsiConsole.MarkupLine(ReplaceLine(line));
+            AnsiConsole.MarkupLine(line);
         }
     }
 
@@ -31,21 +30,7 @@ public partial class SpectreConsoleAdventureRenderer : IAdventureRenderer
     {
         foreach (var line in choice.WhenChosen)
         {
-            AnsiConsole.MarkupLine(ReplaceLine(line));
+            AnsiConsole.MarkupLine(line);
         }
-    }
-
-    [GeneratedRegex(@"\*(.*?)\*")]
-    private static partial Regex ItalicsRegex();
-
-    [GeneratedRegex(@"\*\*(.*?)\*\*")]
-    private static partial Regex BoldRegex();
-
-    private static string ReplaceLine(string line)
-    {
-        line = ItalicsRegex().Replace(line, "[italic cyan]$1[/]");
-        line = BoldRegex().Replace(line, "[bold yellow]$1[/]");
-
-        return line;
     }
 }
