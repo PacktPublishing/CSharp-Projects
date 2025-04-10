@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CardTracker.Contracts.Requests;
 
 namespace CardTrackerWebApi.Converters;
 

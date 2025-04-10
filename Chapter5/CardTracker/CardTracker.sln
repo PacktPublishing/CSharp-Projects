@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardTrackerWebApi", "CardTr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardTrackerClient", "CardTrackerClient\CardTrackerClient.csproj", "{B3C57520-2350-494B-A044-34655BAC3F88}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardTracker.Contracts", "CardTracker.Contracts\CardTracker.Contracts.csproj", "{791FAE50-261A-4738-B4E7-D55BDB62467F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{B3C57520-2350-494B-A044-34655BAC3F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3C57520-2350-494B-A044-34655BAC3F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3C57520-2350-494B-A044-34655BAC3F88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{791FAE50-261A-4738-B4E7-D55BDB62467F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{791FAE50-261A-4738-B4E7-D55BDB62467F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{791FAE50-261A-4738-B4E7-D55BDB62467F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{791FAE50-261A-4738-B4E7-D55BDB62467F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

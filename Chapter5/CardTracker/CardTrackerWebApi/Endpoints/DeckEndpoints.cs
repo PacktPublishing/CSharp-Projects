@@ -1,4 +1,7 @@
 using AutoMapper;
+using CardTracker.Contracts.Requests;
+using CardTracker.Contracts.Responses;
+using CardDeck = CardTrackerWebApi.Models.CardDeck;
 
 namespace CardTrackerWebApi.Endpoints;
 

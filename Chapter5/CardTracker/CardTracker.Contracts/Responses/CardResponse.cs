@@ -1,4 +1,4 @@
-namespace CardTrackerWebApi.Responses;
+namespace CardTracker.Contracts.Responses;
 
 public abstract class CardResponse
 {

@@ -1,4 +1,4 @@
-namespace CardTrackerWebApi.Requests;
+namespace CardTracker.Contracts.Requests;
 
 public class CreateUserRequest
 {
