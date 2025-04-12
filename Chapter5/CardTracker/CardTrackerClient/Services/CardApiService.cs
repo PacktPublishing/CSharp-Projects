@@ -16,7 +16,16 @@ public class CardApiService(HttpClient client, IUserService userService) : ICard
         
         return loginResponse;
     }
-    
+
+    public async Task<List<CardResponse>> GetAllCardsAsync()
+    {
+        HttpRequestMessage httpRequest = new(HttpMethod.Get, "/cards/");
+
+        HttpResponseMessage response = await client.SendAsync(httpRequest);
+
+        return (await response.Content.ReadFromJsonAsync<List<CardResponse>>())!;
+    }
+
     public async Task<List<DeckResponse>> GetAllDecksAsync()
     {
         HttpRequestMessage httpRequest = new(HttpMethod.Get, "/decks/");
@@ -24,7 +33,7 @@ public class CardApiService(HttpClient client, IUserService userService) : ICard
 
         HttpResponseMessage response = await client.SendAsync(httpRequest);
         response.EnsureSuccessStatusCode();
-
+        
         return (await response.Content.ReadFromJsonAsync<List<DeckResponse>>())!;
     }
 

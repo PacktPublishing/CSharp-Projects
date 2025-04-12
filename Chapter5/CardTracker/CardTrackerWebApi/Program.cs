@@ -1,6 +1,6 @@
+using CardTracker.Contracts.Converters;
 using CardTracker.Contracts.Requests;
 using CardTracker.Contracts.Responses;
-using CardTrackerWebApi.Converters;
 using CardTrackerWebApi.Settings;
 using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 

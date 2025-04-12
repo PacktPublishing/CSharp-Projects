@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using CardTrackerClient.Services
 @inject IUserService UserService
+@inject NavigationManager NavigationManager
 
 <PageTitle>Deck Management</PageTitle>
 
@@ -11,18 +12,26 @@
 @if (UserService.IsLoggedIn)
 {
     <h2>Manage Your Decks</h2>
-    <button class="btn btn-primary" @onclick="CreateDeck">Create New Deck</button>
-    <button class="btn btn-secondary" @onclick="ViewDecks">View My Decks</button>
+    <button class="btn btn-primary" @onclick="ViewDecks">View My Decks</button>
+    <button class="btn btn-success" @onclick="CreateDeck">Create New Deck</button>
 }
 else
 {
     <p>Please <a href="/login">log in</a> to manage your decks</p>
 }
 
+<button class="btn btn-secondary" @onclick="ViewCards">View All Cards</button>
+
+
 @code {
     private void CreateDeck()
     {
         throw new NotImplementedException();
+    }
+
+    private void ViewCards()
+    {
+        NavigationManager.NavigateTo("/Cards");
     }
 
     private void ViewDecks()

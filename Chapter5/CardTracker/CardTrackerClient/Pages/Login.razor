@@ -14,52 +14,53 @@
 
     <div>
         <label for="username">Username:</label>
-        <InputText id="username" @bind-Value="username" class="form-control" />
+        <InputText id="username" @bind-Value="_username" class="form-control" />
     </div>
     <div>
         <label for="password">Password:</label>
-        <InputText id="password" @bind-Value="password" type="password" class="form-control" />
+        <InputText id="password" @bind-Value="_password" type="password" class="form-control" />
     </div>
-    <button type="submit" class="btn btn-primary">Login</button>
+    
+    <button type="submit" class="btn btn-primary mt-2">Login</button>
 </EditForm>
 
-@if (!string.IsNullOrEmpty(message))
+@if (!string.IsNullOrEmpty(_message))
 {
-    <p>@message</p>
+    <p>@_message</p>
 }
 
 @code {
     [Required]
-    private string? username;
+    private string? _username;
     [Required]
-    private string? password;
+    private string? _password;
     
-    private string? message;
+    private string? _message;
 
     private async Task HandleLogin()
     {
         try
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password))
             {
-                message = "Username and password cannot be empty.";
+                _message = "Username and password cannot be empty.";
                 return;
             }
             
             LoginRequest loginRequest = new()
             {
-                Username = username,
-                Password = password
+                Username = _username,
+                Password = _password
             };
             LoginResponse response = await CardApiService.LoginAsync(loginRequest);
-            message = "Login successful: " + response.Token;
+            _message = "Login successful: " + response.Token;
             
             // Redirect to Home page after successful login
             NavigationManager.NavigateTo("/");
         }
         catch (Exception ex)
         {
-            message = $"Login failed: {ex.Message}";
+            _message = $"Login failed: {ex.Message}";
         }
     }
 }

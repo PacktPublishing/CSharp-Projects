@@ -1,12 +1,12 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using CardTracker.Contracts.Requests;
+using CardTracker.Contracts.Responses;
 
-namespace CardTrackerWebApi.Converters;
+namespace CardTracker.Contracts.Converters;
 
-public class CreateCardRequestConverter : JsonConverter<CreateCardRequest>
+public class CardResponseConverter : JsonConverter<CardResponse>
 {
-    public override CreateCardRequest Read(ref Utf8JsonReader reader, Type convertType, JsonSerializerOptions options)
+    public override CardResponse? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         using JsonDocument doc = JsonDocument.ParseValue(ref reader);
         
@@ -22,12 +22,15 @@ public class CreateCardRequestConverter : JsonConverter<CreateCardRequest>
         // Deserialize the correct type
         return type.ToUpperInvariant() switch
         {
-            "CREATURE" => JsonSerializer.Deserialize<CreateCreatureCardRequest>(json, options)!,
-            "ACTION" => JsonSerializer.Deserialize<CreateActionCardRequest>(json, options)!,
+            "CREATURE" => JsonSerializer.Deserialize<CreatureCardResponse>(json, options)!,
+            "ACTION" => JsonSerializer.Deserialize<ActionCardResponse>(json, options)!,
             _ => throw new JsonException($"Unknown type: {type}")
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, CreateCardRequest value, JsonSerializerOptions options) 
-        => JsonSerializer.Serialize(writer, (object)value, value.GetType(), options);
+    public override void Write(Utf8JsonWriter writer, CardResponse value, JsonSerializerOptions options)
+    {
+        // Serialize the correct type
+        JsonSerializer.Serialize(writer, value, value.GetType(), options);
+    }
 }

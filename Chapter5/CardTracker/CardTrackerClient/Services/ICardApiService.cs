@@ -11,4 +11,5 @@ public interface ICardApiService
     Task<DeckResponse> UpdateDeckAsync(int id, EditDeckRequest request);
     Task DeleteDeckAsync(int id);
     Task<LoginResponse> LoginAsync(LoginRequest loginRequest);
+    Task<List<CardResponse>> GetAllCardsAsync();
 }

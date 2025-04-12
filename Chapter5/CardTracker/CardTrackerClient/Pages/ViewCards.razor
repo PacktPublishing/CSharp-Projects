@@ -1,0 +1,56 @@
+@page "/Cards"
+@using CardTracker.Contracts.Responses
+@using CardTrackerClient.Services
+@inject ICardApiService CardApiService
+
+<h3>Cards</h3>
+<p>This page lists all cards available in the game for reference purposes.</p>
+
+@if (_cards != null)
+{
+    if (_cards.Count > 0)
+    {
+        <ul>
+            @foreach (var card in _cards)
+            {
+                <li>@card.Name - @card.Description</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+            No cards found. Is the database set up?
+        </div>
+    }
+}
+else if (string.IsNullOrEmpty(_message))
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(_message))
+{
+    <div class="alert alert-danger" role="alert">
+        @_message
+    </div>
+}
+
+@code {
+    private List<CardResponse>? _cards = null;
+    private string? _message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _cards = await CardApiService.GetAllCardsAsync();
+        }
+        catch (Exception ex)
+        {
+            _message = $"Failed to load cards: {ex.Message}";
+        }
+    }
+}
