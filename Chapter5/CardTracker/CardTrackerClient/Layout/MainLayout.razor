@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@using CardTrackerClient.Services
+@inherits LayoutComponentBase
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
 <div class="page">
     <div class="sidebar">
         <NavMenu/>
@@ -6,7 +10,15 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            @* Add a log out link here if the user is logged in *@
+            @if (UserService.IsLoggedIn)
+            {
+                <a class="nav-link" href="#" @onclick="Logout">Log out</a>
+            }
+            else
+            {
+                <a class="nav-link" href="/login">Log in</a>
+            }
         </div>
 
         <article class="content px-4">
@@ -14,3 +26,11 @@
         </article>
     </main>
 </div>
+
+@code {
+    private async Task Logout()
+    {
+        UserService.Logout();
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -1,7 +1,32 @@
 ﻿@page "/"
+@using CardTrackerClient.Services
+@inject IUserService UserService
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Deck Management</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Deck Management</h1>
 
-Welcome to your new app.
+<p>Welcome to your card tracker application.</p>
+
+@if (UserService.IsLoggedIn)
+{
+    <h2>Manage Your Decks</h2>
+    <button class="btn btn-primary" @onclick="CreateDeck">Create New Deck</button>
+    <button class="btn btn-secondary" @onclick="ViewDecks">View My Decks</button>
+}
+else
+{
+    <p>Please <a href="/login">log in</a> to manage your decks</p>
+}
+
+@code {
+    private void CreateDeck()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ViewDecks()
+    {
+        throw new NotImplementedException();
+    }
+}

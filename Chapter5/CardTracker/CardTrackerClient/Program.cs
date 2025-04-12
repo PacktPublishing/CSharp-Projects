@@ -16,5 +16,6 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(apiBaseUr
 
 // Dependency injection for services
 builder.Services.AddScoped<ICardApiService, CardApiService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 await builder.Build().RunAsync();

@@ -3,6 +3,7 @@
 @using CardTracker.Contracts.Responses
 @using CardTrackerClient.Services
 @inject ICardApiService CardApiService
+@inject NavigationManager NavigationManager
 @page "/login"
 
 <h3>Login</h3>
@@ -52,6 +53,9 @@
             };
             LoginResponse response = await CardApiService.LoginAsync(loginRequest);
             message = "Login successful: " + response.Token;
+            
+            // Redirect to Home page after successful login
+            NavigationManager.NavigateTo("/");
         }
         catch (Exception ex)
         {
