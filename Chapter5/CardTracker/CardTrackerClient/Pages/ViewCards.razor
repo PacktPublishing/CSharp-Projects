@@ -10,12 +10,28 @@
 {
     if (_cards.Count > 0)
     {
-        <ul>
+        <div class="row">
             @foreach (var card in _cards)
             {
-                <li>@card.Name - @card.Description</li>
+                <div class="col">
+                    <div class="card h-100 m-2 p-3 bg-info text-white" style="aspect-ratio: 5/7; border: thin solid rgba(255, 255, 255, 0.1);">
+                        <h5 class="card-title mt-3">@card.Name</h5>
+                        @if (!string.IsNullOrEmpty(card.ImagePath))
+                        {
+                            <img src="@card.ImagePath" alt="@card.ImagePath" style="object-fit: cover; height: 100%; width: 100%;" />
+                        }
+                        else
+                        {
+                            <div class="d-flex align-items-center justify-content-center"
+                                 style="height: auto; width: 100%; background-color: black;">
+                                <span>No Image Available</span>
+                            </div>
+                        }
+                        <p class="card-text my-2">@card.Description</p>
+                    </div>
+                </div>
             }
-        </ul>
+        </div>
     }
     else
     {
@@ -53,4 +69,5 @@ else if (string.IsNullOrEmpty(_message))
             _message = $"Failed to load cards: {ex.Message}";
         }
     }
+
 }
