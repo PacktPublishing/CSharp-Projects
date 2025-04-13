@@ -1,0 +1,25 @@
+@using CardTracker.Contracts.Responses
+<div class="card h-100 border-primary border-1 bg-primary-subtle" style="aspect-ratio: 5/7;">
+    <div class="card-header">
+        Action Card
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+        @Card.Cost
+        <span class="visually-hidden">Play Cost</span>
+      </span>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Card.ImagePath))
+    {
+        <img src="@Card.ImagePath" alt="@Card.ImagePath" class="card-img-top">
+    }
+
+    <div class="card-body">
+        <h5 class="card-title">@Card.Name</h5>
+        <p class="card-text"><small>@Card.Effect</small></p>
+        <p class="card-text"><small class="text-body-secondary text-muted">@Card.Description</small></p>
+    </div>
+</div>
+
+@code {
+    [Parameter] public required ActionCardResponse Card { get; init; }
+}

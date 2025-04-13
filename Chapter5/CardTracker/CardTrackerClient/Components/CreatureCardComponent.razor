@@ -1,0 +1,52 @@
+@using CardTracker.Contracts.Responses
+<div class="card h-100 border-success border-1 bg-success-subtle" style="aspect-ratio: 5/7;">
+    <div class="card-header">
+        Creature Card
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+            @Card.SummonCost
+            <span class="visually-hidden">Summon Cost</span>
+        </span>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Card.ImagePath))
+    {
+        <img src="@Card.ImagePath" alt="@Card.ImagePath" class="card-img-top">
+    }
+
+    <div class="card-body">
+        <h5 class="card-title">@Card.Name</h5>
+
+        @if (!string.IsNullOrWhiteSpace(Card.SummonEffect))
+        {
+            <p class="card-text"><small>@Card.SummonEffect</small></p>
+        }
+        @if (!string.IsNullOrWhiteSpace(Card.PerTurnEffect))
+        {
+            <p class="card-text"><small>@Card.PerTurnEffect</small></p>
+        }
+        <p class="card-text"><small class="text-body-secondary text-muted">@Card.Description</small></p>
+
+        <p class="card-subtitle mb-2">
+            <span class="badge rounded-pill text-bg-dark">
+                Power: @Card.Power
+            </span>
+
+            @if (Card.CanFly)
+            {
+                <span class="mx-1 badge rounded-pill text-bg-light">Flies</span>
+            }
+            @if (Card.CanSwim)
+            {
+                <span class="mx-1 badge rounded-pill text-bg-info">Swims</span>
+            }
+            @if (Card.CanClimb)
+            {
+                <span class="mx-1 badge rounded-pill text-bg-secondary">Climbs</span>
+            }
+        </p>
+    </div>
+</div>
+
+@code {
+    [Parameter] public required CreatureCardResponse Card { get; init; }
+}
