@@ -3,39 +3,25 @@
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 
-<PageTitle>Deck Management</PageTitle>
+<PageTitle>Card Tracker</PageTitle>
 
-<h1>Deck Management</h1>
+<h3>Card Tracker</h3>
+<p>Welcome to the card tracker application.</p>
 
-<p>Welcome to your card tracker application.</p>
+<button class="btn btn-primary mx-1" @onclick="ViewCards">View All Cards</button>
 
 @if (UserService.IsLoggedIn)
 {
-    <h2>Manage Your Decks</h2>
-    <button class="btn btn-primary" @onclick="ViewDecks">View My Decks</button>
-    <button class="btn btn-success" @onclick="CreateDeck">Create New Deck</button>
+    <button class="btn btn-primary mx-1" @onclick="ViewDecks">View My Decks</button>
+    <button class="btn btn-primary mx-1" @onclick="CreateDeck">Create New Deck</button>
 }
 else
 {
-    <p>Please <a href="/login">log in</a> to manage your decks</p>
+    <p class="mt-4">Please <a href="/login">log in</a> to manage your decks</p>
 }
 
-<button class="btn btn-secondary" @onclick="ViewCards">View All Cards</button>
-
-
 @code {
-    private void CreateDeck()
-    {
-        throw new NotImplementedException();
-    }
-
-    private void ViewCards()
-    {
-        NavigationManager.NavigateTo("/Cards");
-    }
-
-    private void ViewDecks()
-    {
-        throw new NotImplementedException();
-    }
+    private void ViewCards() => NavigationManager.NavigateTo("/Cards");
+    private void ViewDecks() => NavigationManager.NavigateTo("/Decks");
+    private void CreateDeck() => NavigationManager.NavigateTo("/Decks/Add");
 }

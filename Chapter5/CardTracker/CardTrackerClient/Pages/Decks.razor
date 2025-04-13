@@ -1,0 +1,87 @@
+@page "/Decks"
+@using CardTracker.Contracts.Responses
+@using CardTrackerClient.Services
+@inject IUserService UserService
+@inject ICardApiService CardApiService
+@inject NavigationManager NavigationManager
+
+<h3>Decks</h3>
+<p>This page lists all decks you have created. You can also create a new deck here.</p>
+
+@if (_decks == null)
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+else if (_decks.Count > 0)
+{
+    <div class="row row-cols-6 row-cols-md-4 g-6">
+        @foreach (var deck in _decks)
+        {
+            <div class="col">
+
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@deck.Name</h5>
+                        <p class="card-text">@deck.CardDecks.Sum(cd => cd.Count) Card(s)</p>
+                        <a href="decks/{@deck.Id}" class="card-link">View / Edit</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info" role="alert">
+        No decks found. Create a new deck to get started!
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(_message))
+{
+    <div class="alert alert-danger" role="alert">
+        @_message
+    </div>
+}
+
+<div class="mt-4">
+    <button class="btn btn-primary" @onclick="CreateDeckClicked">Create New Deck</button>
+</div>
+
+@code {
+    private List<DeckResponse>? _decks;
+    private string? _message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!UserService.IsLoggedIn)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            await LoadDecksAsync();
+        }
+    }
+
+    private async Task LoadDecksAsync()
+    {
+        try
+        {
+            _message = null;
+            _decks = await CardApiService.GetAllDecksAsync();
+        }
+        catch (Exception ex)
+        {
+            _message = $"Error loading decks: {ex.Message}";
+        }
+    }
+
+    private void CreateDeckClicked()
+    {
+        NavigationManager.NavigateTo("/Decks/Add");
+    }
+
+}
