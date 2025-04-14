@@ -1,0 +1,18 @@
+@using CardTracker.Contracts.Responses
+@switch (Card)
+{
+    case ActionCardResponse actionCard:
+        <ActionCardComponent Card="@actionCard" />
+        break;
+    case CreatureCardResponse creatureCard:
+        <CreatureCardComponent Card="@creatureCard" />
+        break;
+    default:
+        throw new NotSupportedException($"Unsupported card type: {Card.Type}");
+}
+
+@code {
+    [Parameter]
+    public required CardResponse Card { get; set; }
+    
+}

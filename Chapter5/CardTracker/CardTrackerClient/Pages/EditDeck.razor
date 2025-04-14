@@ -1,0 +1,155 @@
+@page "/Decks/{Id:int}"
+@using CardTracker.Contracts.Requests
+@using CardTracker.Contracts.Responses
+@using CardTrackerClient.Services
+@using CardTrackerClient.Components
+@inject IUserService UserService
+@inject ICardApiService CardApiService
+@inject NavigationManager NavigationManager
+
+<h3>@DeckName</h3>
+
+@if (_deck != null && _allCards != null)
+{
+    <h2 class="mt-4">Cards in Deck</h2>
+    <p>The following cards are currently included in your deck:</p>
+    
+    <div class="row">
+        @foreach (var allocation in _deck.CardDecks)
+        {
+            CardResponse? card = _allCards.Find(c => c.Id == allocation.CardId);
+            @if (card != null)
+            {
+                <div class="col">
+                    <CardComponent Card="card" />
+                </div>
+            }
+        }
+        
+        @if (_deck.CardDecks.Count == 0)
+        {
+            <div class="alert alert-info" role="alert">
+                No cards have been added to this deck. Add a card below to get started.
+            </div>
+        }
+    </div>
+    
+    <h2 class="mt-4">Cards Not in Deck</h2>
+    <p>The following cards are <em>not</em> in your deck:</p>
+    
+    <div class="row">
+        @foreach (var card in _allCards)
+        {
+            if (_deck.CardDecks.All(d => d.CardId != card.Id))
+            {
+                <div class="col">
+                    <CardComponent Card="card" />
+                </div>
+            }
+        }
+        
+        @if (_allCards.Count == _deck.CardDecks.Count)
+        {
+            <div class="alert alert-info" role="alert">
+                All cards are already in your deck.
+            </div>
+        }
+    </div>
+    
+    <button class="btn btn-primary mt-4" @onclick="OnSubmit" disabled="@(Saving)">Save</button>
+}
+else
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+}
+
+@if (SaveSuccess != null)
+{
+    if (SaveSuccess == true)
+    {
+        <div class="alert alert-success mt-4" role="alert">
+            Deck saved successfully!
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger mt-4" role="alert">
+            Failed to save deck.
+        </div>
+    }
+}
+
+@code {
+    private DeckResponse? _deck;
+    private List<CardResponse>? _allCards;
+    
+    [Parameter]
+    public int Id { get; set; }
+
+    private string DeckName => _deck?.Name ?? "Edit Deck";
+
+    protected override Task OnInitializedAsync()
+    {
+        if (!UserService.IsLoggedIn)
+        {
+            NavigationManager.NavigateTo("/login");
+            return Task.CompletedTask;
+        }
+
+        return CardApiService.GetAllCardsAsync()
+            .ContinueWith(task =>
+            {
+                if (task.IsCompletedSuccessfully)
+                {
+                    _allCards = task.Result;
+                }
+            });
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        return CardApiService.GetDeckByIdAsync(Id)
+            .ContinueWith(task =>
+            {
+                if (task.IsCompletedSuccessfully)
+                {
+                    _deck = task.Result;
+                }
+                else
+                {
+                    NavigationManager.NavigateTo("/decks");
+                }
+            });
+    }
+
+    private async Task OnSubmit()
+    {
+        Saving = true;
+        SaveSuccess = null;
+        
+        EditDeckRequest deckRequest = new()
+        {
+            Name = _deck!.Name,
+            CardIds = _deck.CardDecks.SelectMany(cd => Enumerable.Repeat(cd.CardId, cd.Count)).ToList()
+        };
+        
+        await CardApiService.UpdateDeckAsync(_deck.Id, deckRequest)
+            .ContinueWith(task =>
+            {
+                Saving = false;
+                if (task.IsCompletedSuccessfully)
+                {
+                    SaveSuccess = true;
+                }
+                else
+                {
+                    SaveSuccess = false;
+                }
+            });
+    }
+
+    public bool? SaveSuccess { get; set; }
+    public bool Saving { get; set; }
+}

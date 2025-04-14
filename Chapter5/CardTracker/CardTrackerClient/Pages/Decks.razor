@@ -25,7 +25,7 @@ else if (_decks.Count > 0)
                     <div class="card-body">
                         <h5 class="card-title">@deck.Name</h5>
                         <p class="card-text">@deck.CardDecks.Sum(cd => cd.Count) Card(s)</p>
-                        <a href="decks/{@deck.Id}" class="card-link">View / Edit</a>
+                        <a href="decks/@deck.Id" class="card-link">View / Edit</a>
                     </div>
                 </div>
             </div>

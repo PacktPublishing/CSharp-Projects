@@ -15,17 +15,7 @@
             @foreach (var card in _cards)
             {
                 <div class="col">
-                    @switch (card)
-                    {
-                        case ActionCardResponse actionCard:
-                            <ActionCardComponent Card="@actionCard" />
-                            break;
-                        case CreatureCardResponse creatureCard:
-                            <CreatureCardComponent Card="@creatureCard" />
-                            break;
-                        default:
-                            throw new NotSupportedException($"Unsupported card type: {card.Type}");
-                    }
+                    <CardComponent Card="card" />
                 </div>
             }
         </div>
