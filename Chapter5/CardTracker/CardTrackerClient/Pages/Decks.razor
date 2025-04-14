@@ -16,17 +16,14 @@
 }
 else if (_decks.Count > 0)
 {
-    <div class="row row-cols-6 row-cols-md-4 g-6">
+    <div class="d-flex flex-wrap flex-row justify-content-start">
         @foreach (var deck in _decks)
         {
-            <div class="col">
-
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">@deck.Name</h5>
-                        <p class="card-text">@deck.CardDecks.Sum(cd => cd.Count) Card(s)</p>
-                        <a href="decks/@deck.Id" class="card-link">View / Edit</a>
-                    </div>
+            <div class="card m-2" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@deck.Name</h5>
+                    <p class="card-text">@deck.CardDecks.Sum(cd => cd.Count) Card(s)</p>
+                    <a href="decks/@deck.Id" class="card-link">View / Edit</a>
                 </div>
             </div>
         }

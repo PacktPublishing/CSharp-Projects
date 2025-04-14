@@ -11,16 +11,22 @@
 
 @if (_deck != null && _allCards != null)
 {
+    <section>
     <h2 class="mt-4">Cards in Deck</h2>
     <p>The following cards are currently included in your deck:</p>
     
-    <div class="d-flex flex-wrap align-items-start justify-content-between">
+    <div class="d-flex flex-wrap flex-row justify-content-start">
         @foreach (var allocation in _deck.CardDecks)
         {
             CardResponse? card = _allCards.Find(c => c.Id == allocation.CardId);
             @if (card != null)
             {
-                <CardComponent Card="card" />
+                <div style="width: 18rem;" class="m-2">
+                    <CardComponent Card="card" />
+                    <label for="amount-@card.Id" class="mt-2">Amount:</label>
+                    <input id="amount-@card.Id" type="number" class="form-control" min="0" max="10" value="@allocation.Count" 
+                           @onchange="(e) => allocation.Count = int.Parse(e.Value.ToString()!)" />
+                </div>
             }
         }
         
@@ -31,18 +37,20 @@
             </div>
         }
     </div>
+    </section>
     
-    <h2 class="mt-4">Cards Not in Deck</h2>
+    <section class="mt-4">
+    <h2 class="mt-4">Available Cards</h2>
     <p>The following cards are <em>not</em> in your deck:</p>
     
-    <div class="d-flex flex-wrap align-items-start justify-content-between">
+    <div class="d-flex flex-wrap flex-row justify-content-start">
         @foreach (var card in _allCards)
         {
             if (_deck.CardDecks.All(d => d.CardId != card.Id))
             {
-                <div>
+                <div class="m-2">
                     <CardComponent Card="card" />
-                    <button class="btn btn-success mt-1" @onclick="() => AddCardToDeck(card)">Add to Deck</button>
+                    <button class="btn btn-success mt-2" @onclick="() => AddCardToDeck(card)">Add to Deck</button>
                 </div>
             }
         }
@@ -54,10 +62,11 @@
             </div>
         }
     </div>
+    </section>
     
-    <div class="mt-4">
+    <section class="mt-4">
         <button type="button" class="btn btn-primary" @onclick="OnSubmit" disabled="@(Saving)">Save</button>
-    </div>
+    </section>
 }
 else
 {

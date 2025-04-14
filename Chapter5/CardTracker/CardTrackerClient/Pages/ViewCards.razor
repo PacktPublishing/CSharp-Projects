@@ -11,10 +11,12 @@
 {
     if (_cards.Count > 0)
     {
-        <div class="d-flex flex-wrap align-items-start justify-content-between">
+        <div class="d-flex flex-wrap flex-row justify-content-start">
             @foreach (var card in _cards)
             {
-                <CardComponent Card="card" />
+                <div class="m-2">
+                    <CardComponent Card="card" />
+                </div>
             }
         </div>
     }
