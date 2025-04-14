@@ -14,5 +14,5 @@ public class CardDeck
 {
     public required int CardId { get; init; }
     public required int DeckId { get; init; }
-    public int Count { get; init; } = 1;
+    public int Count { get; set; } = 1;
 }

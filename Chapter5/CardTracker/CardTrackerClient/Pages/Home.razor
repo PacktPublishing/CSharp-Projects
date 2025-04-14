@@ -8,12 +8,12 @@
 <h3>Card Tracker</h3>
 <p>Welcome to the card tracker application.</p>
 
-<button class="btn btn-primary mx-1" @onclick="ViewCards">View All Cards</button>
+<button type="button" class="btn btn-primary mx-1" @onclick="ViewCards">View All Cards</button>
 
 @if (UserService.IsLoggedIn)
 {
-    <button class="btn btn-primary mx-1" @onclick="ViewDecks">View My Decks</button>
-    <button class="btn btn-primary mx-1" @onclick="CreateDeck">Create New Deck</button>
+    <button type="button" class="btn btn-primary mx-1" @onclick="ViewDecks">View My Decks</button>
+    <button type="button" class="btn btn-primary mx-1" @onclick="CreateDeck">Create New Deck</button>
 }
 else
 {

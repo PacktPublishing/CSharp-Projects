@@ -14,15 +14,13 @@
     <h2 class="mt-4">Cards in Deck</h2>
     <p>The following cards are currently included in your deck:</p>
     
-    <div class="row">
+    <div class="d-flex flex-wrap align-items-start justify-content-between">
         @foreach (var allocation in _deck.CardDecks)
         {
             CardResponse? card = _allCards.Find(c => c.Id == allocation.CardId);
             @if (card != null)
             {
-                <div class="col">
-                    <CardComponent Card="card" />
-                </div>
+                <CardComponent Card="card" />
             }
         }
         
@@ -37,13 +35,14 @@
     <h2 class="mt-4">Cards Not in Deck</h2>
     <p>The following cards are <em>not</em> in your deck:</p>
     
-    <div class="row">
+    <div class="d-flex flex-wrap align-items-start justify-content-between">
         @foreach (var card in _allCards)
         {
             if (_deck.CardDecks.All(d => d.CardId != card.Id))
             {
-                <div class="col">
+                <div>
                     <CardComponent Card="card" />
+                    <button class="btn btn-success mt-1" @onclick="() => AddCardToDeck(card)">Add to Deck</button>
                 </div>
             }
         }
@@ -56,7 +55,9 @@
         }
     </div>
     
-    <button class="btn btn-primary mt-4" @onclick="OnSubmit" disabled="@(Saving)">Save</button>
+    <div class="mt-4">
+        <button type="button" class="btn btn-primary" @onclick="OnSubmit" disabled="@(Saving)">Save</button>
+    </div>
 }
 else
 {
@@ -152,4 +153,15 @@ else
 
     public bool? SaveSuccess { get; set; }
     public bool Saving { get; set; }
+
+    private void AddCardToDeck(CardResponse card)
+    {
+        _deck!.CardDecks.Add(new CardDeck
+        {
+            CardId = card.Id, 
+            DeckId = _deck.Id,
+            Count = 1
+        });
+    }
+
 }

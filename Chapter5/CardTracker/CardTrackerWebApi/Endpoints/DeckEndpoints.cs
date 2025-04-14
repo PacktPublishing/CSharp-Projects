@@ -145,7 +145,8 @@ public static class DeckEndpoints
         User user = db.Users.AsNoTracking().First(u => u.Username == username);
 
         IQueryable<Deck> decks = db.Decks.AsNoTracking()
-            .Where(d => d.UserId == user.Id);
+            .Where(d => d.UserId == user.Id)
+            .Include(d => d.CardDecks);
 
         return Results.Ok(auto.Map<List<Deck>>(decks));
     }
