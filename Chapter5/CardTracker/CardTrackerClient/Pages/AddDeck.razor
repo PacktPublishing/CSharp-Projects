@@ -42,12 +42,7 @@
             return Task.CompletedTask;
         }
 
-        CreateDeckRequest deckRequest = new()
-        {
-            Name = _name
-        };
-
-        return CardApiService.CreateDeckAsync(deckRequest)
+        return CardApiService.CreateDeckAsync(_name)
             .ContinueWith(task =>
             {
                 if (task.IsCompletedSuccessfully)

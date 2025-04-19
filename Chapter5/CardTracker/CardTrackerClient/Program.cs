@@ -11,11 +11,9 @@ string apiBaseUrl = builder.Configuration["ApiBaseUrl"]!;
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Configure web services client
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
-
 // Dependency injection for services
 builder.Services.AddScoped<ICardApiService, CardApiService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<HttpClient>(_ => new HttpClient { BaseAddress = new Uri(apiBaseUrl) });
 
 await builder.Build().RunAsync();

@@ -12,58 +12,58 @@
 @if (_deck != null && _allCards != null)
 {
     <section>
-    <h2 class="mt-4">Cards in Deck</h2>
-    <p>The following cards are currently included in your deck:</p>
-    
-    <div class="d-flex flex-wrap flex-row justify-content-start">
-        @foreach (var allocation in _deck.CardDecks)
-        {
-            CardResponse? card = _allCards.Find(c => c.Id == allocation.CardId);
-            @if (card != null)
+        <h2 class="mt-4">Cards in Deck</h2>
+        <p>The following cards are currently included in your deck:</p>
+
+        <div class="d-flex flex-wrap flex-row justify-content-start">
+            @foreach (var allocation in _deck.CardDecks)
             {
-                <div style="width: 18rem;" class="m-2">
-                    <CardComponent Card="card" />
-                    <label for="amount-@card.Id" class="mt-2">Amount:</label>
-                    <input id="amount-@card.Id" type="number" class="form-control" min="0" max="10" value="@allocation.Count" 
-                           @onchange="(e) => allocation.Count = int.Parse(e.Value.ToString()!)" />
+                CardResponse? card = _allCards.Find(c => c.Id == allocation.CardId);
+                @if (card != null)
+                {
+                    <div style="width: 18rem;" class="m-2">
+                        <CardComponent Card="card"/>
+                        <label for="amount-@card.Id" class="mt-2">Amount:</label>
+                        <input id="amount-@card.Id" type="number" class="form-control" min="0" value="@allocation.Count"
+                               @onchange="(e) => allocation.Count = int.Parse(e.Value.ToString()!)"/>
+                    </div>
+                }
+            }
+
+            @if (_deck.CardDecks.Count == 0)
+            {
+                <div class="alert alert-info" role="alert">
+                    No cards have been added to this deck. Add a card below to get started.
                 </div>
             }
-        }
-        
-        @if (_deck.CardDecks.Count == 0)
-        {
-            <div class="alert alert-info" role="alert">
-                No cards have been added to this deck. Add a card below to get started.
-            </div>
-        }
-    </div>
+        </div>
     </section>
-    
+
     <section class="mt-4">
-    <h2 class="mt-4">Available Cards</h2>
-    <p>The following cards are <em>not</em> in your deck:</p>
-    
-    <div class="d-flex flex-wrap flex-row justify-content-start">
-        @foreach (var card in _allCards)
-        {
-            if (_deck.CardDecks.All(d => d.CardId != card.Id))
+        <h2 class="mt-4">Available Cards</h2>
+        <p>The following cards are <em>not</em> in your deck:</p>
+
+        <div class="d-flex flex-wrap flex-row justify-content-start">
+            @foreach (var card in _allCards)
             {
-                <div class="m-2">
-                    <CardComponent Card="card" />
-                    <button class="btn btn-success mt-2" @onclick="() => AddCardToDeck(card)">Add to Deck</button>
+                if (_deck.CardDecks.All(d => d.CardId != card.Id))
+                {
+                    <div class="m-2">
+                        <CardComponent Card="card"/>
+                        <button class="btn btn-success mt-2" @onclick="() => AddCardToDeck(card)">Add to Deck</button>
+                    </div>
+                }
+            }
+
+            @if (_allCards.Count == _deck.CardDecks.Count)
+            {
+                <div class="alert alert-info" role="alert">
+                    All cards are already in your deck.
                 </div>
             }
-        }
-        
-        @if (_allCards.Count == _deck.CardDecks.Count)
-        {
-            <div class="alert alert-info" role="alert">
-                All cards are already in your deck.
-            </div>
-        }
-    </div>
+        </div>
     </section>
-    
+
     <section class="mt-4">
         <button type="button" class="btn btn-primary" @onclick="OnSubmit" disabled="@(Saving)">Save</button>
     </section>
@@ -75,28 +75,26 @@ else
     </div>
 }
 
-@if (SaveSuccess != null)
+@if (SaveSuccess == true)
 {
-    if (SaveSuccess == true)
-    {
-        <div class="alert alert-success mt-4" role="alert">
-            Deck saved successfully!
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-danger mt-4" role="alert">
-            Failed to save deck.
-        </div>
-    }
+    <div class="alert alert-success mt-4" role="alert">
+        Deck saved successfully!
+    </div>
+}
+else if (SaveSuccess == false)
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        Failed to save deck.
+    </div>
 }
 
 @code {
     private DeckResponse? _deck;
     private List<CardResponse>? _allCards;
-    
-    [Parameter]
-    public int Id { get; set; }
+    public bool? SaveSuccess { get; set; }
+    public bool Saving { get; set; }
+
+    [Parameter] public int Id { get; set; }
 
     private string DeckName => _deck?.Name ?? "Edit Deck";
 
@@ -138,36 +136,26 @@ else
     {
         Saving = true;
         SaveSuccess = null;
-        
+
         EditDeckRequest deckRequest = new()
         {
             Name = _deck!.Name,
             CardIds = _deck.CardDecks.SelectMany(cd => Enumerable.Repeat(cd.CardId, cd.Count)).ToList()
         };
-        
+
         await CardApiService.UpdateDeckAsync(_deck.Id, deckRequest)
             .ContinueWith(task =>
             {
                 Saving = false;
-                if (task.IsCompletedSuccessfully)
-                {
-                    SaveSuccess = true;
-                }
-                else
-                {
-                    SaveSuccess = false;
-                }
+                SaveSuccess = task.IsCompletedSuccessfully;
             });
     }
-
-    public bool? SaveSuccess { get; set; }
-    public bool Saving { get; set; }
 
     private void AddCardToDeck(CardResponse card)
     {
         _deck!.CardDecks.Add(new CardDeck
         {
-            CardId = card.Id, 
+            CardId = card.Id,
             DeckId = _deck.Id,
             Count = 1
         });

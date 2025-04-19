@@ -9,23 +9,14 @@
 
 @if (_cards != null)
 {
-    if (_cards.Count > 0)
-    {
-        <div class="d-flex flex-wrap flex-row justify-content-start">
-            @foreach (var card in _cards)
-            {
-                <div class="m-2">
-                    <CardComponent Card="card" />
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-warning" role="alert">
-            No cards found. Is the database set up?
-        </div>
-    }
+    <div class="d-flex flex-wrap flex-row justify-content-start">
+        @foreach (var card in _cards)
+        {
+            <div class="m-2">
+                <CardComponent Card="card" />
+            </div>
+        }
+    </div>
 }
 else if (string.IsNullOrEmpty(_message))
 {
@@ -42,7 +33,7 @@ else if (string.IsNullOrEmpty(_message))
 }
 
 @code {
-    private List<CardResponse>? _cards = null;
+    private List<CardResponse>? _cards;
     private string? _message;
 
     protected override async Task OnInitializedAsync()
@@ -50,11 +41,15 @@ else if (string.IsNullOrEmpty(_message))
         try
         {
             _cards = await CardApiService.GetAllCardsAsync();
+
+            if (_cards.Count == 0)
+            {
+                _message = "No cards found. Is the database set up?";
+            }
         }
         catch (Exception ex)
         {
             _message = $"Failed to load cards: {ex.Message}";
         }
     }
-
 }

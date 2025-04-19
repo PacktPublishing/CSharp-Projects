@@ -1,6 +1,7 @@
 @page "/Decks"
 @using CardTracker.Contracts.Responses
 @using CardTrackerClient.Services
+@using CardTrackerClient.Components
 @inject IUserService UserService
 @inject ICardApiService CardApiService
 @inject NavigationManager NavigationManager
@@ -19,13 +20,7 @@ else if (_decks.Count > 0)
     <div class="d-flex flex-wrap flex-row justify-content-start">
         @foreach (var deck in _decks)
         {
-            <div class="card m-2" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">@deck.Name</h5>
-                    <p class="card-text">@deck.CardDecks.Sum(cd => cd.Count) Card(s)</p>
-                    <a href="decks/@deck.Id" class="card-link">View / Edit</a>
-                </div>
-            </div>
+            <DeckSummaryComponent Deck="deck" />
         }
     </div>
 }
@@ -51,6 +46,11 @@ else
     private List<DeckResponse>? _decks;
     private string? _message;
 
+    private void CreateDeckClicked()
+    {
+        NavigationManager.NavigateTo("/Decks/Add");
+    }
+    
     protected override async Task OnInitializedAsync()
     {
         if (!UserService.IsLoggedIn)
@@ -75,10 +75,4 @@ else
             _message = $"Error loading decks: {ex.Message}";
         }
     }
-
-    private void CreateDeckClicked()
-    {
-        NavigationManager.NavigateTo("/Decks/Add");
-    }
-
 }

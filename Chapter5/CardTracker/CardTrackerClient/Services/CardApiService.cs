@@ -6,22 +6,13 @@ namespace CardTrackerClient.Services;
 
 public class CardApiService(HttpClient client, IUserService userService) : ICardApiService
 {
-    public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
-    {
-        HttpResponseMessage response = await client.PostAsJsonAsync("/login", loginRequest);
-        response.EnsureSuccessStatusCode();
-
-        LoginResponse loginResponse = (await response.Content.ReadFromJsonAsync<LoginResponse>())!;
-        userService.Login(loginResponse.Token);
-        
-        return loginResponse;
-    }
 
     public async Task<List<CardResponse>> GetAllCardsAsync()
     {
         HttpRequestMessage httpRequest = new(HttpMethod.Get, "/cards/");
 
         HttpResponseMessage response = await client.SendAsync(httpRequest);
+        response.EnsureSuccessStatusCode();
 
         return (await response.Content.ReadFromJsonAsync<List<CardResponse>>())!;
     }
@@ -48,11 +39,14 @@ public class CardApiService(HttpClient client, IUserService userService) : ICard
         return (await response.Content.ReadFromJsonAsync<DeckResponse>())!;
     }
 
-    public async Task<DeckResponse> CreateDeckAsync(CreateDeckRequest request)
+    public async Task<DeckResponse> CreateDeckAsync(string name)
     {
         HttpRequestMessage httpRequest = new(HttpMethod.Post, "/decks")
         {
-            Content = JsonContent.Create(request)
+            Content = JsonContent.Create(new CreateDeckRequest
+            {
+                Name = name
+            })
         };
         userService.AddAuthorizationHeader(httpRequest);
 

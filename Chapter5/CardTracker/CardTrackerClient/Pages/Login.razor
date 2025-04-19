@@ -2,23 +2,23 @@
 @using CardTracker.Contracts.Requests
 @using CardTracker.Contracts.Responses
 @using CardTrackerClient.Services
-@inject ICardApiService CardApiService
-@inject NavigationManager NavigationManager
 @page "/login"
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
 
 <h3>Login</h3>
 
-<EditForm Model="this" OnValidSubmit="HandleLogin">
+<EditForm Model="_model" OnValidSubmit="HandleLogin">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div>
         <label for="username">Username:</label>
-        <InputText id="username" @bind-Value="_username" class="form-control" />
+        <InputText id="username" @bind-Value="_model.Username" class="form-control" />
     </div>
     <div>
         <label for="password">Password:</label>
-        <InputText id="password" @bind-Value="_password" type="password" class="form-control" />
+        <InputText id="password" @bind-Value="_model.Password" type="password" class="form-control" />
     </div>
     
     <button type="submit" class="btn btn-primary mt-2">Login</button>
@@ -30,10 +30,7 @@
 }
 
 @code {
-    [Required]
-    private string? _username;
-    [Required]
-    private string? _password;
+    private readonly LoginRequest _model = new();
     
     private string? _message;
 
@@ -41,19 +38,7 @@
     {
         try
         {
-            if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password))
-            {
-                _message = "Username and password cannot be empty.";
-                return;
-            }
-            
-            LoginRequest loginRequest = new()
-            {
-                Username = _username,
-                Password = _password
-            };
-            LoginResponse response = await CardApiService.LoginAsync(loginRequest);
-            _message = "Login successful: " + response.Token;
+            await UserService.LoginAsync(_model.Username!, _model.Password!);
             
             // Redirect to Home page after successful login
             NavigationManager.NavigateTo("/");

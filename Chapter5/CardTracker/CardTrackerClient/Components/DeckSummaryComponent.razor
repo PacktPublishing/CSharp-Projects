@@ -1,0 +1,14 @@
+@using CardTracker.Contracts.Responses
+
+<div class="card m-2" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">@Deck.Name</h5>
+        <p class="card-text">@CardCount Card(s)</p>
+        <a href="decks/@Deck.Id" class="card-link">View / Edit</a>
+    </div>
+</div>
+
+@code {
+    [Parameter] public required DeckResponse Deck { get; init; }
+    public int CardCount => Deck.CardDecks.Sum(cd => cd.Count);
+}

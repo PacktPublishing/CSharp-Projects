@@ -79,6 +79,21 @@ Authorization: Bearer {{auth_token}}
   "cost": 1
 }
 
+### Another action
+POST {{BaseUrl}}/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "type": "Action",
+  "name": "Nature's Bounty",
+  "description": "Sometimes life gives you the perfect nut",
+  "imagePath": "Acorn.png",
+  "effect": "Gain 3 energy",
+  "cost": 0
+}
+
+
 ### Delete a card
 DELETE {{BaseUrl}}/cards/1
 Accept: application/json
