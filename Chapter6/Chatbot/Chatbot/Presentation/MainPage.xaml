@@ -7,9 +7,31 @@
       xmlns:um="using:Uno.Material" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:ai="clr-namespace:Microsoft.Extensions.AI;assembly=Microsoft.Extensions.AI.Abstractions"
+      xmlns:templating="clr-namespace:Chatbot.Templating"
       mc:Ignorable="d"
       NavigationCacheMode="Required"
       Background="{ThemeResource BackgroundBrush}" d:DataContext="{d:DesignInstance local:MainViewModel}">
+    <Page.Resources>
+        <DataTemplate x:Key="UserMessageTemplate">
+            <Border Margin="8" Padding="16"
+                    HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="8"
+                    Background="{ThemeResource SystemAccentColor}">
+                <TextBlock Foreground="{StaticResource AppWhiteColorBrush}"
+                           Text="{Binding Path=Text}"/>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="AssistantMessageTemplate">
+            <Border Margin="8" Padding="16"
+                    HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="8"
+                    Background="{ThemeResource SystemGrayColor}">
+                <TextBlock Foreground="{StaticResource AppBlackColorBrush}"
+                           Text="{Binding Path=Text}"/>
+            </Border>
+        </DataTemplate>
+        <templating:ChatTemplateSelector x:Key="MessageTemplateSelector"
+                                         UserTemplate="{StaticResource UserMessageTemplate}"
+                                         AssistantTemplate="{StaticResource AssistantMessageTemplate}" />
+    </Page.Resources>
     <ScrollViewer>
         <Grid utu:SafeArea.Insets="VisibleBounds">
             <Grid.RowDefinitions>
@@ -20,24 +42,14 @@
 
             <Grid Row="1" RowSpacing="16" RowDefinitions="*,Auto" ColumnSpacing="16" ColumnDefinitions="*,Auto" Padding="16">
                 <ListView Grid.ColumnSpan="2" ManipulationMode="None" SelectionMode="None"
-                          ItemsSource="{Binding Path=Messages}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border d:DataContext="{d:DesignInstance ai:ChatMessage}"
-                                    Margin="8" Padding="16"
-                                    HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="8"
-                                    Background="{ThemeResource SystemAccentColor}">
-                                <TextBlock Foreground="{StaticResource AppWhiteColorBrush}"
-                                           Text="{Binding Path=Text}"/>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                          ItemsSource="{Binding Path=Messages}"
+                          ItemTemplateSelector="{StaticResource MessageTemplateSelector}" />
 
                 <TextBox Grid.Row="1" ManipulationMode="None"
                          Text="{Binding Path=MessageText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         utu:CommandExtensions.Command="{Binding SendMessage}"
+                         utu:CommandExtensions.Command="{Binding Path=SendMessage}"
                          PlaceholderText="Enter a message" />
+
                 <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Content="Send"
                         AutomationProperties.AutomationId="SendButton"
                         Command="{Binding Path=SendMessage}" />
