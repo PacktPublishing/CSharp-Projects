@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "Chatbot",
+  "display": "standalone",
+  "name": "Chatbot",
+  "short_name": "Chatbot",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

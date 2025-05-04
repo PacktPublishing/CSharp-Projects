@@ -1,0 +1,41 @@
+﻿<Page x:Class="Chatbot.Presentation.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Chatbot.Presentation"
+      xmlns:uen="using:Uno.Extensions.Navigation.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      xmlns:um="using:Uno.Material" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:ai="clr-namespace:Microsoft.Extensions.AI;assembly=Microsoft.Extensions.AI.Abstractions"
+      mc:Ignorable="d"
+      NavigationCacheMode="Required"
+      Background="{ThemeResource BackgroundBrush}" d:DataContext="{d:DesignInstance local:MainViewModel}">
+    <ScrollViewer>
+        <Grid utu:SafeArea.Insets="VisibleBounds">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <utu:NavigationBar Content="Uno Chatbot Demo" />
+
+            <Grid Row="1" RowSpacing="16" RowDefinitions="*,Auto" ColumnSpacing="16" ColumnDefinitions="*,Auto" Padding="16">
+                <ListView Grid.ColumnSpan="2" ManipulationMode="None" SelectionMode="None"
+                          ItemsSource="{Binding Path=Messages}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate d:DataContext="{d:DesignInstance ai:ChatMessage}">
+                            <Border>
+                                <TextBlock Text="{Binding Path=Text}"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <TextBox Grid.Row="1" ManipulationMode="None" Text="{Binding Path=Name, Mode=TwoWay}"
+                         PlaceholderText="Enter a message" />
+                <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Content="Send"
+                        AutomationProperties.AutomationId="SendButton"
+                        Command="{Binding Path=SendMessage}" />
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</Page>
