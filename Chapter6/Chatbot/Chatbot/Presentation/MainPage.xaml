@@ -15,16 +15,16 @@
         <DataTemplate x:Key="UserMessageTemplate">
             <Border Margin="8" Padding="16"
                     HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="8"
-                    Background="{ThemeResource SystemAccentColor}">
-                <TextBlock Foreground="{StaticResource AppWhiteColorBrush}"
+                    Background="{ThemeResource PrimaryBrush}">
+                <TextBlock Foreground="{ThemeResource OnPrimaryBrush}"
                            Text="{Binding Path=Text}"/>
             </Border>
         </DataTemplate>
         <DataTemplate x:Key="AssistantMessageTemplate">
             <Border Margin="8" Padding="16"
                     HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="8"
-                    Background="{ThemeResource SystemGrayColor}">
-                <TextBlock Foreground="{StaticResource AppBlackColorBrush}"
+                    Background="{ThemeResource TertiaryBrush}">
+                <TextBlock Foreground="{ThemeResource OnTertiaryBrush}"
                            Text="{Binding Path=Text}"/>
             </Border>
         </DataTemplate>
@@ -41,7 +41,7 @@
             <utu:NavigationBar Content="Uno Chatbot Demo" />
 
             <Grid Row="1" RowSpacing="16" RowDefinitions="*,Auto" ColumnSpacing="16" ColumnDefinitions="*,Auto" Padding="16">
-                <ListView Grid.ColumnSpan="2" ManipulationMode="None" SelectionMode="None"
+                <ListView ManipulationMode="None" Grid.ColumnSpan="2" SelectionMode="None"
                           ItemsSource="{Binding Path=Messages}"
                           ItemTemplateSelector="{StaticResource MessageTemplateSelector}" />
 

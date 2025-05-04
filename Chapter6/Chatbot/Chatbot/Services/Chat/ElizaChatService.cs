@@ -7,44 +7,42 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.AI;
 
 namespace Chatbot.Services.Chat;
+
 public class ElizaChatService : IChatClient
 {
-    public string Chat(string? input)
+    private static string Chat(string? input)
     {
         if (string.IsNullOrWhiteSpace(input))
         {
             return "Please tell me more.";
         }
 
-        // Define some basic patterns and responses
-        Dictionary<string, string> patterns = new()
-        {
-            { @"\bI need (.*)", "Why do you need {0}?" },
-            { @"\bI am (.*)", "How long have you been {0}?" },
-            { @"\bI feel (.*)", "Why do you feel {0}?" },
-            { @"\bBecause (.*)", "Is that the real reason?" },
-            { @"\bWhy don't you (.*)", "What makes you think I don't {0}?" },
-            { @"\bWhy can't I (.*)", "What makes you think you can't {0}?" },
-            { @"\bI can't (.*)", "What would it take for you to {0}?" },
-            { @"\bI think (.*)", "Why do you think {0}?" },
-            { @"\bI want (.*)", "What would it mean if you got {0}?" },
-            { @"\b(.*) mother(.*)", "Tell me more about your mother." },
-            { @"\b(.*) father(.*)", "Tell me more about your father." },
-            { @"\b(.*)\?", "What do you think?" },
-        };
+        const RegexOptions regexOptions = RegexOptions.Compiled | RegexOptions.IgnoreCase;
+        (Regex Pattern, string Response)[] patterns =
+        [
+            (new Regex(@"\bI need (.*)", regexOptions), "Why do you need {0}?"),
+            (new Regex(@"\bI am (.*)", regexOptions), "How long have you been {0}?"),
+            (new Regex(@"\bI feel (.*)", regexOptions), "Why do you feel {0}?"),
+            (new Regex(@"\bBecause (.*)", regexOptions), "Is that the real reason?"),
+            (new Regex(@"\bWhy don't you (.*)", regexOptions), "What makes you think I don't {0}?"),
+            (new Regex(@"\bWhy can't I (.*)", regexOptions), "What makes you think you can't {0}?"),
+            (new Regex(@"\bI can't (.*)", regexOptions), "What would it take for you to {0}?"),
+            (new Regex(@"\bI think (.*)", regexOptions), "Why do you think {0}?"),
+            (new Regex(@"\bI want (.*)", regexOptions), "What would it mean if you got {0}?"),
+            (new Regex(@"\b(.*) mother(.*)", regexOptions), "Tell me more about your mother."),
+            (new Regex(@"\b(.*) father(.*)", regexOptions), "Tell me more about your father."),
+            (new Regex(@"\b(.*)\?", regexOptions), "What do you think?")
+        ];
 
-        // Iterate through patterns and find a match
-        foreach (var pattern in patterns)
+        foreach (var (pattern, response) in patterns)
         {
-            Match match = Regex.Match(input, pattern.Key, RegexOptions.IgnoreCase);
+            Match match = pattern.Match(input);
             if (match.Success)
             {
-                // Replace placeholders with matched groups
-                return string.Format(pattern.Value, match.Groups[1].Value.Trim());
+                return string.Format(response, match.Groups[1].Value.Trim());
             }
         }
 
-        // Default response if no patterns match
         return "Can you elaborate on that?";
     }
 
