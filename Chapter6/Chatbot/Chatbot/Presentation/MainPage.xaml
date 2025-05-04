@@ -22,15 +22,21 @@
                 <ListView Grid.ColumnSpan="2" ManipulationMode="None" SelectionMode="None"
                           ItemsSource="{Binding Path=Messages}">
                     <ListView.ItemTemplate>
-                        <DataTemplate d:DataContext="{d:DesignInstance ai:ChatMessage}">
-                            <Border>
-                                <TextBlock Text="{Binding Path=Text}"/>
+                        <DataTemplate>
+                            <Border d:DataContext="{d:DesignInstance ai:ChatMessage}"
+                                    Margin="8" Padding="16"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="8"
+                                    Background="{ThemeResource SystemAccentColor}">
+                                <TextBlock Foreground="{StaticResource AppWhiteColorBrush}"
+                                           Text="{Binding Path=Text}"/>
                             </Border>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
 
-                <TextBox Grid.Row="1" ManipulationMode="None" Text="{Binding Path=Name, Mode=TwoWay}"
+                <TextBox Grid.Row="1" ManipulationMode="None"
+                         Text="{Binding Path=MessageText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         utu:CommandExtensions.Command="{Binding SendMessage}"
                          PlaceholderText="Enter a message" />
                 <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Content="Send"
                         AutomationProperties.AutomationId="SendButton"
