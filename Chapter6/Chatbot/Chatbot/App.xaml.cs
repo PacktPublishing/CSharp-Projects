@@ -1,3 +1,5 @@
+using Chatbot.Services.Chat;
+using Microsoft.Extensions.AI;
 using Uno.Resizetizer;
 
 namespace Chatbot;
@@ -76,8 +78,7 @@ public partial class App : Application
                     .AddRefitClient<IApiClient>(context))
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Register your services
-                    //services.AddSingleton<IMyService, MyService>();
+                    services.AddSingleton<IChatClient, ElizaChatService>();
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
             );

@@ -1,3 +1,5 @@
+using System;
+using Chatbot.Services.Chat;
 using Microsoft.Extensions.AI;
 using Uno.Extensions.Reactive;
 
@@ -5,8 +7,11 @@ namespace Chatbot.Presentation;
 
 public partial record MainModel
 {
-    public MainModel()
+    private readonly IChatClient _chat;
+
+    public MainModel(IChatClient chat)
     {
+        _chat = chat;
         Messages.AddAsync(new ChatMessage(ChatRole.Assistant, "Hello, I'm ELIZA. What's going on right now?"));
     }
 
@@ -24,5 +29,11 @@ public partial record MainModel
 
         await Messages.AddAsync(new ChatMessage(ChatRole.User, userMessage));
         await MessageText.UpdateAsync(m => m = string.Empty);
+
+        ChatResponse response = await _chat.GetResponseAsync(userMessage);
+        foreach (var message in response.Messages)
+        {
+            await Messages.AddAsync(message);
+        }
     }
 }
