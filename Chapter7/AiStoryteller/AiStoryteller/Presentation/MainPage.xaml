@@ -1,30 +1,55 @@
 ﻿<Page x:Class="AiStoryteller.Presentation.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:AiStoryteller.Presentation"
-      xmlns:uen="using:Uno.Extensions.Navigation.UI"
       xmlns:utu="using:Uno.Toolkit.UI"
-      xmlns:um="using:Uno.Material"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:presentation="clr-namespace:AiStoryteller.Presentation"
+      xmlns:templating="clr-namespace:AiStoryteller.Templating"
+      mc:Ignorable="d"
       NavigationCacheMode="Required"
-      Background="{ThemeResource BackgroundBrush}">
-  <ScrollViewer IsTabStop="True">
+      Background="{ThemeResource BackgroundBrush}" d:DataContext="{d:DesignInstance presentation:MainViewModel}">
+    <Page.Resources>
+        <DataTemplate x:Key="UserMessageTemplate">
+            <Border Margin="8" Padding="16"
+                    HorizontalAlignment="Right" VerticalAlignment="Center" CornerRadius="8"
+                    Background="{ThemeResource PrimaryBrush}">
+                <TextBlock Foreground="{ThemeResource OnPrimaryBrush}"
+                           Text="{Binding Path=Text}"/>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="AssistantMessageTemplate">
+            <Border Margin="8" Padding="16"
+                    HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="8"
+                    Background="{ThemeResource TertiaryBrush}">
+                <TextBlock Foreground="{ThemeResource OnTertiaryBrush}"
+                           Text="{Binding Path=Text}"/>
+            </Border>
+        </DataTemplate>
+        <templating:ChatTemplateSelector x:Key="MessageTemplateSelector"
+                                         UserTemplate="{StaticResource UserMessageTemplate}"
+                                         AssistantTemplate="{StaticResource AssistantMessageTemplate}" />
+    </Page.Resources>
     <Grid utu:SafeArea.Insets="VisibleBounds">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition />
-      </Grid.RowDefinitions>
-      <utu:NavigationBar Content="{Binding Title}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <utu:NavigationBar Content="Uno Chatbot Demo" />
 
-      <StackPanel Grid.Row="1"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Spacing="16">
-        <TextBox Text="{Binding Name, Mode=TwoWay}"
-            PlaceholderText="Enter your name:" />
-        <Button Content="Go to Second Page"
-            AutomationProperties.AutomationId="SecondPageButton"
-            Command="{Binding GoToSecond}" />
-      </StackPanel>
+        <Grid Row="1" RowSpacing="16" RowDefinitions="*,Auto" ColumnSpacing="16" ColumnDefinitions="*,Auto" Padding="16">
+            <ListView ManipulationMode="None" Grid.ColumnSpan="2" SelectionMode="None"
+                          ItemsSource="{Binding Path=Messages}"
+                          ItemTemplateSelector="{StaticResource MessageTemplateSelector}" />
+
+            <TextBox Grid.Row="1" ManipulationMode="None"
+                         Text="{Binding Path=MessageText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         utu:CommandExtensions.Command="{Binding Path=SendMessage}"
+                         PlaceholderText="Enter a message" />
+
+            <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Content="Send"
+                        AutomationProperties.AutomationId="SendButton"
+                        Command="{Binding Path=SendMessage}" />
+        </Grid>
     </Grid>
-  </ScrollViewer>
 </Page>

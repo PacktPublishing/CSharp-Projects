@@ -1,28 +1,36 @@
+using Microsoft.Extensions.AI;
+
 namespace AiStoryteller.Presentation;
 
 public partial record MainModel
 {
-    private INavigator _navigator;
+    private readonly IChatClient _chat;
 
-    public MainModel(
-        IStringLocalizer localizer,
-        IOptions<AppConfig> appInfo,
-        INavigator navigator)
+    public MainModel(IChatClient chat)
     {
-        _navigator = navigator;
-        Title = "Main";
-        Title += $" - {localizer["ApplicationName"]}";
-        Title += $" - {appInfo?.Value?.Environment}";
+        _chat = chat;
+        Messages.AddAsync(new ChatMessage(ChatRole.Assistant, "Hello, I'm ELIZA. What's going on right now?"));
     }
 
-    public string? Title { get; }
+    public IListState<ChatMessage> Messages => ListState<ChatMessage>.Empty(this);
+    public IState<string> MessageText => State<string>.Value(this, () => string.Empty);
 
-    public IState<string> Name => State<string>.Value(this, () => string.Empty);
 
-    public async Task GoToSecond()
+    public async Task SendMessage()
     {
-        var name = await Name;
-        await _navigator.NavigateViewModelAsync<SecondModel>(this, data: new Entity(name!));
-    }
+        string? userMessage = await MessageText.Value();
+        if (string.IsNullOrWhiteSpace(userMessage))
+        {
+            return;
+        }
 
+        await Messages.AddAsync(new ChatMessage(ChatRole.User, userMessage));
+        await MessageText.UpdateAsync(m => m = string.Empty);
+
+        ChatResponse response = await _chat.GetResponseAsync(userMessage);
+        foreach (var message in response.Messages)
+        {
+            await Messages.AddAsync(message);
+        }
+    }
 }

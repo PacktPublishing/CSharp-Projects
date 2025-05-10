@@ -7,4 +7,7 @@
   -->
   <ItemGroup>
   </ItemGroup>
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.4.3-preview.1.25230.7" />
+  </ItemGroup>
 </Project>

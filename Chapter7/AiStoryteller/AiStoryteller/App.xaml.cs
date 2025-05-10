@@ -1,3 +1,5 @@
+using AiStoryteller.Services.Chat;
+using Microsoft.Extensions.AI;
 using Uno.Resizetizer;
 
 namespace AiStoryteller;
@@ -81,8 +83,7 @@ public partial class App : Application
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Register your services
-                    //services.AddSingleton<IMyService, MyService>();
+                    services.AddSingleton<IChatClient, ElizaChatService>();
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
             );
@@ -100,16 +101,14 @@ public partial class App : Application
     {
         views.Register(
             new ViewMap(ViewModel: typeof(ShellModel)),
-            new ViewMap<MainPage, MainModel>(),
-            new DataViewMap<SecondPage, SecondModel, Entity>()
+            new ViewMap<MainPage, MainModel>()
         );
 
         routes.Register(
             new RouteMap("", View: views.FindByViewModel<ShellModel>(),
                 Nested:
                 [
-                    new ("Main", View: views.FindByViewModel<MainModel>(), IsDefault:true),
-                    new ("Second", View: views.FindByViewModel<SecondModel>()),
+                    new ("Main", View: views.FindByViewModel<MainModel>(), IsDefault:true)
                 ]
             )
         );
