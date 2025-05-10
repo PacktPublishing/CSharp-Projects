@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "AiStoryteller",
+  "display": "standalone",
+  "name": "AiStoryteller",
+  "short_name": "AiStoryteller",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
