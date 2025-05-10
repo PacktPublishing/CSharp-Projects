@@ -8,7 +8,8 @@
       xmlns:templating="clr-namespace:AiStoryteller.Templating"
       mc:Ignorable="d"
       NavigationCacheMode="Required"
-      Background="{ThemeResource BackgroundBrush}" d:DataContext="{d:DesignInstance presentation:MainViewModel}">
+      Background="{ThemeResource BackgroundBrush}"
+      d:DataContext="{d:DesignInstance presentation:MainViewModel}">
     <Page.Resources>
         <DataTemplate x:Key="UserMessageTemplate">
             <Border Margin="8" Padding="16"
@@ -40,6 +41,7 @@
         <Grid Row="1" RowSpacing="16" RowDefinitions="*,Auto" ColumnSpacing="16" ColumnDefinitions="*,Auto" Padding="16">
             <ListView ManipulationMode="None" Grid.ColumnSpan="2" SelectionMode="None"
                           ItemsSource="{Binding Path=Messages}"
+                          Loaded="ListViewLoaded"
                           ItemTemplateSelector="{StaticResource MessageTemplateSelector}" />
 
             <TextBox Grid.Row="1" ManipulationMode="None"

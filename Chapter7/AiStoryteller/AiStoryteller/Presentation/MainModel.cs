@@ -15,7 +15,6 @@ public partial record MainModel
     public IListState<ChatMessage> Messages => ListState<ChatMessage>.Empty(this);
     public IState<string> MessageText => State<string>.Value(this, () => string.Empty);
 
-
     public async Task SendMessage()
     {
         string? userMessage = await MessageText.Value();
@@ -32,5 +31,7 @@ public partial record MainModel
         {
             await Messages.AddAsync(message);
         }
+
+        MainPage.ScrollToBottomHandler?.Invoke();
     }
 }
