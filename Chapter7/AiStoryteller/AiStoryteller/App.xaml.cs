@@ -1,4 +1,3 @@
-using AiStoryteller.Services.Chat;
 using Microsoft.Extensions.AI;
 using Uno.Resizetizer;
 
@@ -83,7 +82,6 @@ public partial class App : Application
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Get these values from configuration
                     services.AddSingleton<IChatClient>(_ => new OllamaChatClient(new Uri("http://localhost:11434/"), "phi3:mini"));
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)

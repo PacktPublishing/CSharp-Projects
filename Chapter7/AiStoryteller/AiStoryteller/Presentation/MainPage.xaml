@@ -44,8 +44,11 @@
                           Loaded="ListViewLoaded"
                           ItemTemplateSelector="{StaticResource MessageTemplateSelector}" />
 
-            <!-- TODO: Filter the messages to not include the system message -->
-            <!-- TODO: Add a busy indicator -->
+            <utu:LoadingView Visibility="{Binding IsExecuting}">
+                <utu:LoadingView.LoadingContent>
+                    <ProgressRing HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="100"/>
+                </utu:LoadingView.LoadingContent>
+            </utu:LoadingView>
 
             <TextBox Grid.Row="1" ManipulationMode="None"
                          Text="{Binding Path=MessageText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

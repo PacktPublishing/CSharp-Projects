@@ -17,6 +17,7 @@ public partial record MainModel
 
     public IListState<ChatMessage> Messages => ListState<ChatMessage>.Empty(this);
     public IState<string> MessageText => State<string>.Value(this, () => string.Empty);
+    public IState<bool> IsExecuting => State<bool>.Value(this, () => false);
 
     public async Task SendMessage()
     {
@@ -31,7 +32,10 @@ public partial record MainModel
 
         IImmutableList<ChatMessage> messages = await Messages.Value();
 
+        await IsExecuting.UpdateAsync(m => m = true);
         ChatResponse response = await _chat.GetResponseAsync(messages);
+        await IsExecuting.UpdateAsync(m => m = false);
+
         foreach (var message in response.Messages)
         {
             await Messages.AddAsync(message);
@@ -39,4 +43,5 @@ public partial record MainModel
 
         MainPage.ScrollToBottomHandler?.Invoke();
     }
+
 }
