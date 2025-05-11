@@ -83,7 +83,10 @@ public partial class App : Application
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddSingleton<IChatClient>(_ => new OllamaChatClient(new Uri("http://localhost:11434/"), "phi3:mini"));
+                    services.AddSingleton<IChatClient>(_ => new OllamaChatClient(new Uri("http://localhost:11434/"), "llama3.2:latest")
+                        .AsBuilder()
+                        .UseFunctionInvocation()
+                        .Build());
                     services.AddSingleton<IChatPartner, HaikuChatPartner>();
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
