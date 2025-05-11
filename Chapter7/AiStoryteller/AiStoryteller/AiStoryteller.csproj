@@ -41,5 +41,8 @@
     <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.AI.Ollama" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AiStoryteller.StoryServices\AiStoryteller.StoryServices.csproj" />
+  </ItemGroup>
 
 </Project>

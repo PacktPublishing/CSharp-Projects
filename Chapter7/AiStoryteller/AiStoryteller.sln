@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiStoryteller", "AiStoryteller\AiStoryteller.csproj", "{A39F3627-098B-4079-A4D8-6F60A95B70F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiStoryteller.StoryServices", "..\AiStoryteller.StoryServices\AiStoryteller.StoryServices.csproj", "{1243EA73-3DF1-4FF6-98A9-0D6C615C977F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,8 +15,13 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A39F3627-098B-4079-A4D8-6F60A95B70F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A39F3627-098B-4079-A4D8-6F60A95B70F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A39F3627-098B-4079-A4D8-6F60A95B70F7}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{A39F3627-098B-4079-A4D8-6F60A95B70F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A39F3627-098B-4079-A4D8-6F60A95B70F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1243EA73-3DF1-4FF6-98A9-0D6C615C977F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1243EA73-3DF1-4FF6-98A9-0D6C615C977F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1243EA73-3DF1-4FF6-98A9-0D6C615C977F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1243EA73-3DF1-4FF6-98A9-0D6C615C977F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

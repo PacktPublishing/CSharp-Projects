@@ -1,18 +1,20 @@
+using AiStoryteller.StoryServices;
 using Microsoft.Extensions.AI;
-using Uno.UI.RemoteControl.HotReload;
 
 namespace AiStoryteller.Presentation;
 
 public partial record MainModel
 {
-    private readonly IChatClient _chat;
+    private readonly IChatPartner _partner;
 
-    public MainModel(IChatClient chat)
+    public MainModel(IChatPartner partner)
     {
-        _chat = chat;
-        Messages.AddAsync(new ChatMessage(ChatRole.System,
-            "You are an interactive chatbot designed to generate short Haikus to greet the user. Everything you send to the user must be a single Haiku related to the last message from the user. The poem must consist of three lines.\r\nThe first line must have five syllables, the second line seven syllables, and the third line five syllables. Haikus usually focus on nature or the seasons and often contain a “cutting word” that emphasizes a contrast or a change. Do not include a syllable, line, or word count or anything in your response that is not part of the Haiku."));
-        Messages.AddAsync(new ChatMessage(ChatRole.Assistant, "Birds begin their song\r\nWith the melody of life, strong and long\r\nA new day has sprung."));
+        _partner = partner;
+
+        foreach (var message in _partner.Messages.Where(m => m.Role != ChatRole.System))
+        {
+            Messages.AddAsync(message);
+        }
     }
 
     public IListState<ChatMessage> Messages => ListState<ChatMessage>.Empty(this);
@@ -27,20 +29,16 @@ public partial record MainModel
             return;
         }
 
-        await Messages.AddAsync(new ChatMessage(ChatRole.User, userMessage));
+        ChatMessage chatMessage = new(ChatRole.User, userMessage);
+        await Messages.AddAsync(chatMessage);
         await MessageText.UpdateAsync(m => m = string.Empty);
 
-        IImmutableList<ChatMessage> messages = await Messages.Value();
-
         await IsExecuting.UpdateAsync(m => m = true);
-        ChatResponse response = await _chat.GetResponseAsync(messages);
+        string response = await _partner.Chat(userMessage);
+
+        await Messages.AddAsync(new ChatMessage(ChatRole.Assistant, response));
+
         await IsExecuting.UpdateAsync(m => m = false);
-
-        foreach (var message in response.Messages)
-        {
-            await Messages.AddAsync(message);
-        }
-
         MainPage.ScrollToBottomHandler?.Invoke();
     }
 
