@@ -83,7 +83,8 @@ public partial class App : Application
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddSingleton<IChatClient, ElizaChatService>();
+                    // TODO: Get these values from configuration
+                    services.AddSingleton<IChatClient>(_ => new OllamaChatClient(new Uri("http://localhost:11434/"), "phi3:mini"));
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
             );

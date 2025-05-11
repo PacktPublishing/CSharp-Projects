@@ -44,6 +44,9 @@
                           Loaded="ListViewLoaded"
                           ItemTemplateSelector="{StaticResource MessageTemplateSelector}" />
 
+            <!-- TODO: Filter the messages to not include the system message -->
+            <!-- TODO: Add a busy indicator -->
+
             <TextBox Grid.Row="1" ManipulationMode="None"
                          Text="{Binding Path=MessageText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          utu:CommandExtensions.Command="{Binding Path=SendMessage}"

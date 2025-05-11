@@ -1,4 +1,5 @@
 using Microsoft.Extensions.AI;
+using Uno.UI.RemoteControl.HotReload;
 
 namespace AiStoryteller.Presentation;
 
@@ -9,7 +10,9 @@ public partial record MainModel
     public MainModel(IChatClient chat)
     {
         _chat = chat;
-        Messages.AddAsync(new ChatMessage(ChatRole.Assistant, "Hello, I'm ELIZA. What's going on right now?"));
+        Messages.AddAsync(new ChatMessage(ChatRole.System,
+            "You are an interactive chatbot designed to generate short Haikus to greet the user. Everything you send to the user must be a single Haiku related to the last message from the user. The poem must consist of three lines.\r\nThe first line must have five syllables, the second line seven syllables, and the third line five syllables. Haikus usually focus on nature or the seasons and often contain a “cutting word” that emphasizes a contrast or a change. Do not include a syllable, line, or word count or anything in your response that is not part of the Haiku."));
+        Messages.AddAsync(new ChatMessage(ChatRole.Assistant, "Birds begin their song\r\nWith the melody of life, strong and long\r\nA new day has sprung."));
     }
 
     public IListState<ChatMessage> Messages => ListState<ChatMessage>.Empty(this);
@@ -26,7 +29,9 @@ public partial record MainModel
         await Messages.AddAsync(new ChatMessage(ChatRole.User, userMessage));
         await MessageText.UpdateAsync(m => m = string.Empty);
 
-        ChatResponse response = await _chat.GetResponseAsync(userMessage);
+        IImmutableList<ChatMessage> messages = await Messages.Value();
+
+        ChatResponse response = await _chat.GetResponseAsync(messages);
         foreach (var message in response.Messages)
         {
             await Messages.AddAsync(message);
