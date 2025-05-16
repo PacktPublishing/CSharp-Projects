@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Spectre.Console.Json;
-
-namespace AiPersonalAssistant.ConsoleApp;
+﻿namespace AiPersonalAssistant.ConsoleApp;
 
 public class ReadOnlyKernelMemoryPlugin(IKernelMemory memory, IAnsiConsole console)
 {
@@ -18,12 +13,6 @@ public class ReadOnlyKernelMemoryPlugin(IKernelMemory memory, IAnsiConsole conso
         console.MarkupLine("[cyan]RAG Search Results:[/]");
         string json = searchResult.ToJson();
         console.Write(new JsonText(json));
-
-        //MemoryAnswer result = await memory.AskAsync(question);
-
-        // TODO: Display the results in diagnostics in tabular form
-
-        //return result.Result ?? result.NoResultReason ?? "No answer found";
 
         return json;
     }

@@ -9,4 +9,7 @@ public record AlfredOptions
     public required string SystemPrompt { get; init; }
     public required string GreetingMessage { get; set; }
     public required string GoodbyeMessage { get; set; }
+
+    public bool UseKernelMemory { get; set; }
+    public bool UseSemanticKernel { get; set; }
 }
