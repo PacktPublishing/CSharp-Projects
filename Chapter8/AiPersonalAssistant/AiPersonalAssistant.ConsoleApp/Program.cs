@@ -1,34 +1,36 @@
 ﻿using Microsoft.Extensions.Configuration;
 
 #pragma warning disable SKEXP0070
+
+// Set up the console
 IAnsiConsole console = AnsiConsole.Console;
+Console.OutputEncoding = Encoding.Unicode;
+Console.InputEncoding = Encoding.Unicode;
+DisplayAppHeader(console);
 
 try
 {
-    Console.OutputEncoding = Encoding.Unicode;
-    Console.InputEncoding = Encoding.Unicode;
-
+    // Load options
     IConfiguration config = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
         .AddEnvironmentVariables()
         .AddUserSecrets<Program>()
         .AddCommandLine(args)
         .Build();
-
     AlfredOptions options = config.Get<AlfredOptions>()!;
 
-    DisplayAppHeader(console);
+    IKernelMemory memory = await MemoryHelpers.LoadKernelMemoryAsync(options, console);
 
     // Build the kernel
-    Uri ollamaEndpoint = new Uri(options.Endpoint);
     Kernel kernel = Kernel.CreateBuilder()
-        .AddOllamaChatCompletion(options.ChatModelId, ollamaEndpoint)
-        .AddOllamaTextEmbeddingGeneration(options.EmbeddingModelId, ollamaEndpoint)
-        .AddInMemoryVectorStore()
+        .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.Endpoint))
         .Build();
 
-    MemoryPlugin memory = await MemoryHelpers.CreateKernelMemoryAsync(options, console);
-    kernel.ImportPluginFromObject(memory);
+    kernel.ImportPluginFromObject(new ReadOnlyKernelMemoryPlugin(memory, console));
+
+    // TODO: Add a bing or google search plugin if a key is specified
+
+    // TODO: Add a simple custom skill for something silly
 
     // Initialize chat history
     IChatCompletionService chatService = kernel.GetRequiredService<IChatCompletionService>();
@@ -53,14 +55,17 @@ try
 
         if (exitWords.Contains(reply)) break;
 
-        IReadOnlyList<ChatMessageContent> response = [];
-        await console.Status().StartAsync("Thinking...",
-            async _ => { response = await chatService.GetChatMessageContentsAsync(history, settings, kernel); });
+        // TODO: Adding logging at a function call level would be helpful
+
+        IReadOnlyList<ChatMessageContent> response = await chatService.GetChatMessageContentsAsync(history, settings, kernel);
 
         foreach (var part in response)
         {
             AddAssistantMessage(history, part.Content ?? "I have no response to that");
         }
+
+        // TODO: Store the interaction in a chat history file for next session
+
     } while (!string.IsNullOrWhiteSpace(reply));
 
     AddAssistantMessage(history, options.GoodbyeMessage);

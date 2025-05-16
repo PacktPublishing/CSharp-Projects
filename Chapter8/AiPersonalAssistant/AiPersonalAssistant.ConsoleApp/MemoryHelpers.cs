@@ -1,15 +1,8 @@
-﻿using Microsoft.SemanticKernel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AiPersonalAssistant.ConsoleApp;
+﻿namespace AiPersonalAssistant.ConsoleApp;
 
 public class MemoryHelpers
 {
-    public static async Task<MemoryPlugin> CreateKernelMemoryAsync(AlfredOptions options, IAnsiConsole console)
+    public static async Task<IKernelMemory> LoadKernelMemoryAsync(AlfredOptions options, IAnsiConsole console)
     {
         OllamaConfig config = new()
         {
@@ -45,9 +38,8 @@ public class MemoryHelpers
                 await mem.ImportDocumentAsync(file);
                 task.Increment(100); // Mark the task as complete
             }
-
         });
 
-        return new MemoryPlugin(mem);
+        return mem;
     }
 }
