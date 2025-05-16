@@ -1,12 +1,21 @@
-﻿#pragma warning disable SKEXP0070
+﻿using Microsoft.Extensions.Configuration;
+
+#pragma warning disable SKEXP0070
 IAnsiConsole console = AnsiConsole.Console;
 
 try
 {
-    AlfredOptions options = new(); // TODO: Read from config file and environment variables
-
     Console.OutputEncoding = Encoding.Unicode;
     Console.InputEncoding = Encoding.Unicode;
+
+    IConfiguration config = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+        .AddEnvironmentVariables()
+        .AddUserSecrets<Program>()
+        .AddCommandLine(args)
+        .Build();
+
+    AlfredOptions options = config.Get<AlfredOptions>()!;
 
     DisplayAppHeader(console);
 
@@ -18,45 +27,13 @@ try
         .AddInMemoryVectorStore()
         .Build();
 
-    await console.Status().StartAsync("Loading memory...", async _ =>
-    {
-        OllamaConfig config = new()
-        {
-            Endpoint = options.Endpoint,
-            TextModel = new OllamaModelConfig(options.ChatModelId),
-            EmbeddingModel = new OllamaModelConfig(options.EmbeddingModelId) // 2048
-        };
-
-        IKernelMemory mem = new KernelMemoryBuilder()
-            .WithOllamaTextGeneration(config)
-            .WithOllamaTextEmbeddingGeneration(config)
-            .Build<MemoryServerless>();
-
-        // Find all files with extensions of .txt, .docx, and .pdf in the directory
-        string[] documentFiles = Directory.GetFiles(
-                Environment.CurrentDirectory,
-                "*.*",
-                SearchOption.TopDirectoryOnly
-            )
-            .Where(file =>
-                file.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ||
-                file.EndsWith(".docx", StringComparison.OrdinalIgnoreCase) ||
-                file.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
-            )
-            .ToArray();
-
-        foreach (var file in documentFiles)
-        {
-            await mem.ImportDocumentAsync(file);
-        }
-
-        kernel.ImportPluginFromObject(new MemoryPlugin(mem));
-    });
+    MemoryPlugin memory = await MemoryHelpers.CreateKernelMemoryAsync(options, console);
+    kernel.ImportPluginFromObject(memory);
 
     // Initialize chat history
     IChatCompletionService chatService = kernel.GetRequiredService<IChatCompletionService>();
     ChatHistory history = new(options.SystemPrompt);
-    AddAssistantMessage(history, "Hello. How may I help you today? Up to any coding sprees?");
+    AddAssistantMessage(history, options.GreetingMessage);
 
     HashSet<string> exitWords = new(StringComparer.OrdinalIgnoreCase) {
         "exit", "quit", "q", "e", "x", "bye", "goodbye"
@@ -86,7 +63,7 @@ try
         }
     } while (!string.IsNullOrWhiteSpace(reply));
 
-    AddAssistantMessage(history, "Goodbye, and happy coding.");
+    AddAssistantMessage(history, options.GoodbyeMessage);
 
     return 0;
 }
