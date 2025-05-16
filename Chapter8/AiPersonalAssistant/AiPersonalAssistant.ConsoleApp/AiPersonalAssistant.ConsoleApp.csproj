@@ -33,6 +33,7 @@
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.InMemory" Version="1.50.0-preview" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.50.0-alpha" />
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
+    <PackageReference Include="Spectre.Console.Json" Version="0.50.0" />
   </ItemGroup>
 
 </Project>
