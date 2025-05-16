@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.KernelMemory.AI.Ollama" Version="0.98.250508.3" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.50.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.50.0-alpha" />
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
   </ItemGroup>
 
