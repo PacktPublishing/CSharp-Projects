@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
-#pragma warning disable SKEXP0070
+﻿#pragma warning disable SKEXP0070
 IAnsiConsole console = AnsiConsole.Console;
 
 try
@@ -15,33 +12,46 @@ try
 
     // Build the kernel
     Uri ollamaEndpoint = new Uri(options.Endpoint);
-    IKernelBuilder builder = Kernel.CreateBuilder();
-    builder.Services.AddLogging(c =>
-    {
-        c.AddSimpleConsole();
-        c.SetMinimumLevel(LogLevel.Trace);
-    }); 
-
-    Kernel kernel = builder
+    Kernel kernel = Kernel.CreateBuilder()
         .AddOllamaChatCompletion(options.ChatModelId, ollamaEndpoint)
         .AddOllamaTextEmbeddingGeneration(options.EmbeddingModelId, ollamaEndpoint)
         .AddInMemoryVectorStore()
         .Build();
 
-    OllamaConfig config = new()
+    await console.Status().StartAsync("Loading memory...", async _ =>
     {
-        Endpoint = options.Endpoint,
-        TextModel = new OllamaModelConfig(options.ChatModelId),
-        EmbeddingModel = new OllamaModelConfig(options.EmbeddingModelId) // 2048
-    };
+        OllamaConfig config = new()
+        {
+            Endpoint = options.Endpoint,
+            TextModel = new OllamaModelConfig(options.ChatModelId),
+            EmbeddingModel = new OllamaModelConfig(options.EmbeddingModelId) // 2048
+        };
 
-    MemoryServerless mem = new KernelMemoryBuilder()
-        .WithOllamaTextGeneration(config)
-        .WithOllamaTextEmbeddingGeneration(config)
-        .Build<MemoryServerless>();
+        IKernelMemory mem = new KernelMemoryBuilder()
+            .WithOllamaTextGeneration(config)
+            .WithOllamaTextEmbeddingGeneration(config)
+            .Build<MemoryServerless>();
 
-    await mem.ImportTextAsync(File.ReadAllText("Facts.txt"));
-    kernel.ImportPluginFromObject(new MemoryPlugin(mem));
+        // Find all files with extensions of .txt, .docx, and .pdf in the directory
+        string[] documentFiles = Directory.GetFiles(
+                Environment.CurrentDirectory,
+                "*.*",
+                SearchOption.TopDirectoryOnly
+            )
+            .Where(file =>
+                file.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ||
+                file.EndsWith(".docx", StringComparison.OrdinalIgnoreCase) ||
+                file.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+            )
+            .ToArray();
+
+        foreach (var file in documentFiles)
+        {
+            await mem.ImportDocumentAsync(file);
+        }
+
+        kernel.ImportPluginFromObject(new MemoryPlugin(mem));
+    });
 
     // Initialize chat history
     IChatCompletionService chatService = kernel.GetRequiredService<IChatCompletionService>();
@@ -64,18 +74,17 @@ try
         reply = console.Prompt(new TextPrompt<string>("[orange3]User[/]: "));
         history.AddUserMessage(reply);
 
+        if (exitWords.Contains(reply)) break;
+
         IReadOnlyList<ChatMessageContent> response = [];
         await console.Status().StartAsync("Thinking...",
-            async _ =>
-            {
-                response = await chatService.GetChatMessageContentsAsync(history, settings, kernel);
-            });
+            async _ => { response = await chatService.GetChatMessageContentsAsync(history, settings, kernel); });
 
         foreach (var part in response)
         {
             AddAssistantMessage(history, part.Content ?? "I have no response to that");
         }
-    } while (!string.IsNullOrWhiteSpace(reply) && !exitWords.Contains(reply));
+    } while (!string.IsNullOrWhiteSpace(reply));
 
     AddAssistantMessage(history, "Goodbye, and happy coding.");
 
