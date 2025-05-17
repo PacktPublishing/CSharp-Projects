@@ -4,7 +4,6 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
 {
     private Kernel? _kernel;
     private IChatCompletionService? _chat;
-    private PromptExecutionSettings? _settings;
     private readonly ChatHistory _history = new();
     protected Kernel? Kernel => _kernel;
 
@@ -12,11 +11,6 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
     [Experimental("SKEXP0070")]
     public override Task InitializeAsync(AlfredOptions options)
     {
-        _settings = new OllamaPromptExecutionSettings()
-        {
-            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-        };
-
         _kernel = Kernel.CreateBuilder()
             .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.Endpoint))
             .Build();
@@ -28,10 +22,22 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
         return Task.CompletedTask;
     }
 
+    [Experimental("SKEXP0070")]
     public override async Task ChatAsync(string message)
     {
         _history.AddUserMessage(message);
-        IReadOnlyList<ChatMessageContent> result = await _chat!.GetChatMessageContentsAsync(_history, _settings, _kernel);
+
+        FunctionChoiceBehaviorOptions options = new()
+        {
+            AllowConcurrentInvocation = true,
+            AllowParallelCalls = true,
+        };
+        OllamaPromptExecutionSettings settings = new()
+        {
+            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(options: options),
+        };
+
+        IReadOnlyList<ChatMessageContent> result = await _chat!.GetChatMessageContentsAsync(_history, settings, _kernel);
 
         foreach (var response in result)
         {
