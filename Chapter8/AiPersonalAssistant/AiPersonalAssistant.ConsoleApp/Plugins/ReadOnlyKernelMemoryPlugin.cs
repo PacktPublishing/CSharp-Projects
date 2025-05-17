@@ -13,14 +13,14 @@ public class ReadOnlyKernelMemoryPlugin(IKernelMemory memory, IAnsiConsole conso
         SearchResult searchResult = await memory.SearchAsync(question, limit: 5, minRelevance: 0.1);
 
         StringBuilder sb = new();
-        foreach (var citation in searchResult.Results)
+        foreach (var cite in searchResult.Results)
         {
-            sb.AppendLine($"Snippet found in {citation.SourceName}:");
+            sb.AppendLine($"Snippet found in {cite.SourceName}:");
 
-            foreach (var partition in citation.Partitions)
+            foreach (var part in cite.Partitions)
             {
-                console.MarkupLineInterpolated($"[grey]Source:[/] {citation.SourceName} ({partition.Relevance:P2} Relevance)");
-                sb.AppendLine(partition.Text);
+                console.MarkupLineInterpolated($"[grey]Source:[/] {cite.SourceName} ({part.Relevance:P2} Relevance)");
+                sb.AppendLine(part.Text);
             }
         }
 

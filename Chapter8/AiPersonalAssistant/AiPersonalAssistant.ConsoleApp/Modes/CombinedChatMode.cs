@@ -7,7 +7,7 @@ public class CombinedChatMode(IAnsiConsole console) : SemanticKernelChatMode(con
     {
         await base.InitializeAsync(options);
 
-        IKernelMemory memory = await MemoryHelpers.LoadKernelMemoryAsync(options, Console);
+        IKernelMemory memory = await MemoryHelpers.LoadMemory(options, Console);
         Kernel!.ImportPluginFromObject(new ReadOnlyKernelMemoryPlugin(memory, Console));
     }
 }

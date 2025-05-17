@@ -1,6 +1,4 @@
-﻿using AiPersonalAssistant.ConsoleApp.Plugins;
-
-namespace AiPersonalAssistant.ConsoleApp.Modes;
+﻿namespace AiPersonalAssistant.ConsoleApp.Modes;
 
 public class KernelMemoryChatMode(IAnsiConsole console) : AlfredChatHandler(console)
 {
@@ -8,7 +6,7 @@ public class KernelMemoryChatMode(IAnsiConsole console) : AlfredChatHandler(cons
 
     public override async Task InitializeAsync(AlfredOptions options)
     {
-        _memory = await MemoryHelpers.LoadKernelMemoryAsync(options, Console);
+        _memory = await MemoryHelpers.LoadMemory(options, Console);
 
         await base.InitializeAsync(options);
     }

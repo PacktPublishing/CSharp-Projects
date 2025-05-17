@@ -27,14 +27,14 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
     {
         _history.AddUserMessage(message);
 
-        FunctionChoiceBehaviorOptions options = new()
-        {
-            AllowConcurrentInvocation = true,
-            AllowParallelCalls = true,
-        };
         OllamaPromptExecutionSettings settings = new()
         {
-            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(options: options),
+            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(options: 
+                new FunctionChoiceBehaviorOptions
+                {
+                    AllowConcurrentInvocation = true,
+                    AllowParallelCalls = true,
+                })
         };
 
         IReadOnlyList<ChatMessageContent> result = await _chat!.GetChatMessageContentsAsync(_history, settings, _kernel);

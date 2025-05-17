@@ -2,7 +2,7 @@
 
 public class MemoryHelpers
 {
-    public static async Task<IKernelMemory> LoadKernelMemoryAsync(AlfredOptions options, IAnsiConsole console)
+    public static async Task<IKernelMemory> LoadMemory(AlfredOptions options, IAnsiConsole console)
     {
         console.MarkupLine("[orange3]Initializing Memory[/]");
 

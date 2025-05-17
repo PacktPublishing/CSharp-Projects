@@ -8,7 +8,7 @@ public class KernelMemorySearchMode(IAnsiConsole console) : AlfredChatHandler(co
 
     public override async Task InitializeAsync(AlfredOptions options)
     {
-        _memory = await MemoryHelpers.LoadKernelMemoryAsync(options, Console);
+        _memory = await MemoryHelpers.LoadMemory(options, Console);
 
         await base.InitializeAsync(options);
     }
@@ -17,17 +17,17 @@ public class KernelMemorySearchMode(IAnsiConsole console) : AlfredChatHandler(co
     {
         SearchResult response = await _memory!.SearchAsync(message);
 
-        foreach (var citation in response.Results)
+        foreach (var cite in response.Results)
         {
-            foreach (var partition in citation.Partitions)
+            foreach (var part in cite.Partitions)
             {
                 const int snippetLength = 50;
-                string match = partition.Text.ReplaceLineEndings("").Trim();
+                string match = part.Text.ReplaceLineEndings("").Trim();
                 match = match.Length > snippetLength
                     ? $"{match[..snippetLength]}..."
                     : match;
 
-                AddAssistantMessage($"{citation.SourceName} ({partition.Relevance:P2} Relevance): {match}");
+                AddAssistantMessage($"{cite.SourceName} ({part.Relevance:P2} Relevance): {match}");
             }
         }
     }
