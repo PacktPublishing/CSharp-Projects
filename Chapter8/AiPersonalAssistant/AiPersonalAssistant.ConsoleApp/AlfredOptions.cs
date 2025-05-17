@@ -1,4 +1,6 @@
-﻿namespace AiPersonalAssistant.ConsoleApp;
+﻿using AiPersonalAssistant.ConsoleApp.Modes;
+
+namespace AiPersonalAssistant.ConsoleApp;
 
 public record AlfredOptions
 {
@@ -7,9 +9,8 @@ public record AlfredOptions
     public required string EmbeddingModelId { get; init; }
 
     public required string SystemPrompt { get; init; }
-    public required string GreetingMessage { get; set; }
-    public required string GoodbyeMessage { get; set; }
+    public required string GreetingMessage { get; init; }
+    public required string GoodbyeMessage { get; init; }
 
-    public bool UseKernelMemory { get; set; }
-    public bool UseSemanticKernel { get; set; }
+    public ApplicationMode Mode { get; init; }
 }

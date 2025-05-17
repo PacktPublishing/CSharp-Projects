@@ -1,5 +1,5 @@
-﻿using AiPersonalAssistant.ConsoleApp;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using AiPersonalAssistant.ConsoleApp.Modes;
 
 #pragma warning disable SKEXP0070
 
@@ -20,13 +20,16 @@ try
         .Build();
     AlfredOptions options = config.Get<AlfredOptions>()!;
 
-    // Add KernelMemory as needed
-    IKernelMemory? memory = null;
-    if (options.UseKernelMemory)
+    AlfredChatHandler handler = options.Mode switch
     {
-        memory = await MemoryHelpers.LoadKernelMemoryAsync(options, console);
-    }
+        ApplicationMode.KernelMemorySearch => new KernelMemorySearchMode(console),
+        ApplicationMode.KernelMemoryChat => new KernelMemoryChatMode(console),
+        _ => throw new NotSupportedException()
+    };
 
+    await handler.InitializeAsync(options);
+
+    /*
     // Add Semantic Kernel as needed
     Kernel? kernel = null;
     if (options.UseSemanticKernel)
@@ -43,35 +46,37 @@ try
         // TODO: Add a bing or google search plugin if a key is specified
         // TODO: Add a simple custom skill for something silly
     }
+    */
 
     HashSet<string> exitWords = new(StringComparer.OrdinalIgnoreCase) {
         "exit", "quit", "q", "e", "x", "bye", "goodbye"
     };
 
-    ChatHistory history = new(options.SystemPrompt);
-    AddAssistantMessage(history, options.GreetingMessage);
+    handler.AddAssistantMessage(options.GreetingMessage);
 
-    if (options.UseSemanticKernel)
+    // Main conversation loop
+    string? reply;
+    do
     {
-        await ChatWithKernelAsync(kernel!, exitWords, history);
-    }
-    else if (options.UseKernelMemory)
-    {
-        await ChatWithKernelMemoryAsync(memory!, exitWords, history);
-    }
-    else
-    {
-        console.MarkupLine("[red]Error:[/] You must specify Semantic Kernel, KernelMemory, or both.");
-        return -1;
-    }
+        reply = handler.GetUserMessage();
+        if (exitWords.Contains(reply)) break;
 
-    AddAssistantMessage(history, options.GoodbyeMessage);
+        // TODO: Probably don't need this return value
+        IAsyncEnumerable<string> responses = handler.ChatAsync(reply);
+
+        await foreach (var response in responses)
+        {
+            handler.AddAssistantMessage(response);
+        }
+    } while (!string.IsNullOrWhiteSpace(reply));
+
+    handler.AddAssistantMessage(options.GoodbyeMessage);
     return 0;
 }
 catch (Exception ex)
 {
     console.WriteException(ex, ExceptionFormats.ShortenEverything);
-    return -2;
+    return -1;
 }
 
 void DisplayAppHeader(IAnsiConsole ansiConsole)
@@ -83,31 +88,11 @@ void DisplayAppHeader(IAnsiConsole ansiConsole)
     ansiConsole.WriteLine();
 }
 
-async Task ChatWithKernelMemoryAsync(IKernelMemory kernelMemory, HashSet<string> hashSet, ChatHistory history)
-{
-    string reply;
-    do
-    {
-        reply = GetUserMessage(console, history);
-        if (hashSet.Contains(reply))
-            break;
-
-        MemoryAnswer response = await kernelMemory.AskAsync(reply);
-
-        console.MarkupLine("[cyan]RAG Search Results:[/]");
-        string json = response.ToJson(optimizeForStream: false);
-        console.Write(new JsonText(json));
-
-        AddAssistantMessage(history, response.Result);
-    } while (!string.IsNullOrWhiteSpace(reply));
-
-}
-
+/*
 async Task ChatWithKernelAsync(Kernel sk, HashSet<string> hashSet, ChatHistory history)
 {
     // Initialize chat history
     IChatCompletionService chatService = sk.GetRequiredService<IChatCompletionService>();
-
     PromptExecutionSettings settings = new()
     {
         FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
@@ -130,22 +115,6 @@ async Task ChatWithKernelAsync(Kernel sk, HashSet<string> hashSet, ChatHistory h
         }
     } while (!string.IsNullOrWhiteSpace(reply));
 }
-
-void AddAssistantMessage(ChatHistory chatHistory, string message)
-{
-    chatHistory.AddAssistantMessage(message);
-    console.MarkupLineInterpolated($"[yellow]Alfred[/]: {message}");
-    // TODO: Store the interaction in a chat history file for next session
-}
-
-string GetUserMessage(IAnsiConsole ansiConsole, ChatHistory chatHistory)
-{
-    var message = ansiConsole.Prompt(new TextPrompt<string>("[orange3]User[/]: "));
-    chatHistory.AddUserMessage(message);
-
-    // TODO: Store the interaction
-
-    return message;
-}
+*/
 
 #pragma warning restore SKEXP0070
