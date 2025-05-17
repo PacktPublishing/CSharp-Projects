@@ -5,6 +5,5 @@ public enum ApplicationMode
     KernelMemorySearch,
     KernelMemoryChat,
     SemanticKernel,
-    Combined,
-    ModelContextProtocolServer
+    Combined
 }

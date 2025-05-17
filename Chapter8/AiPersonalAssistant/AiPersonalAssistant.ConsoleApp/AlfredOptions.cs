@@ -11,7 +11,5 @@ public record AlfredOptions
     public required string SystemPrompt { get; init; }
     public required string GreetingMessage { get; init; }
     public required string GoodbyeMessage { get; init; }
-
-    public ApplicationMode Mode { get; init; }
     public string? DataDirectory { get; init; }
 }

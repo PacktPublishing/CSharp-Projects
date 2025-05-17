@@ -6,6 +6,8 @@ public abstract class AlfredChatHandler(IAnsiConsole console)
 
     public virtual Task InitializeAsync(AlfredOptions options)
     {
+        AddAssistantMessage(options.GreetingMessage);
+
         return Task.CompletedTask;
     }
 

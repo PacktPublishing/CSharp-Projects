@@ -9,7 +9,7 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
 
 
     [Experimental("SKEXP0070")]
-    public override Task InitializeAsync(AlfredOptions options)
+    public override async Task InitializeAsync(AlfredOptions options)
     {
         _kernel = Kernel.CreateBuilder()
             .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.Endpoint))
@@ -19,7 +19,7 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
 
         _chat = _kernel.GetRequiredService<IChatCompletionService>();
 
-        return Task.CompletedTask;
+        await base.InitializeAsync(options);
     }
 
     [Experimental("SKEXP0070")]

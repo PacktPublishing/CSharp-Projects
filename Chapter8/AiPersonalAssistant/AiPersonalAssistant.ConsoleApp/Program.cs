@@ -1,66 +1,48 @@
-﻿// Set up the console
+﻿// Write header
 IAnsiConsole console = AnsiConsole.Console;
-Console.OutputEncoding = Encoding.Unicode;
-Console.InputEncoding = Encoding.Unicode;
-DisplayAppHeader(console);
+console.Write(new FigletText("Alfred").Color(Color.Yellow));
+console.MarkupLine("[aqua]Digital butler to the budding super-coder[/]");
+console.WriteLine();
 
-try
+// Load options
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+    .AddEnvironmentVariables()
+    .AddUserSecrets<Program>()
+    .AddCommandLine(args)
+    .Build();
+AlfredOptions options = config.Get<AlfredOptions>()!;
+
+// Set up our application
+ApplicationMode mode = console.Prompt(new SelectionPrompt<ApplicationMode>()
+    .AddChoices(Enum.GetValues<ApplicationMode>())
+    .Title("Select an application mode"));
+
+AlfredChatHandler handler = mode switch
 {
-    // Load options
-    IConfiguration config = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-        .AddEnvironmentVariables()
-        .AddUserSecrets<Program>()
-        .AddCommandLine(args)
-        .Build();
-    AlfredOptions options = config.Get<AlfredOptions>()!;
+    ApplicationMode.KernelMemorySearch => new KernelMemorySearchMode(console),
+    ApplicationMode.KernelMemoryChat => new KernelMemoryChatMode(console),
+    ApplicationMode.SemanticKernel => new SemanticKernelChatMode(console),
+    ApplicationMode.Combined => new CombinedChatMode(console),
+    _ => throw new NotSupportedException()
+};
 
-    AlfredChatHandler handler = options.Mode switch
-    {
-        ApplicationMode.KernelMemorySearch => new KernelMemorySearchMode(console),
-        ApplicationMode.KernelMemoryChat => new KernelMemoryChatMode(console),
-        ApplicationMode.SemanticKernel => new SemanticKernelChatMode(console),
-        ApplicationMode.Combined => new CombinedChatMode(console),
-        _ => throw new NotSupportedException()
-    };
+await handler.InitializeAsync(options);
 
-    await handler.InitializeAsync(options);
+HashSet<string> exitWords = new(StringComparer.OrdinalIgnoreCase) {
+    "exit", "quit", "q", "e", "x", "bye", "goodbye"
+};
 
-    /*
-    kernel.ImportPluginFromObject(new ReadOnlyKernelMemoryPlugin(memory, console));
-    */
-
-    HashSet<string> exitWords = new(StringComparer.OrdinalIgnoreCase) {
-        "exit", "quit", "q", "e", "x", "bye", "goodbye"
-    };
-
-    handler.AddAssistantMessage(options.GreetingMessage);
-
-    // Main conversation loop
-    string? reply;
-    TextPrompt<string> userPrompt = new("[orange3]User[/]: ");
-    do
-    {
-        reply = console.Prompt(userPrompt);
-        if (exitWords.Contains(reply)) break;
-
-        await handler.ChatAsync(reply);
-    } while (!string.IsNullOrWhiteSpace(reply));
-
-    handler.AddAssistantMessage(options.GoodbyeMessage);
-    return 0;
-}
-catch (Exception ex)
+// Main conversation loop
+string? reply;
+TextPrompt<string> userPrompt = new("[orange3]User[/]: ");
+do
 {
-    console.WriteException(ex, ExceptionFormats.ShortenEverything);
-    return -1;
-}
+    reply = console.Prompt(userPrompt);
+    if (exitWords.Contains(reply))
+        break;
 
-void DisplayAppHeader(IAnsiConsole ansiConsole)
-{
-    Style accentStyle = new Style(Color.Aqua);
+    await handler.ChatAsync(reply);
+} while (!string.IsNullOrWhiteSpace(reply));
 
-    ansiConsole.Write(new FigletText("Alfred").Color(Color.Yellow));
-    ansiConsole.WriteLine("Digital butler to the budding super-coder", accentStyle);
-    ansiConsole.WriteLine();
-}
+handler.AddAssistantMessage(options.GoodbyeMessage);

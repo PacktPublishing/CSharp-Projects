@@ -9,6 +9,8 @@ public class KernelMemoryChatMode(IAnsiConsole console) : AlfredChatHandler(cons
     public override async Task InitializeAsync(AlfredOptions options)
     {
         _memory = await MemoryHelpers.LoadKernelMemoryAsync(options, Console);
+
+        await base.InitializeAsync(options);
     }
 
     public override async Task ChatAsync(string message)
