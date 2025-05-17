@@ -4,7 +4,7 @@ public class MemoryHelpers
 {
     public static async Task<IKernelMemory> LoadKernelMemoryAsync(AlfredOptions options, IAnsiConsole console)
     {
-        console.WriteLine("Initializing Memory");
+        console.MarkupLine("[orange3]Initializing Memory[/]");
 
         OllamaConfig config = new()
         {

@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using AiPersonalAssistant.ConsoleApp.Modes;
-
-#pragma warning disable SKEXP0070
-
-// Set up the console
+﻿// Set up the console
 IAnsiConsole console = AnsiConsole.Console;
 Console.OutputEncoding = Encoding.Unicode;
 Console.InputEncoding = Encoding.Unicode;
@@ -25,7 +20,7 @@ try
         ApplicationMode.KernelMemorySearch => new KernelMemorySearchMode(console),
         ApplicationMode.KernelMemoryChat => new KernelMemoryChatMode(console),
         ApplicationMode.SemanticKernel => new SemanticKernelChatMode(console),
-        ApplicationMode.Combined => new SemanticKernelChatMode(console),
+        ApplicationMode.Combined => new CombinedChatMode(console),
         _ => throw new NotSupportedException()
     };
 
@@ -69,34 +64,3 @@ void DisplayAppHeader(IAnsiConsole ansiConsole)
     ansiConsole.WriteLine("Digital butler to the budding super-coder", accentStyle);
     ansiConsole.WriteLine();
 }
-
-/*
-async Task ChatWithKernelAsync(Kernel sk, HashSet<string> hashSet, ChatHistory history)
-{
-    // Initialize chat history
-    IChatCompletionService chatService = sk.GetRequiredService<IChatCompletionService>();
-    PromptExecutionSettings settings = new()
-    {
-        FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-    };
-
-    // Main conversation loop
-    string? reply;
-    do
-    {
-        reply = GetUserMessage(console, history);
-        if (hashSet.Contains(reply)) break;
-
-        // TODO: Adding logging at a function call level would be helpful
-
-        IReadOnlyList<ChatMessageContent> response = await chatService.GetChatMessageContentsAsync(history, settings, sk);
-
-        foreach (var part in response)
-        {
-            AddAssistantMessage(history, part.Content ?? "I have no response to that");
-        }
-    } while (!string.IsNullOrWhiteSpace(reply));
-}
-*/
-
-#pragma warning restore SKEXP0070

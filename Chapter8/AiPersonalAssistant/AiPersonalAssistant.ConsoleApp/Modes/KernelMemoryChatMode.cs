@@ -17,14 +17,10 @@ public class KernelMemoryChatMode(IAnsiConsole console) : AlfredChatHandler(cons
 
         Console.MarkupLine("[cyan]RAG Search Results:[/]");
 
-        string json = response.ToJson(optimizeForStream: false);
-        Console.Write(new JsonText(json));
-        Console.WriteLine();
-
         AddAssistantMessage(response.Result);
         foreach (var source in response.RelevantSources)
         {
-            console.MarkupLineInterpolated($"[grey]Used source:[/] {source.SourceName}");
+            Console.MarkupLineInterpolated($"[grey]Used source:[/] {source.SourceName}");
         }
     }
 }

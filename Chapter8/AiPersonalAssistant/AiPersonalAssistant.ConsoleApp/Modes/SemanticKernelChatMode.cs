@@ -1,19 +1,18 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.SemanticKernel.Connectors.Ollama;
+﻿namespace AiPersonalAssistant.ConsoleApp.Modes;
 
-namespace AiPersonalAssistant.ConsoleApp.Modes;
-
-[Experimental("SKEXP0070")]
 public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(console)
 {
     private Kernel? _kernel;
     private IChatCompletionService? _chat;
-    private OllamaPromptExecutionSettings? _settings;
+    private PromptExecutionSettings? _settings;
     private readonly ChatHistory _history = new();
+    protected Kernel? Kernel => _kernel;
 
+
+    [Experimental("SKEXP0070")]
     public override Task InitializeAsync(AlfredOptions options)
     {
-        _settings = new()
+        _settings = new OllamaPromptExecutionSettings()
         {
             FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
         };
@@ -21,9 +20,8 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
         _kernel = Kernel.CreateBuilder()
             .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.Endpoint))
             .Build();
-
-        // TODO: Add a bing or google search plugin if a key is specified
-        // TODO: Add a simple custom skill for something silly
+        
+        _kernel.ImportPluginFromType<TimeAndDatePlugin>();
 
         _chat = _kernel.GetRequiredService<IChatCompletionService>();
 

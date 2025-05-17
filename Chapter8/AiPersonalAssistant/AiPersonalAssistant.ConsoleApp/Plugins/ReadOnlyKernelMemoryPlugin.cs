@@ -1,4 +1,6 @@
-﻿namespace AiPersonalAssistant.ConsoleApp.Plugins;
+﻿using Azure;
+
+namespace AiPersonalAssistant.ConsoleApp.Plugins;
 
 public class ReadOnlyKernelMemoryPlugin(IKernelMemory memory, IAnsiConsole console)
 {
@@ -10,10 +12,18 @@ public class ReadOnlyKernelMemoryPlugin(IKernelMemory memory, IAnsiConsole conso
 
         SearchResult searchResult = await memory.SearchAsync(question, limit: 5, minRelevance: 0.1);
 
-        console.MarkupLine("[cyan]RAG Search Results:[/]");
-        string json = searchResult.ToJson();
-        console.Write(new JsonText(json));
+        StringBuilder sb = new();
+        foreach (var citation in searchResult.Results)
+        {
+            sb.AppendLine("Snippet found in " + citation.SourceName + ":");
 
-        return json;
+            foreach (var partition in citation.Partitions)
+            {
+                console.MarkupLineInterpolated($"[grey]Source:[/] {citation.SourceName} ({partition.Relevance:P2} Relevance)");
+                sb.AppendLine(partition.Text);
+            }
+        }
+
+        return sb.ToString();
     }
 }

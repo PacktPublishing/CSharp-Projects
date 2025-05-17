@@ -25,7 +25,7 @@ public class KernelMemorySearchMode(IAnsiConsole console) : AlfredChatHandler(co
         {
             foreach (var partition in citation.Partitions)
             {
-                AddAssistantMessage($"{citation.SourceName} ({partition.Relevance:P2}): {partition.Text}");
+                AddAssistantMessage($"{citation.SourceName} ({partition.Relevance:P2} Relevance)");
             }
         }
     }
