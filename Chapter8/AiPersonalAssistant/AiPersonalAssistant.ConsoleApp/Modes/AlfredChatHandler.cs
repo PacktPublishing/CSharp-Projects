@@ -9,22 +9,10 @@ public abstract class AlfredChatHandler(IAnsiConsole console)
         return Task.CompletedTask;
     }
 
-    public abstract IAsyncEnumerable<string> ChatAsync(string message);
+    public abstract Task ChatAsync(string message);
 
     public virtual void AddAssistantMessage(string message)
     {
         Console.MarkupLineInterpolated($"[yellow]Alfred[/]: {message}");
-
-        // TODO: Store the interaction in a chat history file for next session
-    }
-
-    public virtual string GetUserMessage()
-    {
-        TextPrompt<string> prompt = new("[orange3]User[/]: ");
-        string message = console.Prompt(prompt);
-
-        // TODO: Store the interaction
-
-        return message;
     }
 }

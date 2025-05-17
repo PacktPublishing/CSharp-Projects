@@ -9,6 +9,16 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="Data\announcing-data-science-in-dotnet.md" />
+    <None Remove="Data\CopyrightNote.md" />
+    <None Remove="Data\ml_net-video-game-classification.md" />
+    <None Remove="Data\ml_net_2_0_text_classification.md" />
+    <None Remove="Data\ml_net_tasks.md" />
+    <None Remove="Data\penalty-prediction.md" />
+    <None Remove="Data\reinforcement_learning.md" />
+    <None Remove="Data\responsible-ai.md" />
+    <None Remove="Data\types_of_ai.md" />
+    <None Remove="Data\WhatIsBigData.md" />
     <None Remove="Facts.txt" />
   </ItemGroup>
 
@@ -16,7 +26,22 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Facts.txt">
+    <Content Include="Data\CopyrightNote.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Facts.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\ml_net_tasks.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\responsible-ai.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\types_of_ai.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\WhatIsBigData.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

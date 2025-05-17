@@ -1,4 +1,6 @@
-﻿namespace AiPersonalAssistant.ConsoleApp.Modes;
+﻿using AiPersonalAssistant.ConsoleApp.Plugins;
+
+namespace AiPersonalAssistant.ConsoleApp.Modes;
 
 public class KernelMemorySearchMode(IAnsiConsole console) : AlfredChatHandler(console)
 {
@@ -9,7 +11,7 @@ public class KernelMemorySearchMode(IAnsiConsole console) : AlfredChatHandler(co
         _memory = await MemoryHelpers.LoadKernelMemoryAsync(options, Console);
     }
 
-    public override async IAsyncEnumerable<string> ChatAsync(string message)
+    public override async Task ChatAsync(string message)
     {
         SearchResult response = await _memory!.SearchAsync(message);
 
@@ -23,7 +25,7 @@ public class KernelMemorySearchMode(IAnsiConsole console) : AlfredChatHandler(co
         {
             foreach (var partition in citation.Partitions)
             {
-                yield return $"{citation.SourceName} ({partition.Relevance:P2}): {partition.Text}";
+                AddAssistantMessage($"{citation.SourceName} ({partition.Relevance:P2}): {partition.Text}");
             }
         }
     }

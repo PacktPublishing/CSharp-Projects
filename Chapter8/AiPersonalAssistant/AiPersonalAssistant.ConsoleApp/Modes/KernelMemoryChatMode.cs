@@ -1,4 +1,6 @@
-﻿namespace AiPersonalAssistant.ConsoleApp.Modes;
+﻿using AiPersonalAssistant.ConsoleApp.Plugins;
+
+namespace AiPersonalAssistant.ConsoleApp.Modes;
 
 public class KernelMemoryChatMode(IAnsiConsole console) : AlfredChatHandler(console)
 {
@@ -9,7 +11,7 @@ public class KernelMemoryChatMode(IAnsiConsole console) : AlfredChatHandler(cons
         _memory = await MemoryHelpers.LoadKernelMemoryAsync(options, Console);
     }
 
-    public override async IAsyncEnumerable<string> ChatAsync(string message)
+    public override async Task ChatAsync(string message)
     {
         MemoryAnswer response = await _memory!.AskAsync(message);
 
@@ -19,6 +21,10 @@ public class KernelMemoryChatMode(IAnsiConsole console) : AlfredChatHandler(cons
         Console.Write(new JsonText(json));
         Console.WriteLine();
 
-        yield return response.Result;
+        AddAssistantMessage(response.Result);
+        foreach (var source in response.RelevantSources)
+        {
+            console.MarkupLineInterpolated($"[grey]Used source:[/] {source.SourceName}");
+        }
     }
 }

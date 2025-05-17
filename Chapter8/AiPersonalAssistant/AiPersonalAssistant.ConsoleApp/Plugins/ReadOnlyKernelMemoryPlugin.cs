@@ -1,4 +1,4 @@
-﻿namespace AiPersonalAssistant.ConsoleApp;
+﻿namespace AiPersonalAssistant.ConsoleApp.Plugins;
 
 public class ReadOnlyKernelMemoryPlugin(IKernelMemory memory, IAnsiConsole console)
 {

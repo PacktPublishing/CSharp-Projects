@@ -24,28 +24,15 @@ try
     {
         ApplicationMode.KernelMemorySearch => new KernelMemorySearchMode(console),
         ApplicationMode.KernelMemoryChat => new KernelMemoryChatMode(console),
+        ApplicationMode.SemanticKernel => new SemanticKernelChatMode(console),
+        ApplicationMode.Combined => new SemanticKernelChatMode(console),
         _ => throw new NotSupportedException()
     };
 
     await handler.InitializeAsync(options);
 
     /*
-    // Add Semantic Kernel as needed
-    Kernel? kernel = null;
-    if (options.UseSemanticKernel)
-    {
-        kernel = Kernel.CreateBuilder()
-            .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.Endpoint))
-            .Build();
-
-        if (memory is not null)
-        {
-            kernel.ImportPluginFromObject(new ReadOnlyKernelMemoryPlugin(memory, console));
-        }
-
-        // TODO: Add a bing or google search plugin if a key is specified
-        // TODO: Add a simple custom skill for something silly
-    }
+    kernel.ImportPluginFromObject(new ReadOnlyKernelMemoryPlugin(memory, console));
     */
 
     HashSet<string> exitWords = new(StringComparer.OrdinalIgnoreCase) {
@@ -56,18 +43,13 @@ try
 
     // Main conversation loop
     string? reply;
+    TextPrompt<string> userPrompt = new("[orange3]User[/]: ");
     do
     {
-        reply = handler.GetUserMessage();
+        reply = console.Prompt(userPrompt);
         if (exitWords.Contains(reply)) break;
 
-        // TODO: Probably don't need this return value
-        IAsyncEnumerable<string> responses = handler.ChatAsync(reply);
-
-        await foreach (var response in responses)
-        {
-            handler.AddAssistantMessage(response);
-        }
+        await handler.ChatAsync(reply);
     } while (!string.IsNullOrWhiteSpace(reply));
 
     handler.AddAssistantMessage(options.GoodbyeMessage);
