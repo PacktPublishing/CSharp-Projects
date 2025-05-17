@@ -1,6 +1,4 @@
-﻿using AiPersonalAssistant.ConsoleApp.Plugins;
-
-namespace AiPersonalAssistant.ConsoleApp.Modes;
+﻿namespace AiPersonalAssistant.ConsoleApp.Modes;
 
 public class KernelMemorySearchMode(IAnsiConsole console) : AlfredChatHandler(console)
 {

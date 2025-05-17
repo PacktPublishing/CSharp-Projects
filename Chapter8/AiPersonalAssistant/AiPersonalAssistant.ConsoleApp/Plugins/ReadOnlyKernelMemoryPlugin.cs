@@ -6,7 +6,7 @@ public class ReadOnlyKernelMemoryPlugin(IKernelMemory memory, IAnsiConsole conso
 {
     [KernelFunction("Search")]
     [Description("Searches documents and history for answers to a question")]
-    public async Task<string> Search(string question)
+    public async Task<string> Search([Description("A question to search documents for")] string question)
     {
         console.MarkupLineInterpolated($"[cyan]RAG Search[/]: {question}");
 
@@ -15,7 +15,7 @@ public class ReadOnlyKernelMemoryPlugin(IKernelMemory memory, IAnsiConsole conso
         StringBuilder sb = new();
         foreach (var citation in searchResult.Results)
         {
-            sb.AppendLine("Snippet found in " + citation.SourceName + ":");
+            sb.AppendLine($"Snippet found in {citation.SourceName}:");
 
             foreach (var partition in citation.Partitions)
             {
