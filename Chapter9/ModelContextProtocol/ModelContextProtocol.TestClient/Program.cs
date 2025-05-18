@@ -1,5 +1,13 @@
 ﻿using Microsoft.Extensions.Hosting;
 using ModelContextProtocol.Client;
+using ModelContextProtocol.Protocol;
+using Spectre.Console;
+
+IAnsiConsole console = AnsiConsole.Console;
+
+console.Write(new FigletText("MCP Client").Color(Color.Yellow));
+console.MarkupLine("[cyan]Demo client for listing MCP server contents[/]");
+console.WriteLine();
 
 //var builder = Host.CreateApplicationBuilder(args);
 //builder.AddServiceDefaults();
@@ -11,38 +19,49 @@ StdioClientTransport clientTransport = new(new()
     Arguments = ["run", "--project", "../../../../ModelContextProtocol.CustomServer"]//, "--no-build"],
 });
 
-Console.WriteLine("Connecting to MCP Server");
+// Connect
+console.WriteLine("Connecting to MCP Server...");
 await using IMcpClient mcpClient = await McpClientFactory.CreateAsync(clientTransport);
-Console.WriteLine("MCP Server started");
+console.MarkupLine("[green]Connected[/]");
 
-await mcpClient.PingAsync();
-Console.WriteLine("Connection verified");
-
-Console.WriteLine("\r\nListing Prompts");
+Table table = BuildMetadataTable("Prompts");
 await foreach (var prompt in mcpClient.EnumeratePromptsAsync())
 {
-    Console.WriteLine($"{prompt.Name}: {prompt.Description}");
+    table.AddRow(prompt.Name, prompt.Description);
 }
+console.Write(table);
 
-Console.WriteLine("\r\nListing Tools");
+table = BuildMetadataTable("Tools");
 await foreach (var tool in mcpClient.EnumerateToolsAsync())
 {
-    Console.WriteLine($"{tool.Name}: {tool.Description}");
+    table.AddRow(tool.Name, tool.Description);
 }
+console.Write(table);
 
-Console.WriteLine("\r\nListing Resources");
+table = BuildMetadataTable("Resources");
+table.AddColumn("[yellow]Uri[/]");
 await foreach (var res in mcpClient.EnumerateResourcesAsync())
 {
-    Console.WriteLine($"{res.Name}: {res.Description}");
+    table.AddRow(res.Name, res.Description, res.Uri);
 }
-
-/*
-var tools = await mcpClient.ListToolsAsync();
-foreach (var tool in tools)
+await foreach (var res in mcpClient.EnumerateResourceTemplatesAsync())
 {
-    Console.WriteLine($"Connected to server with tools: {tool.Name}");
+    table.AddRow(res.Name, res.Description, res.UriTemplate);
 }
-*/
+console.Write(table);
+
+Table BuildMetadataTable(string title)
+{
+    Table table = new();
+    table.Title = new TableTitle($"[Cyan]{title}[/]");
+
+    table.AddColumn("[yellow]Name[/]");
+    table.AddColumn("[yellow]Description[/]");
+
+    table.Expand();
+
+    return table;
+}
 
 //var app = builder.Build();
 //app.Run();
