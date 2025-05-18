@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Tools\" />
     <Folder Include="Resources\" />
   </ItemGroup>
 
