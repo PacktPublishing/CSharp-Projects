@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ModelContextProtocol.ServiceDefaults\ModelContextProtocol.ServiceDefaults.csproj" />
   </ItemGroup>
 

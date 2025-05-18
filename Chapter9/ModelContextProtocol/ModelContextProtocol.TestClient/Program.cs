@@ -21,13 +21,19 @@ Console.WriteLine("Connection verified");
 Console.WriteLine("\r\nListing Prompts");
 await foreach (var prompt in mcpClient.EnumeratePromptsAsync())
 {
-    Console.WriteLine($"{prompt.Name}: {prompt.Description}, {prompt.ProtocolPrompt}");
+    Console.WriteLine($"{prompt.Name}: {prompt.Description}");
 }
 
-Console.WriteLine("\r\nListing tools");
+Console.WriteLine("\r\nListing Tools");
 await foreach (var tool in mcpClient.EnumerateToolsAsync())
 {
     Console.WriteLine($"{tool.Name}: {tool.Description}");
+}
+
+Console.WriteLine("\r\nListing Resources");
+await foreach (var res in mcpClient.EnumerateResourcesAsync())
+{
+    Console.WriteLine($"{res.Name}: {res.Description}");
 }
 
 /*
