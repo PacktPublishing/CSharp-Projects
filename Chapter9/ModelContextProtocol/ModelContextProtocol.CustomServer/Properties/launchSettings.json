@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ModelContextProtocol.CustomServer": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

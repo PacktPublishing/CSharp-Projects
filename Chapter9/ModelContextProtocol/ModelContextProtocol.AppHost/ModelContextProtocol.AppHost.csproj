@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ModelContextProtocol.ApiService\ModelContextProtocol.ApiService.csproj" />
+    <ProjectReference Include="..\ModelContextProtocol.CustomServer\ModelContextProtocol.CustomServer.csproj" />
+    <ProjectReference Include="..\ModelContextProtocol.TestClient\ModelContextProtocol.TestClient.csproj" />
     <ProjectReference Include="..\ModelContextProtocol.Web\ModelContextProtocol.Web.csproj" />
   </ItemGroup>
 

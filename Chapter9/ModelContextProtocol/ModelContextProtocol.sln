@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.ApiSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.Web", "ModelContextProtocol.Web\ModelContextProtocol.Web.csproj", "{77B15C58-2E6A-FBD3-7E63-3FFE9185E5F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.CustomServer", "ModelContextProtocol.CustomServer\ModelContextProtocol.CustomServer.csproj", "{A8AF2040-85C9-4F7D-BAC1-468D58263427}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.TestClient", "ModelContextProtocol.TestClient\ModelContextProtocol.TestClient.csproj", "{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{77B15C58-2E6A-FBD3-7E63-3FFE9185E5F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77B15C58-2E6A-FBD3-7E63-3FFE9185E5F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77B15C58-2E6A-FBD3-7E63-3FFE9185E5F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8AF2040-85C9-4F7D-BAC1-468D58263427}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8AF2040-85C9-4F7D-BAC1-468D58263427}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8AF2040-85C9-4F7D-BAC1-468D58263427}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8AF2040-85C9-4F7D-BAC1-468D58263427}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
