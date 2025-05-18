@@ -5,8 +5,6 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
     private Kernel? _kernel;
     private IChatCompletionService? _chat;
     private readonly ChatHistory _history = new();
-    protected Kernel? Kernel => _kernel;
-
 
     [Experimental("SKEXP0070")]
     public override async Task InitializeAsync(AlfredOptions options)
@@ -14,12 +12,17 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
         _kernel = Kernel.CreateBuilder()
             .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.Endpoint))
             .Build();
-        
-        _kernel.ImportPluginFromType<TimeAndDatePlugin>();
+
+        LoadPlugins(_kernel);
 
         _chat = _kernel.GetRequiredService<IChatCompletionService>();
 
         await base.InitializeAsync(options);
+    }
+
+    public virtual void LoadPlugins(Kernel kernel)
+    {
+        kernel.ImportPluginFromType<TimeAndDatePlugin>();
     }
 
     [Experimental("SKEXP0070")]
@@ -27,17 +30,16 @@ public class SemanticKernelChatMode(IAnsiConsole console) : AlfredChatHandler(co
     {
         _history.AddUserMessage(message);
 
+        FunctionChoiceBehaviorOptions behave = new()
+        {
+            AllowConcurrentInvocation = true,
+        };
         OllamaPromptExecutionSettings settings = new()
         {
-            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(options: 
-                new FunctionChoiceBehaviorOptions
-                {
-                    AllowConcurrentInvocation = true,
-                    AllowParallelCalls = true,
-                })
+            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(options: behave)
         };
 
-        IReadOnlyList<ChatMessageContent> result = await _chat!.GetChatMessageContentsAsync(_history, settings, _kernel);
+        IEnumerable<ChatMessageContent> result = await _chat!.GetChatMessageContentsAsync(_history, settings, _kernel);
 
         foreach (var response in result)
         {
