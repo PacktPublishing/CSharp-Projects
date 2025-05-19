@@ -11,21 +11,19 @@ console.WriteLine();
 //var builder = Host.CreateApplicationBuilder(args);
 //builder.AddServiceDefaults();
 
-string? endpoint = Environment.GetEnvironmentVariable("services__documentsapi__https__0");
-console.WriteLine("Using endpoint for RAG API: " + endpoint);
+string? endpoint = Environment.GetEnvironmentVariable("services__mcpserver-sse__https__0");
+endpoint ??= "http://localhost:5021";
+console.WriteLine($"Using endpoint for MCP Server: {endpoint}");
 
-console.WriteLine(string.Join('|', args));
-
-// TODO: Let's switch to SSE for this instead
-StdioClientTransport clientTransport = new(new()
+IClientTransport clientTransport = new SseClientTransport(new()
 {
     Name = "Custom MCP Server",
-    Command = "dotnet",
-    Arguments = ["run", "--project", "../../../../ModelContextProtocol.CustomServer", $"--KernelMemoryEndpoint=\"{endpoint}\""]
+    Endpoint = new Uri(endpoint),
+    UseStreamableHttp = true
 });
 
 // Connect
-console.WriteLine("Connecting to MCP Server...");
+console.WriteLine($"Connecting to MCP Server at {endpoint}...");
 await using IMcpClient mcpClient = await McpClientFactory.CreateAsync(clientTransport);
 Implementation info = mcpClient.ServerInfo;
 console.MarkupLineInterpolated($"[green]Connected[/] to {info.Name} {info.Version}");

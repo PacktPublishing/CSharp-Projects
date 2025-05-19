@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.StdioS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.ServerShared", "ModelContextProtocol.ServerShared\ModelContextProtocol.ServerShared.csproj", "{B15CEE01-E265-4395-8E30-E7BAD77F5F57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.SseServer", "ModelContextProtocol.SseServer\ModelContextProtocol.SseServer.csproj", "{71C53981-B1B4-AD25-0632-2AD44BB33904}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{B15CEE01-E265-4395-8E30-E7BAD77F5F57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B15CEE01-E265-4395-8E30-E7BAD77F5F57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B15CEE01-E265-4395-8E30-E7BAD77F5F57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71C53981-B1B4-AD25-0632-2AD44BB33904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71C53981-B1B4-AD25-0632-2AD44BB33904}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71C53981-B1B4-AD25-0632-2AD44BB33904}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71C53981-B1B4-AD25-0632-2AD44BB33904}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +83,7 @@ Global
 		{297E215C-1AB8-3851-0480-91AF709C5CD2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{CD219AEF-680C-0313-2631-98BF6F090E0F} = {36BC27CA-468C-47F2-B26F-0767C13341C0}
 		{B15CEE01-E265-4395-8E30-E7BAD77F5F57} = {36BC27CA-468C-47F2-B26F-0767C13341C0}
+		{71C53981-B1B4-AD25-0632-2AD44BB33904} = {36BC27CA-468C-47F2-B26F-0767C13341C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CFF31682-C1D2-49C3-BF65-DC04854F18AD}
