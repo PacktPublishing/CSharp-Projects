@@ -8,13 +8,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.Web", "ModelContextProtocol.Web\ModelContextProtocol.Web.csproj", "{77B15C58-2E6A-FBD3-7E63-3FFE9185E5F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.CustomServer", "ModelContextProtocol.CustomServer\ModelContextProtocol.CustomServer.csproj", "{A8AF2040-85C9-4F7D-BAC1-468D58263427}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.StdioServer", "ModelContextProtocol.CustomServer\ModelContextProtocol.StdioServer.csproj", "{A8AF2040-85C9-4F7D-BAC1-468D58263427}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.TestClient", "ModelContextProtocol.TestClient\ModelContextProtocol.TestClient.csproj", "{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.DocumentsApi", "ModelContextProtocol.DocumentsApi\ModelContextProtocol.DocumentsApi.csproj", "{388D3CDE-3832-1A7D-6CC9-425B23880D9B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.ChatApi", "ModelContextProtocol.ChatApi\ModelContextProtocol.ChatApi.csproj", "{297E215C-1AB8-3851-0480-91AF709C5CD2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "APIs", "APIs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MCP Servers", "MCP Servers", "{36BC27CA-468C-47F2-B26F-0767C13341C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Front Ends", "Front Ends", "{0332AF08-D422-4B75-8FD8-10A4CF0ABEEC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{18E5B2D3-9115-405C-BDE2-87E6949D1FA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +61,15 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DFF9C673-AE3F-4CF1-AA5F-D6DD052E287D} = {18E5B2D3-9115-405C-BDE2-87E6949D1FA9}
+		{4D50D21F-E39C-C9C5-B0ED-E21F14B55F72} = {18E5B2D3-9115-405C-BDE2-87E6949D1FA9}
+		{77B15C58-2E6A-FBD3-7E63-3FFE9185E5F3} = {0332AF08-D422-4B75-8FD8-10A4CF0ABEEC}
+		{A8AF2040-85C9-4F7D-BAC1-468D58263427} = {36BC27CA-468C-47F2-B26F-0767C13341C0}
+		{20410B9B-B184-4C29-B3A3-D93F27D2BDA5} = {0332AF08-D422-4B75-8FD8-10A4CF0ABEEC}
+		{388D3CDE-3832-1A7D-6CC9-425B23880D9B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{297E215C-1AB8-3851-0480-91AF709C5CD2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CFF31682-C1D2-49C3-BF65-DC04854F18AD}

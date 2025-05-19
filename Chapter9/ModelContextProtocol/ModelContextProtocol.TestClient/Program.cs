@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-using ModelContextProtocol.Client;
+﻿using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 using Spectre.Console;
 
@@ -17,6 +16,7 @@ console.WriteLine("Using endpoint for RAG API: " + endpoint);
 
 console.WriteLine(string.Join('|', args));
 
+// TODO: Let's switch to SSE for this instead
 StdioClientTransport clientTransport = new(new()
 {
     Name = "Custom MCP Server",

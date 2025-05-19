@@ -1,6 +1,6 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var mcpServer = builder.AddProject<Projects.ModelContextProtocol_CustomServer>("mcpserver");
+var mcpServer = builder.AddProject<Projects.ModelContextProtocol_StdioServer>("mcpserver");
 
 // TODO: It'd be nice to launch the server explicitly here and have the client somehow talk to it
 
