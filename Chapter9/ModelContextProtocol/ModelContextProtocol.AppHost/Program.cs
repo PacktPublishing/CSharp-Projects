@@ -9,8 +9,10 @@ builder.AddProject<Projects.ModelContextProtocol_Web>("webfrontend")
 
 //var mcpServer = builder.AddProject<Projects.ModelContextProtocol_CustomServer>("mcpserver");
 
-builder.AddProject<Projects.ModelContextProtocol_TestClient>("mcpclient");
-//    .WithReference(mcpServer)
-    //.WaitFor(mcpServer);
+// TODO: It'd be nice to launch the server explicitly here and have the client somehow talk to it
+
+builder.AddProject<Projects.ModelContextProtocol_TestClient>("mcpclient")
+       .WithReference(apiService)
+       .WaitFor(apiService);
 
 builder.Build().Run();

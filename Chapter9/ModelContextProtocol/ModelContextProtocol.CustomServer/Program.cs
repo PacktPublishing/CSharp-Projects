@@ -1,24 +1,31 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol.CustomServer;
 using ModelContextProtocol.Protocol;
-using OpenTelemetry;
-using OpenTelemetry.Logs;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
-
 builder.AddServiceDefaults();
 
+// Configure Settings
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+    .AddEnvironmentVariables()
+    .AddUserSecrets<Program>()
+    .AddCommandLine(args);
+var op = builder.Configuration.Get<McpServerSettings>();
+builder.Services.Configure<McpServerSettings>(builder.Configuration);
+
+// Configure logging
 builder.Logging.AddConsole(options =>
 {
     options.LogToStandardErrorThreshold = LogLevel.Trace;
 });
 
+// Add Model Context Protocol server implementation
 builder.Services
     .AddMcpServer(o =>
     {
@@ -29,7 +36,7 @@ builder.Services
         o.ServerInfo = new Implementation
         {
             Name = "Custom MCP Server",
-            Version = version
+            Version = op.KernelMemoryEndpoint
         };
         o.ServerInstructions = "If no programming language is specified, assume C#. Keep your responses brief and professional.";
     })

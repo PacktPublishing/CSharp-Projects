@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.KernelMemory;
 using Microsoft.KernelMemory.AI.Ollama;
