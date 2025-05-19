@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.36105.23 d17.13
+VisualStudioVersion = 17.13.36105.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.AppHost", "ModelContextProtocol.AppHost\ModelContextProtocol.AppHost.csproj", "{DFF9C673-AE3F-4CF1-AA5F-D6DD052E287D}"
 EndProject
@@ -13,6 +13,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.CustomServer", "ModelContextProtocol.CustomServer\ModelContextProtocol.CustomServer.csproj", "{A8AF2040-85C9-4F7D-BAC1-468D58263427}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.TestClient", "ModelContextProtocol.TestClient\ModelContextProtocol.TestClient.csproj", "{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.DocumentsApi", "ModelContextProtocol.DocumentsApi\ModelContextProtocol.DocumentsApi.csproj", "{388D3CDE-3832-1A7D-6CC9-425B23880D9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelContextProtocol.ChatApi", "ModelContextProtocol.ChatApi\ModelContextProtocol.ChatApi.csproj", "{297E215C-1AB8-3851-0480-91AF709C5CD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +48,14 @@ Global
 		{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20410B9B-B184-4C29-B3A3-D93F27D2BDA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{388D3CDE-3832-1A7D-6CC9-425B23880D9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{388D3CDE-3832-1A7D-6CC9-425B23880D9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{388D3CDE-3832-1A7D-6CC9-425B23880D9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{388D3CDE-3832-1A7D-6CC9-425B23880D9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{297E215C-1AB8-3851-0480-91AF709C5CD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{297E215C-1AB8-3851-0480-91AF709C5CD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{297E215C-1AB8-3851-0480-91AF709C5CD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{297E215C-1AB8-3851-0480-91AF709C5CD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

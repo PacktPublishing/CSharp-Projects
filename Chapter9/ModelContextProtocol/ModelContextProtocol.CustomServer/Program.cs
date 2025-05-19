@@ -16,7 +16,6 @@ builder.Configuration
     .AddEnvironmentVariables()
     .AddUserSecrets<Program>()
     .AddCommandLine(args);
-var op = builder.Configuration.Get<McpServerSettings>();
 builder.Services.Configure<McpServerSettings>(builder.Configuration);
 
 // Configure logging
@@ -36,7 +35,7 @@ builder.Services
         o.ServerInfo = new Implementation
         {
             Name = "Custom MCP Server",
-            Version = op.KernelMemoryEndpoint
+            Version = version
         };
         o.ServerInstructions = "If no programming language is specified, assume C#. Keep your responses brief and professional.";
     })

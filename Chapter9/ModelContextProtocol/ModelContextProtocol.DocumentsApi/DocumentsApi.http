@@ -1,0 +1,17 @@
+@ModelContextProtocol.DocumentsApi_HostAddress = http://localhost:5109
+
+POST  {{ModelContextProtocol.DocumentsApi_HostAddress}}/search
+content-type: application/json
+
+{
+  "query": "What is AI transparency?"
+}
+
+###
+
+POST  {{ModelContextProtocol.DocumentsApi_HostAddress}}/ask
+content-type: application/json
+
+{
+  "query": "What is AI transparency?"
+}
