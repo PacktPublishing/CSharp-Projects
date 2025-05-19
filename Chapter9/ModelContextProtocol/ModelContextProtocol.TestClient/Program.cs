@@ -22,7 +22,9 @@ StdioClientTransport clientTransport = new(new()
 // Connect
 console.WriteLine("Connecting to MCP Server...");
 await using IMcpClient mcpClient = await McpClientFactory.CreateAsync(clientTransport);
-console.MarkupLine("[green]Connected[/]");
+Implementation info = mcpClient.ServerInfo;
+console.MarkupLineInterpolated($"[green]Connected[/] to {info.Name} {info.Version}");
+console.WriteLine($"Server instructions: {mcpClient.ServerInstructions ?? "No instructions set"}\r\n");
 
 Table table = BuildMetadataTable("Prompts");
 await foreach (var prompt in mcpClient.EnumeratePromptsAsync())

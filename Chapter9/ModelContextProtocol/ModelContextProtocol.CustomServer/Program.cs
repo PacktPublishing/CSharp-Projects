@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol.Protocol;
 using OpenTelemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -17,7 +20,19 @@ builder.Logging.AddConsole(options =>
 });
 
 builder.Services
-    .AddMcpServer()
+    .AddMcpServer(o =>
+    {
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+        string version = fvi.FileVersion ?? "v0.0.1";
+
+        o.ServerInfo = new Implementation
+        {
+            Name = "Custom MCP Server",
+            Version = version
+        };
+        o.ServerInstructions = "If no programming language is specified, assume C#. Keep your responses brief and professional.";
+    })
     .WithStdioServerTransport()
     .WithResourcesFromAssembly()
     .WithPromptsFromAssembly()

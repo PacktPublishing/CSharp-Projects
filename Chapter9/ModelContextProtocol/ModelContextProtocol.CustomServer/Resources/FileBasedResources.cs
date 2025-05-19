@@ -20,7 +20,7 @@ public class FileBasedResources
 
         foreach (var file in directory.GetFiles("*.md"))
         {
-            yield return new TextResourceContents()
+            yield return new TextResourceContents
             {
                 MimeType = "text/markdown",
                 Text = File.ReadAllText(file.FullName),
