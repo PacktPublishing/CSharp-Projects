@@ -1,4 +1,7 @@
-﻿namespace ModelContextProtocol.CustomServer.Resources;
+﻿using System.ComponentModel;
+using ModelContextProtocol.Server;
+
+namespace ModelContextProtocol.ServerShared.Resources;
 
 [McpServerResourceType]
 public class EmbeddedResources

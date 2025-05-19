@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ModelContextProtocol.ServerShared\ModelContextProtocol.ServerShared.csproj" />
     <ProjectReference Include="..\ModelContextProtocol.ServiceDefaults\ModelContextProtocol.ServiceDefaults.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿namespace ModelContextProtocol.CustomServer.Requests;
+﻿namespace ModelContextProtocol.ServerShared.Requests;
 
 public record SearchRequest
 {

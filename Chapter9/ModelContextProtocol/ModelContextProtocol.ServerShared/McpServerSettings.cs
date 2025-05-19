@@ -1,4 +1,4 @@
-﻿namespace ModelContextProtocol.CustomServer;
+﻿namespace ModelContextProtocol.ServerShared;
 
 public record McpServerSettings
 {

@@ -1,4 +1,7 @@
-﻿namespace ModelContextProtocol.CustomServer.Prompts;
+﻿using System.ComponentModel;
+using ModelContextProtocol.Server;
+
+namespace ModelContextProtocol.ServerShared.Prompts;
 
 [McpServerPromptType]
 public class GenerateUnitTestsPrompt

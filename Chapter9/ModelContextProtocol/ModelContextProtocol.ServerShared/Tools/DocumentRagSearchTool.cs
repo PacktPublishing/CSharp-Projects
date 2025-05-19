@@ -1,8 +1,10 @@
-﻿using System.Net.Http.Json;
+﻿using System.ComponentModel;
+using System.Net.Http.Json;
 using Microsoft.Extensions.Options;
-using ModelContextProtocol.CustomServer.Requests;
+using ModelContextProtocol.Server;
+using ModelContextProtocol.ServerShared.Requests;
 
-namespace ModelContextProtocol.CustomServer.Tools;
+namespace ModelContextProtocol.ServerShared.Tools;
 
 [McpServerToolType]
 public class DocumentRagSearchTool(IOptionsSnapshot<McpServerSettings> options)

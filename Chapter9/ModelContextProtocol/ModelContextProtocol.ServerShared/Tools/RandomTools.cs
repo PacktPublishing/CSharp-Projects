@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using ModelContextProtocol.Server;
 
-namespace ModelContextProtocol.CustomServer.Tools;
+namespace ModelContextProtocol.ServerShared.Tools;
 
 [McpServerToolType]
 public class RandomTools

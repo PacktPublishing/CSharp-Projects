@@ -4,8 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ModelContextProtocol.CustomServer;
 using ModelContextProtocol.Protocol;
+using ModelContextProtocol.ServerShared;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 builder.AddServiceDefaults();
@@ -24,6 +24,8 @@ builder.Logging.AddConsole(options =>
     options.LogToStandardErrorThreshold = LogLevel.Trace;
 });
 
+Assembly shared = Assembly.GetAssembly(typeof(McpServerSettings))!;
+
 // Add Model Context Protocol server implementation
 builder.Services
     .AddMcpServer(o =>
@@ -40,8 +42,8 @@ builder.Services
         o.ServerInstructions = "If no programming language is specified, assume C#. Keep your responses brief and professional.";
     })
     .WithStdioServerTransport()
-    .WithResourcesFromAssembly()
-    .WithPromptsFromAssembly()
-    .WithToolsFromAssembly();
+    .WithResourcesFromAssembly(shared)
+    .WithPromptsFromAssembly(shared)
+    .WithToolsFromAssembly(shared);
 
 await builder.Build().RunAsync();
