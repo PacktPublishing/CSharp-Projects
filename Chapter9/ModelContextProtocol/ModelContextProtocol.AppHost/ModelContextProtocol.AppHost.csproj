@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ModelContextProtocol.ApiService\ModelContextProtocol.ApiService.csproj" />
     <ProjectReference Include="..\ModelContextProtocol.ChatApi\ModelContextProtocol.ChatApi.csproj" />
     <ProjectReference Include="..\ModelContextProtocol.CustomServer\ModelContextProtocol.CustomServer.csproj" />
     <ProjectReference Include="..\ModelContextProtocol.DocumentsApi\ModelContextProtocol.DocumentsApi.csproj" />

@@ -12,7 +12,7 @@ console.WriteLine();
 //var builder = Host.CreateApplicationBuilder(args);
 //builder.AddServiceDefaults();
 
-string? endpoint = Environment.GetEnvironmentVariable("services__apiservice__https__0");
+string? endpoint = Environment.GetEnvironmentVariable("services__documentsapi__https__0");
 console.WriteLine("Using endpoint for RAG API: " + endpoint);
 
 console.WriteLine(string.Join('|', args));
