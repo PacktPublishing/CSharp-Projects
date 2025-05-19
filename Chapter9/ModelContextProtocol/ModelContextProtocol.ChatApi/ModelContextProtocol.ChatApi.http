@@ -1,7 +1,0 @@
-@ModelContextProtocol.ChatApi_HostAddress = http://localhost:5189
-
-GET {{ModelContextProtocol.ChatApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
-

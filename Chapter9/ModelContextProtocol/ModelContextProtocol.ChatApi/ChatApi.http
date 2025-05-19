@@ -1,0 +1,15 @@
+@ModelContextProtocol.ChatApi_HostAddress = http://localhost:5189
+
+POST {{ModelContextProtocol.ChatApi_HostAddress}}/chat
+Accept: application/json
+Content-Type: application/json
+
+{
+  "Messages": [
+    {"Role": "assistant", "Message": "Hello there. How are you?"},
+    {"Role": "user", "Message": "I'm fine. How are you today?"}
+  ]
+}
+
+###
+

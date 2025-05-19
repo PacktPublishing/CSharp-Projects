@@ -8,9 +8,6 @@ console.Write(new FigletText("MCP Client").Color(Color.Yellow));
 console.MarkupLine("[cyan]Demo client for listing MCP server contents[/]");
 console.WriteLine();
 
-//var builder = Host.CreateApplicationBuilder(args);
-//builder.AddServiceDefaults();
-
 string? endpoint = Environment.GetEnvironmentVariable("services__mcpserver-sse__https__0");
 endpoint ??= "http://localhost:5021";
 console.WriteLine($"Using endpoint for MCP Server: {endpoint}");
