@@ -1,6 +1,6 @@
-@ModelContextProtocol.ChatApi_HostAddress = http://localhost:5189
+@ChatApi_HostAddress = http://localhost:5189
 
-POST {{ModelContextProtocol.ChatApi_HostAddress}}/chat
+POST {{ChatApi_HostAddress}}/chat
 Accept: application/json
 Content-Type: application/json
 

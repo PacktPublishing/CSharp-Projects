@@ -1,6 +1,6 @@
-@ModelContextProtocol.DocumentsApi_HostAddress = http://localhost:5109
+@DocumentsApi_HostAddress = http://localhost:5109
 
-POST  {{ModelContextProtocol.DocumentsApi_HostAddress}}/search
+POST  {{DocumentsApi_HostAddress}}/search
 content-type: application/json
 
 {
@@ -9,7 +9,7 @@ content-type: application/json
 
 ###
 
-POST  {{ModelContextProtocol.DocumentsApi_HostAddress}}/ask
+POST  {{DocumentsApi_HostAddress}}/ask
 content-type: application/json
 
 {

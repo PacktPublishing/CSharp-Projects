@@ -400,3 +400,5 @@ FodyWeavers.xsd
 *.sln.iml
 
 Chapter4/CardTracker/CardTrackerWebApi/cardtracker.db
+
+Chapter9/ModelContextProtocol/.idea/
