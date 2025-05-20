@@ -13,3 +13,12 @@ Content-Type: application/json
 
 ###
 
+POST {{ChatApi_HostAddress}}/chat
+Accept: application/json
+Content-Type: application/json
+
+{
+  "Messages": [
+    {"Role": "user", "Message": "Roll two six-sided dice and tell me the result."}
+  ]
+}

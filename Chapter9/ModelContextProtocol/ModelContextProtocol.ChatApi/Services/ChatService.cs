@@ -4,16 +4,15 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.Ollama;
 using ModelContextProtocol.ChatApi.Requests;
+using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
-using ModelContextProtocol.SemanticKernel.Extensions;
-using ModelContextProtocol.SemanticKernel.Options;
-using OllamaSharp;
 
 namespace ModelContextProtocol.ChatApi.Services;
 
 public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory) : IChatService
 {
     private readonly ILogger<ChatService> _logger = logFactory.CreateLogger<ChatService>();
+    private IMcpClient? _mcpClient;
 
     [Experimental("SKEXP0070")]
     public async IAsyncEnumerable<string> ChatAsync(ChatRequest request)
@@ -27,7 +26,6 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
             FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
         };
 
-        // TODO: Loading the MCP Server and kernel with every request is inefficient
         _logger.LogTrace("Creating kernel with chat model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
 
         IKernelBuilder builder = Kernel.CreateBuilder()
@@ -35,19 +33,11 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
         builder.Services.AddSingleton(logFactory);
             
         Kernel kernel = builder.Build();
-
-        _logger.LogTrace("Connecting to MCP Server at {endpoint}", options.McpServerEndpoint);
-        ModelContextProtocolSemanticKernelSseOptions sseOptions = new()
-        {
-            Name = "Custom MCP Server",
-            Endpoint = new Uri(options.McpServerEndpoint),
-            LoggerFactory = logFactory
-        };
+        // TODO: Loading the MCP Server and kernel with every request is inefficient
+        await AddMcpToolsAsync(options, kernel);
 
         using HttpClient client = new();
         client.Timeout = TimeSpan.FromSeconds(60);
-
-        await kernel.Plugins.AddMcpFunctionsFromSseServerAsync(sseOptions, client);
 
         IChatCompletionService completions = kernel.GetRequiredService<IChatCompletionService>();
 
@@ -64,6 +54,25 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
                 _logger.LogTrace("Response {index}: {content}", index, response.Content);
                 yield return response.Content;
             }
+        }
+    }
+
+    [Experimental("SKEXP0001")]
+    private async Task AddMcpToolsAsync(ChatSettings options, Kernel kernel)
+    {
+        _logger.LogTrace("Connecting to MCP Server at {endpoint}", options.McpServerEndpoint);
+        IClientTransport clientTransport = new SseClientTransport(new()
+        {
+            Name = "Custom MCP Server",
+            Endpoint = new Uri(options.McpServerEndpoint),
+            UseStreamableHttp = true
+        });
+        _mcpClient = await McpClientFactory.CreateAsync(clientTransport);
+
+        await foreach (var tool in _mcpClient.EnumerateToolsAsync())
+        {
+            _logger.LogTrace("Registering MCP Tool {Name}", tool.Name);
+            kernel.Plugins.AddFromFunctions(tool.Name, tool.Description, [tool.AsKernelFunction()]);
         }
     }
 
