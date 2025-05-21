@@ -5,6 +5,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.Ollama;
 using ModelContextProtocol.ChatApi.Requests;
 using ModelContextProtocol.Client;
+using ModelContextProtocol.Domain.Requests;
 using ModelContextProtocol.Protocol;
 
 namespace ModelContextProtocol.ChatApi.Services;

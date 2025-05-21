@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Options;
+using ModelContextProtocol.ChatApi.Requests;
 using ModelContextProtocol.Server;
-using ModelContextProtocol.ServerShared.Requests;
 
 namespace ModelContextProtocol.ServerShared.Tools;
 

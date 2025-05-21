@@ -1,6 +1,7 @@
 using ModelContextProtocol.ChatApi;
 using ModelContextProtocol.ChatApi.Requests;
 using ModelContextProtocol.ChatApi.Services;
+using ModelContextProtocol.Domain.Requests;
 
 var builder = WebApplication.CreateBuilder(args);
 

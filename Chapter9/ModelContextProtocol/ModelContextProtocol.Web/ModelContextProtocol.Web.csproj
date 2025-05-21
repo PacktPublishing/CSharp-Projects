@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ModelContextProtocol.Domain\ModelContextProtocol.Domain.csproj" />
     <ProjectReference Include="..\ModelContextProtocol.ServiceDefaults\ModelContextProtocol.ServiceDefaults.csproj" />
   </ItemGroup>
 

@@ -10,4 +10,8 @@
     <PackageReference Include="ModelContextProtocol" Version="0.2.0-preview.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ModelContextProtocol.Domain\ModelContextProtocol.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

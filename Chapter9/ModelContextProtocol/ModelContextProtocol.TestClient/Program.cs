@@ -65,6 +65,4 @@ Table BuildMetadataTable(string title)
     return table;
 }
 
-//var app = builder.Build();
-//app.Run();
 
