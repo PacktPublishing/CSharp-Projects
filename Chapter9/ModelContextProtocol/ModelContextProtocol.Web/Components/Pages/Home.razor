@@ -1,9 +1,86 @@
 ﻿@page "/"
+@using ModelContextProtocol.Domain.Requests
+@using ModelContextProtocol.Protocol
+@rendermode InteractiveServer
 
 @inject ChatApiClient ChatApi
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudContainer>
+    <div class="my-4">
+        <MudText Typo="Typo.h1">Aspire AI Chat</MudText>
+        <MudText Typo="Typo.h6">
+            This app uses Semantic Kernel, Model Context Protocol, and Kernel Memory communicating 
+            over several different services, all coordinated using .NET Aspire.
+        </MudText>
+    </div>
+    
+    @foreach (var message in _messages)
+    {
+        @if (message.Role == Role.User) {
+            <MudChat ChatPosition="ChatBubblePosition.End" Color="Color.Primary" Variant="Variant.Filled">
+            <MudChatHeader>User</MudChatHeader>
+            <MudChatBubble>
+                @message.Message
+            </MudChatBubble>
+            </MudChat>
+        }
+        else
+        {
+            <MudChat ChatPosition="ChatBubblePosition.Start" Color="Color.Secondary" Variant="Variant.Filled">
+                <MudChatHeader>AI Agent</MudChatHeader>
+                <MudChatBubble>
+                    @message.Message
+                </MudChatBubble>
+            </MudChat>
+        }
+    }
+    
+    <MudDivider Class="my-8" />
+    
+    <div class="d-flex flex-row mt-8 gap-4">
+        <MudTextField @bind-Value="Text"
+                      Immediate="true"
+                      Label="Message" 
+                      Variant="Variant.Text" 
+                      Placeholder="Enter a message" 
+                      Class="flex-grow-1" 
+                      InputType="InputType.Text" 
+                      T="string" />
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   EndIcon="@Icons.Material.Filled.Send"
+                   OnClick="SendMessage">
+            Send
+        </MudButton>
+    </div>
+    
+    <div>
+        @Text
+    </div>
+</MudContainer>
 
-Welcome to your new app.
+@code {
+    private readonly List<ApiChatMessage> _messages =
+    [
+        new(Role.User, "Hello, how are you?"),
+        new(Role.Assistant, "I'm doing well, thank you! How can I assist you today?")
+    ];
+    
+    public string Text { get; set; }
+
+    private async Task SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(Text))
+        {
+            return;
+        }
+        
+        _messages.Add(new ApiChatMessage(Role.User, Text));
+        Text = string.Empty;
+        IEnumerable<ApiChatMessage> newMessages = await ChatApi.ChatAsync(_messages);
+        _messages.AddRange(newMessages);
+        StateHasChanged();
+    }
+}

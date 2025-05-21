@@ -11,4 +11,14 @@
     <ProjectReference Include="..\ModelContextProtocol.ServiceDefaults\ModelContextProtocol.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="8.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ModelContextProtocol">
+      <HintPath>..\..\..\..\..\.nuget\packages\modelcontextprotocol\0.2.0-preview.1\lib\net9.0\ModelContextProtocol.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
