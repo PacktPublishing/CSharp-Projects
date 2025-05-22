@@ -43,6 +43,7 @@
         <MudTextField @bind-Value="Text"
                       Immediate="true"
                       Label="Message" 
+                      OnKeyDown="OnTextKeyDown"
                       Variant="Variant.Text" 
                       Placeholder="Enter a message" 
                       Class="flex-grow-1" 
@@ -54,10 +55,6 @@
                    OnClick="SendMessage">
             Send
         </MudButton>
-    </div>
-    
-    <div>
-        @Text
     </div>
 </MudContainer>
 
@@ -82,5 +79,13 @@
         IEnumerable<ApiChatMessage> newMessages = await ChatApi.ChatAsync(_messages);
         _messages.AddRange(newMessages);
         StateHasChanged();
+    }
+
+    private async Task OnTextKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key.Contains("Enter", StringComparison.OrdinalIgnoreCase))
+        {
+            await SendMessage();
+        }
     }
 }
