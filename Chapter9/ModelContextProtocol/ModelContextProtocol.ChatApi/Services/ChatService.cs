@@ -1,9 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.Ollama;
-using ModelContextProtocol.ChatApi.Requests;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Domain.Requests;
 using ModelContextProtocol.Protocol;
@@ -12,6 +12,7 @@ namespace ModelContextProtocol.ChatApi.Services;
 
 public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory) : IChatService
 {
+    private readonly ActivitySource _activitySource = new(typeof(ChatService).Assembly.FullName!);
     private readonly ILogger<ChatService> _logger = logFactory.CreateLogger<ChatService>();
     private IMcpClient? _mcpClient;
 
@@ -79,18 +80,23 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
 
     private ChatHistory BuildChatHistory(ChatRequest request, string sysPrompt)
     {
-        _logger.LogTrace("Building conversation history");
+        using Activity? activity = _activitySource.StartActivity(ActivityKind.Server);
+        activity?.AddTag("History Size", request.Messages.Count());
+
         ChatHistory history = new(sysPrompt);
 
+        int index = 1;
         foreach (var entry in request.Messages)
         {
             if (entry.Role == Role.Assistant)
             {
+                activity?.AddEvent(new ActivityEvent($"History-{index++} Assistant: {entry.Message}"));
                 _logger.LogTrace("Assistant: {Message}", entry.Message);
                 history.AddAssistantMessage(entry.Message);
             }
             else
             {
+                activity?.AddEvent(new ActivityEvent($"User-{index++} Assistant: {entry.Message}"));
                 _logger.LogTrace("User: {Message}", entry.Message);
                 history.AddUserMessage(entry.Message);
             }
