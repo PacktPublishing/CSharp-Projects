@@ -61,8 +61,9 @@
 @code {
     private readonly List<ApiChatMessage> _messages =
     [
-        new(Role.User, "Hello, how are you?"),
-        new(Role.Assistant, "I'm doing well, thank you! How can I assist you today?")
+        new(Role.Assistant, "Hello. How can I help you today?"),
+        // new(Role.User, "Hello, how are you?"),
+        // new(Role.Assistant, "I'm doing well, thank you! How can I assist you today?")
     ];
     
     public string Text { get; set; }
@@ -76,6 +77,8 @@
         
         _messages.Add(new ApiChatMessage(Role.User, Text));
         Text = string.Empty;
+        StateHasChanged();
+        
         IEnumerable<ApiChatMessage> newMessages = await ChatApi.ChatAsync(_messages);
         _messages.AddRange(newMessages);
         StateHasChanged();

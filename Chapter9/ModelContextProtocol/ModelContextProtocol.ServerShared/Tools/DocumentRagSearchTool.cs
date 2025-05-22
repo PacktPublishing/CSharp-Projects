@@ -32,8 +32,7 @@ public class DocumentRagSearchTool(IOptionsSnapshot<McpServerSettings> options)
             HttpResponseMessage result = await client.PostAsync("ask", content);
 
             string response = await result.Content.ReadAsStringAsync();
-
-            activity?.AddTag("response", response);
+            activity?.AddEvent(new ActivityEvent(response));
 
             return response;
         }

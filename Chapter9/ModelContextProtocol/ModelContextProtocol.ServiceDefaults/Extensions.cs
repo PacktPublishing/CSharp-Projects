@@ -54,11 +54,17 @@ public static class Extensions
             {
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
+                    .AddMeter("Microsoft.SemanticKernel*")
+                    .AddMeter("Microsoft.KernelMemory*")
+                    .AddMeter("ModelContextProtocol*")
                     .AddRuntimeInstrumentation();
             })
             .WithTracing(tracing =>
             {
                 tracing.AddSource(builder.Environment.ApplicationName)
+                    .AddSource("Microsoft.SemanticKernel*")
+                    .AddSource("Microsoft.KernelMemory*")
+                    .AddSource("ModelContextProtocol*")
                     .AddAspNetCoreInstrumentation()
                     // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
                     //.AddGrpcClientInstrumentation()

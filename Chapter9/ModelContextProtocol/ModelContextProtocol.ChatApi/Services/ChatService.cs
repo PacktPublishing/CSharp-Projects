@@ -29,7 +29,7 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
         };
 
         _logger.LogTrace("Creating kernel with chat model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
-
+        
         IKernelBuilder builder = Kernel.CreateBuilder()
             .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.ChatEndpoint));
         builder.Services.AddSingleton(logFactory);
@@ -43,8 +43,7 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
 
         IChatCompletionService completions = kernel.GetRequiredService<IChatCompletionService>();
 
-        _logger.LogTrace("Getting responses");
-        IReadOnlyList<ChatMessageContent> responses = await completions.GetChatMessageContentsAsync(history, execSettings, kernel);
+        IReadOnlyList<ChatMessageContent> responses = await GetResponse(completions, history, execSettings, kernel);
 
         int index = 0;
         foreach (var response in responses)
@@ -59,10 +58,19 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
         }
     }
 
+    private async Task<IReadOnlyList<ChatMessageContent>> GetResponse(IChatCompletionService completions, 
+        ChatHistory history,
+        PromptExecutionSettings execSettings, 
+        Kernel kernel)
+    {
+        using Activity? activity = _activitySource.StartActivity(ActivityKind.Client);
+        return await completions.GetChatMessageContentsAsync(history, execSettings, kernel);
+    }
+
     [Experimental("SKEXP0001")]
     private async Task AddMcpToolsAsync(ChatSettings options, Kernel kernel)
     {
-        _logger.LogTrace("Connecting to MCP Server at {endpoint}", options.McpServerEndpoint);
+        using Activity? activity = _activitySource.StartActivity(ActivityKind.Server);
         IClientTransport clientTransport = new SseClientTransport(new()
         {
             Name = "Custom MCP Server",
@@ -73,7 +81,7 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
 
         await foreach (var tool in _mcpClient.EnumerateToolsAsync())
         {
-            _logger.LogTrace("Registering MCP Tool {Name}", tool.Name);
+            activity?.AddEvent(new ActivityEvent($"Registering {tool.Name}"));
             kernel.Plugins.AddFromFunctions(tool.Name, tool.Description, [tool.AsKernelFunction()]);
         }
     }
@@ -81,8 +89,6 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
     private ChatHistory BuildChatHistory(ChatRequest request, string sysPrompt)
     {
         using Activity? activity = _activitySource.StartActivity(ActivityKind.Server);
-        activity?.AddTag("History Size", request.Messages.Count());
-
         ChatHistory history = new(sysPrompt);
 
         int index = 1;
