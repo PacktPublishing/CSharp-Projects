@@ -1,4 +1,6 @@
-﻿IAnsiConsole console = AnsiConsole.Console;
+﻿using ConsoleRolePlayingGame.Overworld.Generators;
+
+IAnsiConsole console = AnsiConsole.Console;
 try
 {
     ServiceCollection services = new();
@@ -13,6 +15,7 @@ try
     services.AddSingleton<AbilityRepository>();
     services.AddSingleton<MapGenerator>();
     services.AddSingleton<WorldMap>();
+    services.AddSingleton<OpenPosSelector>();
     services.AddSingleton<Random>();
     
     // Transients will be created each time they are requested

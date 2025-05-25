@@ -1,4 +1,6 @@
-namespace ConsoleRolePlayingGame.Overworld;
+using ConsoleRolePlayingGame.Overworld.Structure;
+
+namespace ConsoleRolePlayingGame.Overworld.Entities;
 
 public class HostileMapEntity(Pos startPos) : IMapEntity
 {

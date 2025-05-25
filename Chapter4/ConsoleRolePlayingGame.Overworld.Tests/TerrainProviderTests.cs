@@ -1,3 +1,5 @@
+using ConsoleRolePlayingGame.Overworld.Generators;
+using ConsoleRolePlayingGame.Overworld.Structure;
 using Shouldly;
 
 namespace ConsoleRolePlayingGame.Overworld.Tests;

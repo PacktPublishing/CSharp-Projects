@@ -1,5 +1,7 @@
 using ConsoleRolePlayingGame.CombatSystem;
 using ConsoleRolePlayingGame.Overworld;
+using ConsoleRolePlayingGame.Overworld.Entities;
+using ConsoleRolePlayingGame.Overworld.Structure;
 
 namespace ConsoleRolePlayingGame.Domain.Entities;
 

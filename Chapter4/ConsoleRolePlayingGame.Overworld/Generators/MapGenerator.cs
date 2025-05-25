@@ -1,4 +1,6 @@
-namespace ConsoleRolePlayingGame.Overworld;
+using ConsoleRolePlayingGame.Overworld.Structure;
+
+namespace ConsoleRolePlayingGame.Overworld.Generators;
 
 public class MapGenerator
 {

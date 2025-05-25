@@ -1,4 +1,4 @@
-namespace ConsoleRolePlayingGame.Overworld;
+namespace ConsoleRolePlayingGame.Overworld.Structure;
 
 public enum Direction
 {

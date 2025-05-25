@@ -1,4 +1,4 @@
-namespace ConsoleRolePlayingGame.Overworld;
+namespace ConsoleRolePlayingGame.CombatSystem;
 
 public class EncounterEnemyInformation
 {

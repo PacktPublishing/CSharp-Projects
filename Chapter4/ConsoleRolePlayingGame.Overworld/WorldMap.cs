@@ -1,3 +1,7 @@
+using ConsoleRolePlayingGame.Overworld.Entities;
+using ConsoleRolePlayingGame.Overworld.Generators;
+using ConsoleRolePlayingGame.Overworld.Structure;
+
 namespace ConsoleRolePlayingGame.Overworld;
 
 public class WorldMap(MapGenerator mapGenerator, Random random)
@@ -23,33 +27,8 @@ public class WorldMap(MapGenerator mapGenerator, Random random)
     }
 
     public IEnumerable<IMapEntity> Entities => _entities.AsReadOnly();
-
     private readonly List<IMapEntity> _entities = new();
+    
     public void AddEntity(IMapEntity entity) => _entities.Add(entity);
     public void RemoveEntity(IMapEntity entity) => _entities.Remove(entity);
-
-    public Pos GetOpenPositionNear(Pos centralPosition, int minDistance, int maxDistance)
-    {
-        Pos pos;
-        do
-        {
-            int offset = random.Next(minDistance, maxDistance + 1);
-            int xOffset = (int)Math.Round(random.NextDouble() * offset);
-            int yOffset = offset - xOffset;
-
-            // Randomly flip the offsets to negative
-            if (random.NextDouble() < 0.5)
-            {
-                xOffset *= -1;
-            }
-            if (random.NextDouble() < 0.5)
-            {
-                yOffset *= -1;
-            }
-
-            pos = new Pos(centralPosition.X + xOffset, centralPosition.Y + yOffset);
-        } while (_entities.Any(e => e.MapPos == pos));
-
-        return pos;
-    }
 }

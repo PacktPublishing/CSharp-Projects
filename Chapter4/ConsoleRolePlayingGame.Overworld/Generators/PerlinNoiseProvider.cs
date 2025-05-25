@@ -1,6 +1,6 @@
 using SimplexNoise;
 
-namespace ConsoleRolePlayingGame.Overworld;
+namespace ConsoleRolePlayingGame.Overworld.Generators;
 
 public class PerlinNoiseProvider(int seed, float scale = 0.05f)
 {

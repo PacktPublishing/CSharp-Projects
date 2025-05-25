@@ -1,6 +1,7 @@
 using ConsoleRolePlayingGame.CombatSystem;
 using ConsoleRolePlayingGame.Domain.Entities;
 using ConsoleRolePlayingGame.Overworld;
+using ConsoleRolePlayingGame.Overworld.Structure;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ConsoleRolePlayingGame.Domain.Repositories;

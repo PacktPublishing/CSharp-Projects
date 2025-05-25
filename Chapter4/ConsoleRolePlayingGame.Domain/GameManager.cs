@@ -2,6 +2,9 @@ using ConsoleRolePlayingGame.CombatSystem;
 using ConsoleRolePlayingGame.Domain.Entities;
 using ConsoleRolePlayingGame.Domain.Repositories;
 using ConsoleRolePlayingGame.Overworld;
+using ConsoleRolePlayingGame.Overworld.Entities;
+using ConsoleRolePlayingGame.Overworld.Generators;
+using ConsoleRolePlayingGame.Overworld.Structure;
 
 namespace ConsoleRolePlayingGame.Domain;
 
@@ -9,6 +12,7 @@ public class GameManager
 {
     private readonly EncounterRepository _encounters;
     private readonly Random _random;
+    private readonly OpenPosSelector _posSelector;
     public GameStatus Status { get; private set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
     public PlayerParty Party { get; }
@@ -17,10 +21,12 @@ public class GameManager
     public GameManager(PartyRepository partyRepository, 
                        EncounterRepository encounterRepository,
                        Random random,
+                       OpenPosSelector posSelector,
                        WorldMap map)
     {
         _encounters = encounterRepository;
         _random = random;
+        _posSelector = posSelector;
         Party = partyRepository.Load();
         Map = map;
         Map.AddEntity(Party);
@@ -34,7 +40,7 @@ public class GameManager
 
     private void SpawnNearbyEncounter()
     {
-        Pos point = Map.GetOpenPositionNear(Party.MapPos, 5, 10);
+        Pos point = _posSelector.GetOpenPositionNear(Party.MapPos, 5, 10);
         Map.AddEntity(_encounters.CreateRandomEncounter(point));
     }
 
