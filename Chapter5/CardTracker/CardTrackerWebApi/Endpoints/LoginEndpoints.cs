@@ -1,6 +1,3 @@
-using CardTracker.Contracts.Requests;
-using CardTracker.Contracts.Responses;
-
 namespace CardTrackerWebApi.Endpoints;
 
 public static class LoginEndpoints

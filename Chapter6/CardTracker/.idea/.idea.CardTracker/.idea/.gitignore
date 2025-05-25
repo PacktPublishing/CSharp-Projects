@@ -2,9 +2,9 @@
 /shelf/
 /workspace.xml
 # Rider ignored files
-/.idea.CardTracker.iml
-/projectSettingsUpdater.xml
 /modules.xml
+/.idea.TradingCardTracker.iml
+/projectSettingsUpdater.xml
 /contentModel.xml
 # Editor-based HTTP Client requests
 /httpRequests/

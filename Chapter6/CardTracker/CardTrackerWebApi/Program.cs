@@ -1,8 +1,7 @@
-using CardTrackerWebApi.Converters;
-using CardTrackerWebApi.Helpers;
+using CardTracker.Contracts.Converters;
+using CardTracker.Contracts.Requests;
+using CardTracker.Contracts.Responses;
 using CardTrackerWebApi.Settings;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -25,6 +24,8 @@ builder.Services.AddAutoMapper(map =>
     map.CreateMap<CreatureCard, CreatureCardResponse>();
     map.CreateMap<CreateActionCardRequest, ActionCard>();
     map.CreateMap<CreateCreatureCardRequest, CreatureCard>();
+    map.CreateMap<CardTrackerWebApi.Models.CardDeck, CardTracker.Contracts.Responses.CardDeck>();
+    map.CreateMap<CardTracker.Contracts.Responses.CardDeck, CardTrackerWebApi.Models.CardDeck>();
     
     // Polymorphic mappings
     map.CreateMap<Card, CardResponse>()
@@ -50,10 +51,22 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 });
 
+// Configure CORS to allow any origin, method, and header for all endpoints
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 WebApplication app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors();
 
 // Configure the request pipeline.
 if (app.Environment.IsDevelopment())
@@ -61,8 +74,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseDeveloperExceptionPage();
 }
-
-app.UseHttpsRedirection();
+else
+{
+    app.UseHttpsRedirection();
+}
 
 // Endpoints
 app.AddLoginEndpoints();
