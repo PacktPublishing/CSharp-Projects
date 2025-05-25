@@ -1,7 +1,6 @@
-using ConsoleRolePlayingGame.Overworld;
 using Shouldly;
 
-namespace ConsoleRolePlayingGame.Tests;
+namespace ConsoleRolePlayingGame.Overworld.Tests;
 
 public class TerrainProviderTests
 {
