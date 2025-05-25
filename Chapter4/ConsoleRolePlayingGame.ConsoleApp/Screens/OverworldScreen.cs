@@ -1,26 +1,20 @@
-using ConsoleRolePlayingGame.ConsoleApp.Visuals;
-using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Combat;
-using Spectre.Console;
-using Spectre.Console.Rendering;
-
 namespace ConsoleRolePlayingGame.ConsoleApp.Screens;
 
 public class OverworldScreen(GameManager game, IAnsiConsole console)
 {
-    public const int width = 21;
+    public const int Width = 21;
     private readonly Layout _layout = new Layout("Root").SplitRows(
         new Layout("Header").Size(1)
             .Update(new Markup("[bold yellow]Console Role Playing Game[/] by [cyan]Matt Eland[/]")),
-        new Layout("Content").Size(width)
+        new Layout("Content").Size(Width)
             .SplitColumns(
-                new Layout("Main").Size(width * 2),
+                new Layout("Main").Size(Width * 2),
                 new Layout("Sidebar")
             )
     );
 
     private readonly HelpRenderer _helpRenderer = new();
-    private readonly MapRenderer _mapRenderer = new(game, width, width);
+    private readonly MapRenderer _mapRenderer = new(game, Width, Width);
     private readonly PartyRenderer _partyRenderer = new(game.Party);
     
     public IRenderable GenerateVisual()
@@ -41,7 +35,7 @@ public class OverworldScreen(GameManager game, IAnsiConsole console)
 
         if (keyInfo.HasValue)
         {
-            CombatGroup party = game.Party;
+            IMapEntity party = (IMapEntity) game.Party;
             switch (keyInfo.Value.Key)
             {
                 case ConsoleKey.A:

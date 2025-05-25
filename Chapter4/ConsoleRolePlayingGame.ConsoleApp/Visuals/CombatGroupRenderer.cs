@@ -1,10 +1,6 @@
-using ConsoleRolePlayingGame.Domain.Combat;
-using Spectre.Console;
-using Spectre.Console.Rendering;
-
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class CombatGroupRenderer(CombatGroup group, Combatant? activeCharacter, bool includeStats = false)
+public class CombatGroupRenderer(ICombatGroup group, Combatant? activeCharacter, bool includeStats = false)
 {
     public IRenderable GenerateVisual()
     {

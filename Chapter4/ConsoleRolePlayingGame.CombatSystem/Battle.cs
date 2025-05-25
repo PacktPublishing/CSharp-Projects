@@ -1,14 +1,14 @@
 using System.Text;
 
-namespace ConsoleRolePlayingGame.Domain.Combat;
+namespace ConsoleRolePlayingGame.CombatSystem;
 
 public class Battle
 {
-    private readonly CombatGroup _party;
-    private readonly CombatGroup _enemies;
+    private readonly ICombatGroup _party;
+    private readonly ICombatGroup _enemies;
     private readonly Random _random;
 
-    public Battle(CombatGroup party, CombatGroup enemies, Random random)
+    public Battle(ICombatGroup party, ICombatGroup enemies, Random random)
     {
         _party = party;
         _enemies = enemies;
@@ -20,8 +20,8 @@ public class Battle
         }
     }
 
-    public CombatGroup Enemies => _enemies;
-    public CombatGroup Party => _party;
+    public ICombatGroup Enemies => _enemies;
+    public ICombatGroup Party => _party;
     public IEnumerable<Combatant> AllCharacters => [.._party.Members, .._enemies.Members];
 
     public Combatant? ActiveMember => AllCharacters

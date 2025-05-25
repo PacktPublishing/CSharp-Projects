@@ -1,9 +1,3 @@
-using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Combat;
-using ConsoleRolePlayingGame.Domain.Overworld;
-using Spectre.Console;
-using Spectre.Console.Rendering;
-
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
 public class MapRenderer(GameManager game, int width, int height)
@@ -25,7 +19,7 @@ public class MapRenderer(GameManager game, int width, int height)
             for (int x = 0; x < mapWindow.GetLength(0); x++)
             {
                 MapCell cell = mapWindow[x,y];
-                CombatGroup? entity = game.Map.Entities.FirstOrDefault(e => cell.Position == e.MapPos);
+                IMapEntity? entity = game.Map.Entities.FirstOrDefault(e => cell.Position == e.MapPos);
                 canvas.SetPixel(x, y, GetCellColor(entity, cell.Terrain));
             }
         }
@@ -33,21 +27,24 @@ public class MapRenderer(GameManager game, int width, int height)
         return canvas;
     }
 
-    private Color GetCellColor(CombatGroup? entity, TerrainType terrain)
+    private static Color GetCellColor(IMapEntity? entity, TerrainType terrain)
     {
-        if (entity is not null) return entity == game.Party 
-            ? Color.Yellow1 
-            : Color.Red;
-        
-        return terrain switch
-        {
-            TerrainType.Grass => Color.Green,
-            TerrainType.Water => Color.Blue,
-            TerrainType.DeepWater => Color.Blue3_1,
-            TerrainType.Mountain => new Color(128, 128, 128),
-            TerrainType.Forest => Color.DarkGreen,
-            TerrainType.Desert => Color.MistyRose1,
-            _ => throw new NotSupportedException($"Unsupported terrain: {terrain}")
-        };
+        return entity is not null
+            ? entity.EntityType switch
+            {
+                EntityType.Player => Color.Yellow1,
+                EntityType.Enemy => Color.Red,
+                _ => Color.Magenta1
+            }
+            : terrain switch
+            {
+                TerrainType.Grass => Color.Green,
+                TerrainType.Water => Color.Blue,
+                TerrainType.DeepWater => Color.Blue3_1,
+                TerrainType.Mountain => new Color(128, 128, 128),
+                TerrainType.Forest => Color.DarkGreen,
+                TerrainType.Desert => Color.MistyRose1,
+                _ => Color.DarkMagenta
+            };
     }
 }

@@ -1,9 +1,3 @@
-using ConsoleRolePlayingGame.ConsoleApp.Visuals;
-using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Combat;
-using Spectre.Console;
-using Spectre.Console.Rendering;
-
 namespace ConsoleRolePlayingGame.ConsoleApp.Screens;
 
 public class BattleScreen(GameManager game, IAnsiConsole console)

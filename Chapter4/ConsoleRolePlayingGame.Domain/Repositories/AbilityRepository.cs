@@ -1,4 +1,4 @@
-using ConsoleRolePlayingGame.Domain.Combat;
+using ConsoleRolePlayingGame.CombatSystem;
 
 namespace ConsoleRolePlayingGame.Domain.Repositories;
 

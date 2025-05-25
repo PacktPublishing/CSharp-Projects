@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ConsoleRolePlayingGame.Domain\ConsoleRolePlayingGame.Domain.csproj" />
+      <ProjectReference Include="..\ConsoleRolePlayingGame.Overworld\ConsoleRolePlayingGame.Overworld.csproj" />
     </ItemGroup>
 
     <ItemGroup>

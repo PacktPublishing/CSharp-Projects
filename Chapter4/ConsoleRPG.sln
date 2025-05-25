@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRolePlayingGame.Cons
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRolePlayingGame.Tests", "ConsoleRolePlayingGame.Tests\ConsoleRolePlayingGame.Tests.csproj", "{5AAE0367-4F1C-4A2D-A9DB-AAFA2D9EF291}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRolePlayingGame.Overworld", "ConsoleRolePlayingGame.Overworld\ConsoleRolePlayingGame.Overworld.csproj", "{1794FEB0-DA96-476A-BC0F-5FA7533D6BD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRolePlayingGame.CombatSystem", "ConsoleRolePlayingGame.CombatSystem\ConsoleRolePlayingGame.CombatSystem.csproj", "{5433A6CF-C531-4247-AAFB-7E69449B397B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{5AAE0367-4F1C-4A2D-A9DB-AAFA2D9EF291}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AAE0367-4F1C-4A2D-A9DB-AAFA2D9EF291}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AAE0367-4F1C-4A2D-A9DB-AAFA2D9EF291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1794FEB0-DA96-476A-BC0F-5FA7533D6BD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1794FEB0-DA96-476A-BC0F-5FA7533D6BD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1794FEB0-DA96-476A-BC0F-5FA7533D6BD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1794FEB0-DA96-476A-BC0F-5FA7533D6BD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5433A6CF-C531-4247-AAFB-7E69449B397B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5433A6CF-C531-4247-AAFB-7E69449B397B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5433A6CF-C531-4247-AAFB-7E69449B397B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5433A6CF-C531-4247-AAFB-7E69449B397B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-namespace ConsoleRolePlayingGame.Domain.Combat;
+namespace ConsoleRolePlayingGame.CombatSystem;
 
 public class EnemyTurnStrategy(Random random) : IBattleStrategy
 {

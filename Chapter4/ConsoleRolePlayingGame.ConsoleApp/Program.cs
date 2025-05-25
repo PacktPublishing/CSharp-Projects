@@ -1,13 +1,4 @@
-﻿using ConsoleRolePlayingGame.ConsoleApp.Input;
-using ConsoleRolePlayingGame.ConsoleApp.Screens;
-using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Combat;
-using ConsoleRolePlayingGame.Domain.Overworld;
-using ConsoleRolePlayingGame.Domain.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
-
-IAnsiConsole console = AnsiConsole.Console;
+﻿IAnsiConsole console = AnsiConsole.Console;
 try
 {
     ServiceCollection services = new();

@@ -1,14 +1,10 @@
-using ConsoleRolePlayingGame.Domain.Overworld;
+namespace ConsoleRolePlayingGame.Overworld;
 
-namespace ConsoleRolePlayingGame.Domain.Combat;
-
-public class CombatGroup
+public interface IMapEntity
 {
-    public required string Name { get; init;  }
-    public required Pos MapPos { get; set; }
-    public required List<Combatant> Members { get; init; }
-    public bool IsDead => Members.All(m => m.IsDead);
-    
+    EntityType EntityType { get; }
+    Pos MapPos { get; set; }
+
     public void Move(Direction direction)
     {
         MapPos = direction switch

@@ -1,5 +1,6 @@
-using ConsoleRolePlayingGame.Domain.Combat;
-using ConsoleRolePlayingGame.Domain.Overworld;
+using ConsoleRolePlayingGame.CombatSystem;
+using ConsoleRolePlayingGame.Domain.Entities;
+using ConsoleRolePlayingGame.Overworld;
 
 namespace ConsoleRolePlayingGame.Domain.Repositories;
 
@@ -7,14 +8,14 @@ public class EncounterRepository(
     EnemyRepository enemyRepository, 
     Random random) : FileRepositoryBase
 {
-    public CombatGroup CreateRandomEncounter(Pos position)
+    public EnemyGroup CreateRandomEncounter(Pos position)
     {
         List<EncounterInformation> encounters = LoadManyFromJsonFile<EncounterInformation>("Encounters.json");
         
         // Select a random element of encounters
         EncounterInformation encounter = encounters[random.Next(encounters.Count)];
         
-        return new CombatGroup()
+        return new EnemyGroup()
         {
             Name = encounter.Name,
             MapPos = position,

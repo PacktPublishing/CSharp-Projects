@@ -1,6 +1,7 @@
-using ConsoleRolePlayingGame.Domain.Combat;
-using ConsoleRolePlayingGame.Domain.Overworld;
+using ConsoleRolePlayingGame.CombatSystem;
+using ConsoleRolePlayingGame.Domain.Entities;
 using ConsoleRolePlayingGame.Domain.Repositories;
+using ConsoleRolePlayingGame.Overworld;
 
 namespace ConsoleRolePlayingGame.Domain;
 
@@ -10,7 +11,7 @@ public class GameManager
     private readonly Random _random;
     public GameStatus Status { get; private set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
-    public CombatGroup Party { get; }
+    public PlayerParty Party { get; }
     public Battle? Battle { get; private set; }
 
     public GameManager(PartyRepository partyRepository, 
@@ -44,7 +45,7 @@ public class GameManager
             return;
         }
         
-        if (Party.IsDead)
+        if (Party.Members.All(m => m.IsDead))
         {
             TriggerGameOver();
             return;
@@ -53,18 +54,19 @@ public class GameManager
         switch (Status)
         {
             case GameStatus.Overworld:
-                CombatGroup? encounter = Map.Entities
-                    .FirstOrDefault(g => g != Party && g.MapPos == Party.MapPos);
-            
-                if (encounter is not null)
-                {
-                    StartBattle(encounter);
-                }
+                IMapEntity? encounter = Map.Entities
+                    .FirstOrDefault(g => g.EntityType == EntityType.Enemy && g.MapPos == Party.MapPos);
 
+                if (encounter is ICombatGroup combatant)
+                {
+                    Map.RemoveEntity(encounter);
+                    Battle = new Battle(Party, combatant, _random);
+                    Status = GameStatus.Combat;
+                }
                 break;
             
             case GameStatus.Combat:
-                if (Battle is not null && Battle.Enemies.IsDead)
+                if (Battle is not null && Battle.Enemies.Members.All(e => e.IsDead))
                 {
                     EndBattle();
                 }
@@ -72,13 +74,6 @@ public class GameManager
         }
     }
 
-    private void StartBattle(CombatGroup enemies)
-    {
-        Map.RemoveEntity(enemies);
-        Battle = new Battle(Party, enemies, _random);
-        Status = GameStatus.Combat;
-    }
-    
     private void EndBattle()
     {
         Battle = null;

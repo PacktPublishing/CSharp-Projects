@@ -1,4 +1,4 @@
-using ConsoleRolePlayingGame.Domain.Combat;
+using ConsoleRolePlayingGame.CombatSystem;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ConsoleRolePlayingGame.Domain.Repositories;

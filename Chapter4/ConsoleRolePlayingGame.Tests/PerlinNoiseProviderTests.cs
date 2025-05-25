@@ -1,4 +1,4 @@
-﻿using ConsoleRolePlayingGame.Domain.Overworld;
+﻿using ConsoleRolePlayingGame.Overworld;
 using Shouldly;
 
 namespace ConsoleRolePlayingGame.Tests;

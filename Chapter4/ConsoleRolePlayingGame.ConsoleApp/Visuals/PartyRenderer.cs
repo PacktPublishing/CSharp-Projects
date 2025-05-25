@@ -1,11 +1,6 @@
-using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Combat;
-using Spectre.Console;
-using Spectre.Console.Rendering;
-
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class PartyRenderer(CombatGroup party) {
+public class PartyRenderer(ICombatGroup party) {
     public IRenderable GenerateVisual()
     {
         IEnumerable<Combatant> team = party.Members;

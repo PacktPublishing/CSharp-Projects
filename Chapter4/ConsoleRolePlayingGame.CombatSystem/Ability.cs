@@ -1,4 +1,4 @@
-namespace ConsoleRolePlayingGame.Domain.Combat;
+namespace ConsoleRolePlayingGame.CombatSystem;
 
 public record Ability
 {

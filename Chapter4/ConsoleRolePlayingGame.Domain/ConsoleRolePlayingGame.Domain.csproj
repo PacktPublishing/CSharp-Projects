@@ -31,4 +31,9 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ConsoleRolePlayingGame.CombatSystem\ConsoleRolePlayingGame.CombatSystem.csproj" />
+      <ProjectReference Include="..\ConsoleRolePlayingGame.Overworld\ConsoleRolePlayingGame.Overworld.csproj" />
+    </ItemGroup>
+
 </Project>

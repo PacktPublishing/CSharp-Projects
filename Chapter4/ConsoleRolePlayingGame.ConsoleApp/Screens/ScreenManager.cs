@@ -1,6 +1,3 @@
-using ConsoleRolePlayingGame.Domain;
-using Spectre.Console;
-
 namespace ConsoleRolePlayingGame.ConsoleApp.Screens;
 
 public class ScreenManager(GameManager game, IAnsiConsole console, OverworldScreen overworld, BattleScreen battleScreen)

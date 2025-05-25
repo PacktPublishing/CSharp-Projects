@@ -1,6 +1,3 @@
-using ConsoleRolePlayingGame.Domain.Combat;
-using Spectre.Console;
-
 namespace ConsoleRolePlayingGame.ConsoleApp.Input;
 
 public class PlayerTurnStrategy(IAnsiConsole console) : IBattleStrategy
