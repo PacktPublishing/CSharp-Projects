@@ -7,8 +7,8 @@ public record Ability
     public bool TargetsSingle { get; init; }
     public bool IsHeal { get; init; }
     public int ManaCost { get; init; }
-    public float MinMultiplier { get; init; }
-    public float MaxMultiplier { get; init; }
+    public float MinMultiplier { get; init; } = 1.0f;
+    public float MaxMultiplier { get; init; } = 1.0f;
     public Trait Attribute { get; init; } = Trait.None;
 
     public int CalculateAmount(Combatant activator, Combatant target, Random random)

@@ -6,13 +6,12 @@ public class Battle
 {
     private readonly ICombatGroup _party;
     private readonly ICombatGroup _enemies;
-    private readonly Random _random;
+    private readonly Random _random = Random.Shared;
 
-    public Battle(ICombatGroup party, ICombatGroup enemies, Random random)
+    public Battle(ICombatGroup party, ICombatGroup enemies)
     {
         _party = party;
         _enemies = enemies;
-        _random = random;
         
         foreach (var member in AllCharacters)
         {
@@ -75,5 +74,13 @@ public class Battle
         return target.IsDead
             ? $"{target.Name} takes {amount} damage and dies!"
             : $"{target.Name} takes {amount} damage.";
+    }
+
+    public void AdvanceUntilNextTurn()
+    {
+        while (ActiveMember is null)
+        {
+            AdvanceTime();
+        }
     }
 }

@@ -11,7 +11,6 @@ namespace ConsoleRolePlayingGame.Domain;
 public class GameManager
 {
     private readonly IEncounterProvider _encounters;
-    public Random Random { get; set; } = Random.Shared;
     public GameStatus Status { get; private set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
     public PlayerParty Party { get; }
@@ -62,8 +61,7 @@ public class GameManager
                 if (encounter is ICombatGroup combatant)
                 {
                     Map.RemoveEntity(encounter);
-                    Battle = new Battle(Party, combatant, Random);
-                    Status = GameStatus.Combat;
+                    StartBattle(combatant);
                 }
                 break;
             
@@ -76,7 +74,14 @@ public class GameManager
         }
     }
 
-    private void EndBattle()
+    public Battle StartBattle(ICombatGroup combatant)
+    {
+        Battle = new Battle(Party, combatant);
+        Status = GameStatus.Combat;
+        return Battle;
+    }
+
+    public void EndBattle()
     {
         Battle = null;
         Status = GameStatus.Overworld;
