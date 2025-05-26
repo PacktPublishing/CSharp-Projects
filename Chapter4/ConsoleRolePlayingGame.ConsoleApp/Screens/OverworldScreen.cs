@@ -32,10 +32,10 @@ public class OverworldScreen(GameManager game, IAnsiConsole console)
         return _layout;
     }
 
-    public async Task HandlePlayerInputAsync()
+    public void HandlePlayerInput()
     {
         console.Markup("[Yellow]>[/] ");
-        ConsoleKeyInfo? keyInfo = await console.Input.ReadKeyAsync(true, CancellationToken.None);
+        ConsoleKeyInfo? keyInfo = console.Input.ReadKey(true);
 
         if (keyInfo.HasValue)
         {

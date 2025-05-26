@@ -18,12 +18,7 @@ public class OverworldScreenTests
     public void OverworldScreenShouldRenderInfo()
     {
         // Arrange
-        PlayerParty party = CreateTestParty();
-        WorldMap map = new(new MapGenerator());
-        Mock<IEncounterProvider> mockEncounters = new();
-        mockEncounters.Setup(m => m.CreateRandomEncounter(It.IsAny<Pos>()))
-            .Returns(CreateTestEncounter());
-        GameManager game = new(party, mockEncounters.Object, map);
+        GameManager game = CreateGameManager();
         TestConsole console = new();
         OverworldScreen screen = new(game, console);
 
@@ -37,6 +32,56 @@ public class OverworldScreenTests
         console.Lines[0].ShouldStartWith("Console Role Playing Game");
         console.Output.ShouldContain("Test Hero");
         console.Output.ShouldContain("HP  ██████████████████████ 10");
+    }
+
+    [Theory]
+    [InlineData(ConsoleKey.UpArrow, 0, -1)]
+    [InlineData(ConsoleKey.S, 0, 1)]
+    [InlineData(ConsoleKey.A, -1, 0)]
+    [InlineData(ConsoleKey.RightArrow, 1, 0)]
+    public void OverworldScreenShouldHandleMovementCommands(ConsoleKey key, int expectedX, int expectedY)
+    {
+        // Arrange
+        GameManager game = CreateGameManager();
+        TestConsole console = new();
+        console.Interactive();
+        console.Input.PushKey(key);
+        OverworldScreen screen = new(game, console);
+        
+        // Act
+        screen.HandlePlayerInput();
+
+        // Assert
+        game.Party.MapPos.ShouldBe(new Pos(expectedX, expectedY));
+        game.Status.ShouldBe(GameStatus.Overworld);
+    }
+    
+    [Fact]
+    public void OverworldScreenShouldHandleQuitKey()
+    {
+        // Arrange
+        GameManager game = CreateGameManager();
+        TestConsole console = new();
+        console.Interactive();
+        console.Input.PushKey(ConsoleKey.Q);
+        OverworldScreen screen = new(game, console);
+        
+        // Act
+        screen.HandlePlayerInput();
+
+        // Assert
+        game.Status.ShouldBe(GameStatus.Terminated);
+    }
+
+    private static GameManager CreateGameManager()
+    {
+        PlayerParty party = CreateTestParty();
+        WorldMap map = new(new MapGenerator());
+        Mock<IEncounterProvider> mockEncounters = new();
+        mockEncounters.Setup(m => m.CreateRandomEncounter(It.IsAny<Pos>()))
+            .Returns(CreateTestEncounter());
+        GameManager game = new(party, mockEncounters.Object, map);
+        return game;
     }
 
     private static EnemyGroup CreateTestEncounter()

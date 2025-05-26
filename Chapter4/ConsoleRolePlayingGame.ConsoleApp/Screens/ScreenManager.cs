@@ -11,7 +11,7 @@ public class ScreenManager(GameManager game, IAnsiConsole console, OverworldScre
         {
             case GameStatus.Overworld:
                 console.Write(overworld.GenerateVisual());
-                await overworld.HandlePlayerInputAsync();
+                overworld.HandlePlayerInput();
                 break;
             
             case GameStatus.Combat:
