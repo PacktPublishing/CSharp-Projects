@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "Goblin",
+    "MaxHealth": 5,
+    "MaxMana": 0,
+    "Dexterity": 10,
+    "Speed": 10,
+    "Strength": 5,
+    "Intelligence": 5,
+    "AsciiArt": [
+      "  o   ",
+      " .;-/ ",
+      " /\\   "
+    ],
+    "AbilityIds": [
+      "Attack"
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "Name": "Goblin Raiding Party",
+    "Enemies": [
+      {
+        "Name": "Goblin",
+        "Count": 3
+      }
+    ]
+  },
+  {
+    "Name": "Goblin Gang",
+    "Enemies": [
+      {
+        "Name": "Goblin",
+        "Count": 8
+      }
+    ]
+  }
+]
