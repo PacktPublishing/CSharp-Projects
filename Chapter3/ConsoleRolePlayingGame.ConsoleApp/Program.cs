@@ -26,6 +26,8 @@ try
     while (game.Status != GameStatus.Terminated)
     {
         await screens.RunAsync();
+        
+        game.Update();
     }
 }
 catch (Exception ex)

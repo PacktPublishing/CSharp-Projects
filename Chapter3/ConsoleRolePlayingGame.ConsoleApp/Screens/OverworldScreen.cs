@@ -39,42 +39,29 @@ public class OverworldScreen(GameManager game, IAnsiConsole console)
 
         if (keyInfo.HasValue)
         {
-            IMapEntity party = game.Party;
             switch (keyInfo.Value.Key)
             {
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
-                    party.Move(Direction.West);
-                    MoveEnemies();
+                    game.MoveParty(Direction.West);
                     break;
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
-                    party.Move(Direction.East);
-                    MoveEnemies();
+                    game.MoveParty(Direction.East);
                     break;
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
-                    party.Move(Direction.South);
-                    MoveEnemies();
+                    game.MoveParty(Direction.South);
                     break;
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
-                    party.Move(Direction.North);
-                    MoveEnemies();
+                    game.MoveParty(Direction.North);
                     break;
                 case ConsoleKey.Q:
                 case ConsoleKey.Escape:
                     game.Quit();
                     break;
             }
-        }
-    }
-
-    private void MoveEnemies()
-    {
-        foreach (var group in game.Map.Entities.OfType<EnemyGroup>())
-        {
-            group.MoveTowards(game.Party.MapPos);
         }
     }
 }

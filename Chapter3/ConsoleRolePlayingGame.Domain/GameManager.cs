@@ -10,6 +10,8 @@ public class GameManager
     public GameStatus Status { get; private set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
     public PlayerParty Party { get; }
+    
+    public const int MaxEnemies = 5;
 
     public GameManager(PlayerParty party, WorldMap map)
     {
@@ -18,7 +20,7 @@ public class GameManager
         Map.AddEntity(Party);
         
         // Spawn a few initial encounters
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < MaxEnemies; i++)
         {
             SpawnNearbyEncounter();
         }
@@ -32,4 +34,43 @@ public class GameManager
     }
     
     public void Quit() => Status = GameStatus.Terminated;
+
+    public void MoveParty(Direction dir)
+    {
+        Party.Move(dir);
+
+        List<EnemyGroup> enemies = Map.Entities.OfType<EnemyGroup>()
+            .Where(e => e.MapPos == Party.MapPos)
+            .ToList();
+
+        foreach (var group in enemies)
+        {
+            Map.RemoveEntity(group);
+        }
+    }
+    
+    public void Update()
+    {
+        List<EnemyGroup> enemies = Map.Entities.OfType<EnemyGroup>().ToList();
+        
+        foreach (var group in enemies)
+        {
+            group.MoveTowards(Party.MapPos);
+            if (group.MapPos == Party.MapPos)
+            {
+                Map.RemoveEntity(group);
+                Party.Health--;
+            }
+        }
+        
+        if (Party.Health <= 0)
+        {
+            Status = GameStatus.GameOver;
+        }
+        
+        if (Map.Entities.OfType<EnemyGroup>().Count() < MaxEnemies)
+        {
+            SpawnNearbyEncounter();
+        }
+    }
 }
