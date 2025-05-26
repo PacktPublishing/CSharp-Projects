@@ -2,7 +2,7 @@ namespace ConsoleRolePlayingGame.CombatSystem;
 
 public record Combatant
 {
-    public Combatant(CombatantData data)
+    public Combatant(CombatantData data, IBattleStrategy strategy)
     {
         Name = data.Name;
         AsciiArt = data.AsciiArt;
@@ -14,6 +14,7 @@ public record Combatant
         Dexterity = data.Dexterity;
         Intelligence = data.Intelligence;
         Speed = data.Speed;
+        Strategy = strategy;
     }
 
     public string Name { get; init; }
@@ -35,5 +36,5 @@ public record Combatant
     
     public bool IsReady => TimeUntilTurn <= 0 && !IsDead;
     public bool IsPlayer { get; set; }
-    public required IBattleStrategy Strategy { get; init; }
+    public IBattleStrategy Strategy { get;}
 }

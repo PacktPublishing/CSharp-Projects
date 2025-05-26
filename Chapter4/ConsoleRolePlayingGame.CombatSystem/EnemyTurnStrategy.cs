@@ -1,12 +1,14 @@
 namespace ConsoleRolePlayingGame.CombatSystem;
 
-public class EnemyTurnStrategy(Random random) : IBattleStrategy
+public class EnemyTurnStrategy : IBattleStrategy
 {
+    public Random Random { get; set; } = Random.Shared;
+    
     public string Execute(Battle battle, Combatant combatant)
     {
         // Select a random ability
         Ability ability = combatant.Abilities
-            .OrderBy(_ => random.Next())
+            .OrderBy(_ => Random.Next())
             .First();
         
         IEnumerable<Combatant> targets = ability.IsHeal
@@ -17,7 +19,7 @@ public class EnemyTurnStrategy(Random random) : IBattleStrategy
         if (ability.TargetsSingle)
         {
             targets = targets
-                .OrderBy(_ => random.Next())
+                .OrderBy(_ => Random.Next())
                 .Take(1);
         }
         

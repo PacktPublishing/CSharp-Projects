@@ -13,10 +13,9 @@ public class PartyRepository(AbilityRepository abilities, [FromKeyedServices("Pl
             Name = "The Party",
             MapPos = new Pos(0, 0),
             Members = LoadManyFromJsonFile<CombatantData>("Party.json")
-                .Select(c => new Combatant(c)
+                .Select(c => new Combatant(c, strategy)
                 {
                     IsPlayer = true,
-                    Strategy = strategy,
                     Abilities = abilities.GetAbilities(c.AbilityIds),
                 }).ToList(),
 

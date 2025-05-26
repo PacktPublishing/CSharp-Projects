@@ -11,7 +11,7 @@ public class MapRenderer(GameManager game, int width, int height)
         Pos center = game.Party.MapPos;
         int offsetX = (int)Math.Ceiling(width / 2.0);
         int offsetY = (int)Math.Ceiling(height / 2.0);
-        Pos mapTopLeft = new Pos(center.X - offsetX, center.Y - offsetY);
+        Pos mapTopLeft = new(center.X - offsetX, center.Y - offsetY);
         MapCell[,] mapWindow = game.Map.GetMapWindow(mapTopLeft, width, height);
         
         Canvas canvas = new(mapWindow.GetLength(0), mapWindow.GetLength(1));

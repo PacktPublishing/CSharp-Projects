@@ -4,7 +4,7 @@ using ConsoleRolePlayingGame.Overworld.Structure;
 
 namespace ConsoleRolePlayingGame.Overworld;
 
-public class WorldMap(MapGenerator mapGenerator, Random random)
+public class WorldMap(MapGenerator mapGenerator)
 {
     public MapCell[,] GetMapWindow(Pos topLeft, int width, int height)
     {

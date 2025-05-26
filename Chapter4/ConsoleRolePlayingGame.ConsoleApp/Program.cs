@@ -1,4 +1,5 @@
-﻿using ConsoleRolePlayingGame.Overworld.Generators;
+﻿using ConsoleRolePlayingGame.Domain.Entities;
+using ConsoleRolePlayingGame.Overworld.Generators;
 
 IAnsiConsole console = AnsiConsole.Console;
 try
@@ -9,19 +10,23 @@ try
     services.AddSingleton<GameManager>();
     services.AddSingleton<IAnsiConsole>(console);
     services.AddSingleton<PerlinNoiseProvider>();
-    services.AddSingleton<EncounterRepository>();
     services.AddSingleton<EnemyRepository>();
+    services.AddSingleton<IEncounterProvider, EncounterRepository>();
     services.AddSingleton<PartyRepository>();
     services.AddSingleton<AbilityRepository>();
     services.AddSingleton<MapGenerator>();
     services.AddSingleton<WorldMap>();
     services.AddSingleton<OpenPosSelector>();
-    services.AddSingleton<Random>();
     
     // Transients will be created each time they are requested
     services.AddTransient<ScreenManager>();
     services.AddTransient<OverworldScreen>();
     services.AddTransient<BattleScreen>();
+    services.AddTransient<PlayerParty>(m =>
+    {
+        PartyRepository partyRepo = m.GetRequiredService<PartyRepository>();
+        return partyRepo.Load();
+    });
     services.AddKeyedTransient<IBattleStrategy, EnemyTurnStrategy>(serviceKey: "Enemy");
     services.AddKeyedTransient<IBattleStrategy, PlayerTurnStrategy>(serviceKey: "Player");
     

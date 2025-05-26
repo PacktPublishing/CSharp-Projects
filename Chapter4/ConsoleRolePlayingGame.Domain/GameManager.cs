@@ -10,24 +10,19 @@ namespace ConsoleRolePlayingGame.Domain;
 
 public class GameManager
 {
-    private readonly EncounterRepository _encounters;
-    private readonly Random _random;
-    private readonly OpenPosSelector _posSelector;
+    private readonly IEncounterProvider _encounters;
+    public Random Random { get; set; } = Random.Shared;
     public GameStatus Status { get; private set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
     public PlayerParty Party { get; }
     public Battle? Battle { get; private set; }
 
-    public GameManager(PartyRepository partyRepository, 
-                       EncounterRepository encounterRepository,
-                       Random random,
-                       OpenPosSelector posSelector,
+    public GameManager(PlayerParty party,
+                       IEncounterProvider encounters,
                        WorldMap map)
     {
-        _encounters = encounterRepository;
-        _random = random;
-        _posSelector = posSelector;
-        Party = partyRepository.Load();
+        _encounters = encounters;
+        Party = party;
         Map = map;
         Map.AddEntity(Party);
         
@@ -40,7 +35,8 @@ public class GameManager
 
     private void SpawnNearbyEncounter()
     {
-        Pos point = _posSelector.GetOpenPositionNear(Party.MapPos, 5, 10);
+        OpenPosSelector selector = new(Map, Random.Shared);
+        Pos point = selector.GetOpenPositionNear(Party.MapPos, 5, 10);
         Map.AddEntity(_encounters.CreateRandomEncounter(point));
     }
 
@@ -66,7 +62,7 @@ public class GameManager
                 if (encounter is ICombatGroup combatant)
                 {
                     Map.RemoveEntity(encounter);
-                    Battle = new Battle(Party, combatant, _random);
+                    Battle = new Battle(Party, combatant, Random);
                     Status = GameStatus.Combat;
                 }
                 break;

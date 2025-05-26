@@ -12,10 +12,9 @@ public class EnemyRepository([FromKeyedServices("Enemy")] IBattleStrategy strate
 
         CombatantData e = enemies.First(e => enemyName.Equals(e.Name, StringComparison.OrdinalIgnoreCase));
 
-        return new Combatant(e)
+        return new Combatant(e, strategy)
         {
             IsPlayer = false,
-            Strategy = strategy,
             Abilities = abilityRepository.GetAbilities(e.AbilityIds),
         };
     }
