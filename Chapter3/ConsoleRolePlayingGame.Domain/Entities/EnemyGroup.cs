@@ -1,3 +1,4 @@
+using ConsoleRolePlayingGame.Overworld;
 using ConsoleRolePlayingGame.Overworld.Entities;
 using ConsoleRolePlayingGame.Overworld.Structure;
 
@@ -8,7 +9,7 @@ public class EnemyGroup(Pos pos) : IMapEntity
     public Pos MapPos { get; set; } = pos;
     public EntityType EntityType => EntityType.Enemy;
 
-    public void MoveTowards(Pos target)
+    public void MoveTowards(Pos target, WorldMap map)
     {
         if (target == MapPos)
         {
@@ -28,6 +29,11 @@ public class EnemyGroup(Pos pos) : IMapEntity
             direction = yDiff < 0 ? Direction.North : Direction.South;
         }
         
-        MapPos = MapPos.Move(direction);
+        // Check if the next position is occupied
+        Pos newPos = MapPos.Move(direction);
+        if (map.Entities.All(e => e.MapPos != newPos || e != this))
+        {
+            MapPos = newPos;
+        }
     }
 }

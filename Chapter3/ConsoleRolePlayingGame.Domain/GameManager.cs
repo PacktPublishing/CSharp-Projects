@@ -51,11 +51,13 @@ public class GameManager
     
     public void Update()
     {
+        if (Status != GameStatus.Overworld) return;
+        
         List<EnemyGroup> enemies = Map.Entities.OfType<EnemyGroup>().ToList();
         
         foreach (var group in enemies)
         {
-            group.MoveTowards(Party.MapPos);
+            group.MoveTowards(Party.MapPos, Map);
             if (group.MapPos == Party.MapPos)
             {
                 Map.RemoveEntity(group);

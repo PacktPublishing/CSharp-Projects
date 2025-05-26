@@ -25,8 +25,7 @@ try
     
     while (game.Status != GameStatus.Terminated)
     {
-        await screens.RunAsync();
-        
+        screens.Run();
         game.Update();
     }
 }
