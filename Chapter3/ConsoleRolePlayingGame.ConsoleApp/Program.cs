@@ -1,11 +1,5 @@
-﻿using ConsoleRolePlayingGame.ConsoleApp.Input;
-using ConsoleRolePlayingGame.ConsoleApp.Screens;
-using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Combat;
-using ConsoleRolePlayingGame.Domain.Overworld;
-using ConsoleRolePlayingGame.Domain.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
+﻿using ConsoleRolePlayingGame.Domain.Entities;
+using ConsoleRolePlayingGame.Overworld.Generators;
 
 IAnsiConsole console = AnsiConsole.Console;
 try
@@ -16,20 +10,14 @@ try
     services.AddSingleton<GameManager>();
     services.AddSingleton<IAnsiConsole>(console);
     services.AddSingleton<PerlinNoiseProvider>();
-    services.AddSingleton<EncounterRepository>();
-    services.AddSingleton<EnemyRepository>();
-    services.AddSingleton<PartyRepository>();
-    services.AddSingleton<AbilityRepository>();
     services.AddSingleton<MapGenerator>();
     services.AddSingleton<WorldMap>();
-    services.AddSingleton<Random>();
+    services.AddSingleton<OpenPosSelector>();
+    services.AddSingleton<PlayerParty>();
     
     // Transients will be created each time they are requested
     services.AddTransient<ScreenManager>();
     services.AddTransient<OverworldScreen>();
-    services.AddTransient<BattleScreen>();
-    services.AddKeyedTransient<IBattleStrategy, EnemyTurnStrategy>(serviceKey: "Enemy");
-    services.AddKeyedTransient<IBattleStrategy, PlayerTurnStrategy>(serviceKey: "Player");
     
     ServiceProvider provider = services.BuildServiceProvider();
     GameManager game = provider.GetRequiredService<GameManager>();
@@ -37,8 +25,7 @@ try
     
     while (game.Status != GameStatus.Terminated)
     {
-        await screens.RunAsync();
-
+        screens.Run();
         game.Update();
     }
 }

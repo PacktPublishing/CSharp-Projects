@@ -1,31 +1,26 @@
-using ConsoleRolePlayingGame.Domain.Combat;
-using ConsoleRolePlayingGame.Domain.Overworld;
-using ConsoleRolePlayingGame.Domain.Repositories;
+using ConsoleRolePlayingGame.Domain.Entities;
+using ConsoleRolePlayingGame.Overworld;
+using ConsoleRolePlayingGame.Overworld.Generators;
+using ConsoleRolePlayingGame.Overworld.Structure;
 
 namespace ConsoleRolePlayingGame.Domain;
 
 public class GameManager
 {
-    private readonly EncounterRepository _encounters;
-    private readonly Random _random;
     public GameStatus Status { get; private set; } = GameStatus.Overworld;
     public WorldMap Map { get; }
-    public CombatGroup Party { get; }
-    public Battle? Battle { get; private set; }
+    public PlayerParty Party { get; }
+    
+    public const int MaxEnemies = 5;
 
-    public GameManager(PartyRepository partyRepository, 
-                       EncounterRepository encounterRepository,
-                       Random random,
-                       WorldMap map)
+    public GameManager(PlayerParty party, WorldMap map)
     {
-        _encounters = encounterRepository;
-        _random = random;
-        Party = partyRepository.Load();
+        Party = party;
         Map = map;
         Map.AddEntity(Party);
         
         // Spawn a few initial encounters
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < MaxEnemies; i++)
         {
             SpawnNearbyEncounter();
         }
@@ -33,60 +28,51 @@ public class GameManager
 
     private void SpawnNearbyEncounter()
     {
-        Pos point = Map.GetOpenPositionNear(Party.MapPos, 5, 10);
-        Map.AddEntity(_encounters.CreateRandomEncounter(point));
-    }
-
-    public void Update()
-    {
-        if (Status is GameStatus.Terminated or GameStatus.GameOver)
-        {
-            return;
-        }
-        
-        if (Party.IsDead)
-        {
-            TriggerGameOver();
-            return;
-        } 
-        
-        switch (Status)
-        {
-            case GameStatus.Overworld:
-                CombatGroup? encounter = Map.Entities
-                    .FirstOrDefault(g => g != Party && g.MapPos == Party.MapPos);
-            
-                if (encounter is not null)
-                {
-                    StartBattle(encounter);
-                }
-
-                break;
-            
-            case GameStatus.Combat:
-                if (Battle is not null && Battle.Enemies.IsDead)
-                {
-                    EndBattle();
-                }
-                break;
-        }
-    }
-
-    private void StartBattle(CombatGroup enemies)
-    {
-        Map.RemoveEntity(enemies);
-        Battle = new Battle(Party, enemies, _random);
-        Status = GameStatus.Combat;
+        OpenPosSelector selector = new(Map, Random.Shared);
+        Pos point = selector.GetOpenPositionNear(Party.MapPos, 5, 10);
+        Map.AddEntity(new EnemyGroup(point));
     }
     
-    private void EndBattle()
-    {
-        Battle = null;
-        Status = GameStatus.Overworld;
-        SpawnNearbyEncounter();
-    }
-
     public void Quit() => Status = GameStatus.Terminated;
 
-    private void TriggerGameOver() => Status = GameStatus.GameOver;
+    public void MoveParty(Direction dir)
+    {
+        Party.Move(dir);
+
+        List<EnemyGroup> enemies = Map.Entities.OfType<EnemyGroup>()
+            .Where(e => e.MapPos == Party.MapPos)
+            .ToList();
+
+        foreach (var group in enemies)
+        {
+            Map.RemoveEntity(group);
+        }
+    }
+    
+    public void Update()
+    {
+        if (Status != GameStatus.Overworld) return;
+        
+        List<EnemyGroup> enemies = Map.Entities.OfType<EnemyGroup>().ToList();
+        
+        foreach (var group in enemies)
+        {
+            group.MoveTowards(Party.MapPos, Map);
+            if (group.MapPos == Party.MapPos)
+            {
+                Map.RemoveEntity(group);
+                Party.Health--;
+            }
+        }
+        
+        if (Party.Health <= 0)
+        {
+            Status = GameStatus.GameOver;
+        }
+        
+        if (Map.Entities.OfType<EnemyGroup>().Count() < MaxEnemies)
+        {
+            SpawnNearbyEncounter();
+        }
+    }
 }

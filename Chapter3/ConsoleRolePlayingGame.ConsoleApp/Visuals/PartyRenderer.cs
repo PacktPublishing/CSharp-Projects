@@ -1,28 +1,21 @@
-using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Combat;
-using Spectre.Console;
-using Spectre.Console.Rendering;
+using ConsoleRolePlayingGame.Domain.Entities;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class PartyRenderer(CombatGroup party) {
+public class PartyRenderer(PlayerParty party)
+{
     public IRenderable GenerateVisual()
     {
-        IEnumerable<Combatant> team = party.Members;
-        int maxHealth = team.Max(c => c.MaxHealth);
-        int maxMana = team.Max(c => c.MaxMana);
-        
-        IEnumerable<IRenderable> partyMarkdown = team.Select(m => 
+        IRenderable partyMarkdown =
             new Rows(
-                new Markup($"[bold]{m.Name}[/]"),
+                new Markup("[bold]Hero[/]"),
                 new Padder(
-                new BarChart()
-                    .AddItem("[Red]HP[/]", m.Health, Color.Red)
-                    .AddItem("[Blue]MP[/]", m.Mana, Color.Blue)
-                    .WithMaxValue(Math.Max(maxHealth, maxMana))
-                    .ShowValues()
-            , new Padding(5, 0, 0, 0)))
-        );
+                    new BarChart()
+                        .AddItem("[Red]HP[/]", party.Health, Color.Red)
+                        .AddItem("[Blue]MP[/]", party.Mana, Color.Blue)
+                        .WithMaxValue(PlayerParty.MaxStat)
+                        .ShowValues()
+                ));
 
         return new Panel(new Rows(partyMarkdown))
             .Header($"[Yellow] {party.Name} [/]")

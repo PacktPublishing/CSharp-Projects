@@ -27,8 +27,4 @@
       </Content>
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\CardTracker.Contracts\CardTracker.Contracts.csproj" />
-    </ItemGroup>
-
 </Project>

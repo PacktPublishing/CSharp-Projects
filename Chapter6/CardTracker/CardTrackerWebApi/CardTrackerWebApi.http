@@ -1,0 +1,136 @@
+### View OpenAPI Specification - see https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi
+GET {{BaseUrl}}/openapi/v1.json
+
+### 418 I'm a Teapot demonstration
+GET {{BaseUrl}}/tea
+
+### LOGIN ENDPOINTS #######################################################################################
+### Login
+POST {{BaseUrl}}/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "PacktBooks"
+}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+### USERS ENDPOINTS #######################################################################################
+### Get all users (requires admin)
+GET {{BaseUrl}}/users
+Authorization: Bearer {{auth_token}}
+
+### Create user (Requires admin)
+POST {{BaseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "PacktBooks",
+  "isAdmin": true
+}
+
+### Get User (requires admin)
+GET {{BaseUrl}}/users/testuser
+Authorization: Bearer {{auth_token}}
+
+### CARD ENDPOINTS ########################################################################################
+
+### Get all cards
+GET {{BaseUrl}}/cards
+Accept: application/json
+
+### Get a specific card
+GET {{BaseUrl}}/cards/1
+Accept: application/json
+
+### Create a creature card
+POST {{BaseUrl}}/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "type": "Creature",
+  "name": "Sally the Squirrel",
+  "description": "An adorable squirrel squirrel",
+  "imagePath": "SQUIRREL.png",
+  "effect": "Looks cute while pecking at monsters",
+  "summonCost": 1,
+  "power": 1,
+  "canFly": true,
+  "canSwim": false,
+  "canClimb": true,
+  "summonEffect": "You feel awesome because you now have a squirrel",
+  "perTurnEffect": "Be distracted by the squirrel"
+}
+
+### Create an action card
+POST {{BaseUrl}}/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "type": "Action",
+  "name": "Test Action",
+  "description": "For when you really need to win",
+  "imagePath": "SomeImage.png",
+  "effect": "Automatically wins the game",
+  "cost": 1
+}
+
+### Another action
+POST {{BaseUrl}}/cards
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "type": "Action",
+  "name": "Nature's Bounty",
+  "description": "Sometimes life gives you the perfect nut",
+  "imagePath": "Acorn.png",
+  "effect": "Gain 3 energy",
+  "cost": 0
+}
+
+
+### Delete a card
+DELETE {{BaseUrl}}/cards/1
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### DECK ENDPOINTS ########################################################################################
+
+### Get all decks
+GET {{BaseUrl}}/decks/
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Create a deck
+POST {{BaseUrl}}/decks
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Test Deck 3"
+}
+
+### Get a specific deck
+GET {{BaseUrl}}/decks/1
+Accept: application/json
+Authorization: Bearer {{auth_token}}
+
+### Update a specific deck and add cards
+PUT {{BaseUrl}}/decks/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Edited Deck",
+  "cardIds": [1,1,2,2,2,3]
+}
+
+### DELETE a specific deck
+DELETE {{BaseUrl}}/decks/0
+Accept: application/json
+Authorization: Bearer {{auth_token}}

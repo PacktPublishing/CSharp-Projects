@@ -1,26 +1,24 @@
-using ConsoleRolePlayingGame.ConsoleApp.Visuals;
-using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Combat;
-using Spectre.Console;
-using Spectre.Console.Rendering;
+using ConsoleRolePlayingGame.Domain.Entities;
+using ConsoleRolePlayingGame.Overworld.Entities;
+using ConsoleRolePlayingGame.Overworld.Structure;
 
 namespace ConsoleRolePlayingGame.ConsoleApp.Screens;
 
 public class OverworldScreen(GameManager game, IAnsiConsole console)
 {
-    public const int width = 21;
+    public const int Width = 21;
     private readonly Layout _layout = new Layout("Root").SplitRows(
         new Layout("Header").Size(1)
             .Update(new Markup("[bold yellow]Console Role Playing Game[/] by [cyan]Matt Eland[/]")),
-        new Layout("Content").Size(width)
+        new Layout("Content").Size(Width)
             .SplitColumns(
-                new Layout("Main").Size(width * 2),
+                new Layout("Main").Size(Width * 2),
                 new Layout("Sidebar")
             )
     );
 
     private readonly HelpRenderer _helpRenderer = new();
-    private readonly MapRenderer _mapRenderer = new(game, width, width);
+    private readonly MapRenderer _mapRenderer = new(game, Width, Width);
     private readonly PartyRenderer _partyRenderer = new(game.Party);
     
     public IRenderable GenerateVisual()
@@ -34,31 +32,30 @@ public class OverworldScreen(GameManager game, IAnsiConsole console)
         return _layout;
     }
 
-    public async Task HandlePlayerInputAsync()
+    public void HandlePlayerInput()
     {
         console.Markup("[Yellow]>[/] ");
-        ConsoleKeyInfo? keyInfo = await console.Input.ReadKeyAsync(true, CancellationToken.None);
+        ConsoleKeyInfo? keyInfo = console.Input.ReadKey(true);
 
         if (keyInfo.HasValue)
         {
-            CombatGroup party = game.Party;
             switch (keyInfo.Value.Key)
             {
                 case ConsoleKey.A:
                 case ConsoleKey.LeftArrow:
-                    party.Move(Direction.West);
+                    game.MoveParty(Direction.West);
                     break;
                 case ConsoleKey.D:
                 case ConsoleKey.RightArrow:
-                    party.Move(Direction.East);
+                    game.MoveParty(Direction.East);
                     break;
                 case ConsoleKey.S:
                 case ConsoleKey.DownArrow:
-                    party.Move(Direction.South);
+                    game.MoveParty(Direction.South);
                     break;
                 case ConsoleKey.W:
                 case ConsoleKey.UpArrow:
-                    party.Move(Direction.North);
+                    game.MoveParty(Direction.North);
                     break;
                 case ConsoleKey.Q:
                 case ConsoleKey.Escape:
