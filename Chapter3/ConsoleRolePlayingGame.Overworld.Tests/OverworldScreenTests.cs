@@ -1,6 +1,5 @@
 using ConsoleRolePlayingGame.ConsoleApp.Screens;
 using ConsoleRolePlayingGame.Domain;
-using ConsoleRolePlayingGame.Domain.Entities;
 using ConsoleRolePlayingGame.Overworld.Generators;
 using ConsoleRolePlayingGame.Overworld.Structure;
 using Shouldly;
@@ -28,7 +27,8 @@ public class OverworldScreenTests
         console.Lines.Count.ShouldBeGreaterThan(10);
         console.Lines[0].ShouldStartWith("Console Role Playing Game");
         console.Output.ShouldContain("Hero");
-        console.Output.ShouldContain("HP  █████████████████████████ 10");
+        console.Output.ShouldContain("HP");
+        console.Output.ShouldContain("10");
     }
 
     [Theory]

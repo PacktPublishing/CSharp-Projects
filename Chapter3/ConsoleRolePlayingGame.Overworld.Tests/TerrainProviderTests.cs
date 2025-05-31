@@ -11,7 +11,7 @@ public class TerrainProviderTests
     [InlineData(0, -2, TerrainType.Desert)]
     [InlineData(11, -1, TerrainType.DeepWater)]
     [InlineData(10, -1, TerrainType.Water)]
-    public void TerrainGenerationShouldBeDeterministic(int x, int y, TerrainType expected)
+    public void ProducesExpectedResult(int x, int y, TerrainType expected)
     {
         // Arrange
         MapGenerator generator = new();

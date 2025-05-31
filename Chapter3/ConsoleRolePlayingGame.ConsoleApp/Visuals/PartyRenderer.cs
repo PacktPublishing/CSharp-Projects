@@ -1,5 +1,3 @@
-using ConsoleRolePlayingGame.Domain.Entities;
-
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
 public class PartyRenderer(PlayerParty party)

@@ -1,4 +1,3 @@
-using ConsoleRolePlayingGame.Domain.Entities;
 using ConsoleRolePlayingGame.Overworld;
 using ConsoleRolePlayingGame.Overworld.Generators;
 using ConsoleRolePlayingGame.Overworld.Structure;

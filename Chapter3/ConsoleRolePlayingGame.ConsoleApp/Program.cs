@@ -1,5 +1,4 @@
-﻿using ConsoleRolePlayingGame.Domain.Entities;
-using ConsoleRolePlayingGame.Overworld.Generators;
+﻿using ConsoleRolePlayingGame.Overworld.Generators;
 
 IAnsiConsole console = AnsiConsole.Console;
 try

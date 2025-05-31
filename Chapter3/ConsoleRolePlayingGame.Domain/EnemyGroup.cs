@@ -2,7 +2,7 @@ using ConsoleRolePlayingGame.Overworld;
 using ConsoleRolePlayingGame.Overworld.Entities;
 using ConsoleRolePlayingGame.Overworld.Structure;
 
-namespace ConsoleRolePlayingGame.Domain.Entities;
+namespace ConsoleRolePlayingGame.Domain;
 
 public class EnemyGroup(Pos pos) : IMapEntity
 {
