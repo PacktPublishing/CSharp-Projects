@@ -2,12 +2,12 @@ using ConsoleRolePlayingGame.Overworld.Structure;
 
 namespace ConsoleRolePlayingGame.Overworld.Generators;
 
-public class OpenPosSelector(WorldMap map, Random random)
+public class OpenPosSelector(WorldMap map)
 {
     public Pos GetOpenPositionNear(Pos centralPosition, int minDistance, int maxDistance)
     {
         HashSet<Pos> occupied = [..map.Entities.Select(e => e.MapPos)];
-        
+        Random random = Random.Shared;
         Pos pos;
         do
         {

@@ -4,8 +4,8 @@ namespace ConsoleRolePlayingGame.Overworld.Generators;
 
 public class MapGenerator
 {
-    private readonly PerlinNoiseProvider _heightNoise = new(1234);
-    private readonly PerlinNoiseProvider _temperatureNoise = new(5678);
+    private readonly PerlinNoiseProvider _heightNoise = new(seed: 1234);
+    private readonly PerlinNoiseProvider _temperatureNoise = new(seed: 5678);
     
     public TerrainType CalculateTerrain(Pos position)
     {

@@ -25,15 +25,13 @@ public class GameManager
         }
     }
 
-    private void SpawnNearbyEncounter()
-    {
-        OpenPosSelector selector = new(Map, Random.Shared);
-        Pos point = selector.GetOpenPositionNear(Party.MapPos, 5, 10);
-        Map.AddEntity(new EnemyGroup(point));
-    }
+private void SpawnNearbyEncounter()
+{
+    OpenPosSelector selector = new(Map);
+    Pos point = selector.GetOpenPositionNear(Party.MapPos, 5, 10);
+    Map.AddEntity(new EnemyGroup(point));
+}
     
-    public void Quit() => Status = GameStatus.Terminated;
-
     public void MoveParty(Direction dir)
     {
         Party.Move(dir);
@@ -48,6 +46,8 @@ public class GameManager
         }
     }
     
+    public void Quit() => Status = GameStatus.Terminated;
+
     public void Update()
     {
         if (Status != GameStatus.Overworld) return;
