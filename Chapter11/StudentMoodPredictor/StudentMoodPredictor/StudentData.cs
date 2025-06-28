@@ -1,6 +1,6 @@
 using Microsoft.ML.Data;
 
-public class StudentMoodData
+public class StudentData
 {
     //[LoadColumn(0)]
     //public string Timestamp { get; set; }
@@ -29,11 +29,11 @@ public class StudentMoodData
     [LoadColumn(8)]
     public float StressLevel { get; set; }
 
-    [LoadColumn(9), ColumnName("Label")]
+    [LoadColumn(9)]
     public float SleepHours { get; set; }
 
-//    [LoadColumn(10), ColumnName("Label")]
-    //public float MoodScore { get; set; }
+    [LoadColumn(10), ColumnName("Label")]
+    public float MoodScore { get; set; }
 
     //[LoadColumn(11), ColumnName("Label")]
     //public float MentalHealthStatus { get; set; }
