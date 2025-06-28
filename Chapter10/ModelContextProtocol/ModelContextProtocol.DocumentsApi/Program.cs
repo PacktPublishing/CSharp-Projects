@@ -1,16 +1,13 @@
 using Microsoft.Extensions.Options;
 using Microsoft.KernelMemory;
 using Microsoft.KernelMemory.AI.Ollama;
-using ModelContextProtocol.ApiService;
-using ModelContextProtocol.ApiService.Services;
+using ModelContextProtocol.DocumentsApi;
 using ModelContextProtocol.DocumentsApi.Requests;
+using ModelContextProtocol.DocumentsApi.Services;
+using ModelContextProtocol.ServiceDefaults;
 
-var builder = WebApplication.CreateBuilder(args);
-
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
-
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.Configure<OllamaSearchOptions>(

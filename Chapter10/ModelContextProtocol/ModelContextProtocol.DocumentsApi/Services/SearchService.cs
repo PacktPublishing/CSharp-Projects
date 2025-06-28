@@ -1,7 +1,7 @@
-﻿using Microsoft.KernelMemory;
-using System.Text;
+﻿using System.Text;
+using Microsoft.KernelMemory;
 
-namespace ModelContextProtocol.ApiService.Services;
+namespace ModelContextProtocol.DocumentsApi.Services;
 
 public class SearchService(IKernelMemory memory) : ISearchService
 {

@@ -1,4 +1,4 @@
-﻿namespace ModelContextProtocol.ApiService;
+﻿namespace ModelContextProtocol.DocumentsApi;
 
 public class OllamaSearchOptions
 {

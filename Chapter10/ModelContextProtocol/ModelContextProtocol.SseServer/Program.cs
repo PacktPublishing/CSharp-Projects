@@ -2,14 +2,12 @@ using ModelContextProtocol.Protocol;
 using ModelContextProtocol.ServerShared;
 using System.Diagnostics;
 using System.Reflection;
+using ModelContextProtocol.ServiceDefaults;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.Configure<McpServerSettings>(builder.Configuration.GetSection("McpServer"));
-
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 Assembly shared = Assembly.GetAssembly(typeof(McpServerSettings))!;

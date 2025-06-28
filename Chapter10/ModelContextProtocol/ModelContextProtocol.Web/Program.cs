@@ -1,3 +1,4 @@
+using ModelContextProtocol.ServiceDefaults;
 using ModelContextProtocol.Web;
 using ModelContextProtocol.Web.Components;
 using MudBlazor.Services;

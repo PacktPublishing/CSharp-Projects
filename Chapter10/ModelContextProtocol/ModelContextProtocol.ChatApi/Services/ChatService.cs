@@ -4,17 +4,15 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.Ollama;
-using ModelContextProtocol.Client;
 using ModelContextProtocol.Domain.Requests;
 using ModelContextProtocol.Protocol;
 
 namespace ModelContextProtocol.ChatApi.Services;
 
-public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory) : IChatService
+public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory, Kernel kernel) : IChatService
 {
     private readonly ActivitySource _activitySource = new(typeof(ChatService).Assembly.FullName!);
     private readonly ILogger<ChatService> _logger = logFactory.CreateLogger<ChatService>();
-    private IMcpClient? _mcpClient;
 
     [Experimental("SKEXP0070")]
     public async IAsyncEnumerable<string> ChatAsync(ChatRequest request)
@@ -22,88 +20,48 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
         ChatSettings options = settings.Value;
         string sysPrompt = options.SystemPrompt;
         ChatHistory history = BuildChatHistory(request, sysPrompt);
-
-        OllamaPromptExecutionSettings execSettings = new()
-        {
-            FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-        };
-
-        _logger.LogTrace("Creating kernel with chat model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
         
-        IKernelBuilder builder = Kernel.CreateBuilder()
-            .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.ChatEndpoint));
-        builder.Services.AddSingleton(logFactory);
-            
-        Kernel kernel = builder.Build();
-        // TODO: Loading the MCP Server and kernel with every request is inefficient
-        await AddMcpToolsAsync(options, kernel);
-
-        using HttpClient client = new();
-        client.Timeout = TimeSpan.FromSeconds(60);
+        _logger.LogTrace("Creating kernel with chat model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
 
         IChatCompletionService completions = kernel.GetRequiredService<IChatCompletionService>();
+        IReadOnlyList<ChatMessageContent> responses;
+        using (_activitySource.StartActivity(ActivityKind.Client))
+        {
+            OllamaPromptExecutionSettings execSettings = new()
+            {
+                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+            };
+            responses = await completions.GetChatMessageContentsAsync(history, execSettings, kernel);
+        }
 
-        IReadOnlyList<ChatMessageContent> responses = await GetResponse(completions, history, execSettings, kernel);
-
-        int index = 0;
+        int index = 1;
         foreach (var response in responses)
         {
-            index++;
-
             if (!string.IsNullOrWhiteSpace(response.Content))
             {
                 _logger.LogTrace("Response {index}: {content}", index, response.Content);
                 yield return response.Content;
             }
-        }
-    }
-
-    private async Task<IReadOnlyList<ChatMessageContent>> GetResponse(IChatCompletionService completions, 
-        ChatHistory history,
-        PromptExecutionSettings execSettings, 
-        Kernel kernel)
-    {
-        using Activity? activity = _activitySource.StartActivity(ActivityKind.Client);
-        return await completions.GetChatMessageContentsAsync(history, execSettings, kernel);
-    }
-
-    [Experimental("SKEXP0001")]
-    private async Task AddMcpToolsAsync(ChatSettings options, Kernel kernel)
-    {
-        using Activity? activity = _activitySource.StartActivity(ActivityKind.Server);
-        IClientTransport clientTransport = new SseClientTransport(new()
-        {
-            Name = "Custom MCP Server",
-            Endpoint = new Uri(options.McpServerEndpoint),
-            UseStreamableHttp = true
-        });
-        _mcpClient = await McpClientFactory.CreateAsync(clientTransport);
-
-        await foreach (var tool in _mcpClient.EnumerateToolsAsync())
-        {
-            activity?.AddEvent(new ActivityEvent($"Registering {tool.Name}"));
-            kernel.Plugins.AddFromFunctions(tool.Name, tool.Description, [tool.AsKernelFunction()]);
+            index++;
         }
     }
 
     private ChatHistory BuildChatHistory(ChatRequest request, string sysPrompt)
     {
-        using Activity? activity = _activitySource.StartActivity(ActivityKind.Server);
         ChatHistory history = new(sysPrompt);
-
+        using Activity? activity = _activitySource.StartActivity(ActivityKind.Server);
+        
         int index = 1;
         foreach (var entry in request.Messages)
         {
+            activity?.AddEvent(new ActivityEvent($"{entry.Role}-{index++} Assistant: {entry.Message}"));
+            _logger.LogTrace("{Role}: {Message}", entry.Role, entry.Message);
             if (entry.Role == Role.Assistant)
             {
-                activity?.AddEvent(new ActivityEvent($"History-{index++} Assistant: {entry.Message}"));
-                _logger.LogTrace("Assistant: {Message}", entry.Message);
                 history.AddAssistantMessage(entry.Message);
             }
             else
             {
-                activity?.AddEvent(new ActivityEvent($"User-{index++} Assistant: {entry.Message}"));
-                _logger.LogTrace("User: {Message}", entry.Message);
                 history.AddUserMessage(entry.Message);
             }
         }

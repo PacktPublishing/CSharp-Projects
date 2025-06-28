@@ -1,4 +1,4 @@
-﻿namespace ModelContextProtocol.ChatApi.Requests;
+﻿namespace ModelContextProtocol.Domain.Requests;
 
 public record SearchRequest
 {

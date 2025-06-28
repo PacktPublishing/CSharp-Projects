@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Options;
-using ModelContextProtocol.ChatApi.Requests;
+using ModelContextProtocol.Domain.Requests;
 using ModelContextProtocol.Server;
 
 namespace ModelContextProtocol.ServerShared.Tools;

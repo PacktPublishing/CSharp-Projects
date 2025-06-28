@@ -1,5 +1,4 @@
-﻿using ModelContextProtocol.ChatApi.Requests;
-using ModelContextProtocol.Domain.Requests;
+﻿using ModelContextProtocol.Domain.Requests;
 
 namespace ModelContextProtocol.ChatApi.Services;
 

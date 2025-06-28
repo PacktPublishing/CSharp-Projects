@@ -20,10 +20,10 @@
     {
         @if (message.Role == Role.User) {
             <MudChat ChatPosition="ChatBubblePosition.End" Color="Color.Primary" Variant="Variant.Filled">
-            <MudChatHeader>User</MudChatHeader>
-            <MudChatBubble>
-                @message.Message
-            </MudChatBubble>
+                <MudChatHeader>User</MudChatHeader>
+                <MudChatBubble>
+                    @message.Message
+                </MudChatBubble>
             </MudChat>
         }
         else
@@ -62,8 +62,6 @@
     private readonly List<ApiChatMessage> _messages =
     [
         new(Role.Assistant, "Hello. How can I help you today?"),
-        // new(Role.User, "Hello, how are you?"),
-        // new(Role.Assistant, "I'm doing well, thank you! How can I assist you today?")
     ];
     
     public string Text { get; set; }

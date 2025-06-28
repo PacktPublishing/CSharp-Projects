@@ -1,6 +1,6 @@
 ﻿using Microsoft.KernelMemory;
 
-namespace ModelContextProtocol.ApiService.Services;
+namespace ModelContextProtocol.DocumentsApi.Services;
 
 public class DocumentIndexingService(IKernelMemory memory, ILogger<DocumentIndexingService> logger) : IHostedService
 {

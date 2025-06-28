@@ -1,4 +1,4 @@
-﻿namespace ModelContextProtocol.ApiService.Services;
+﻿namespace ModelContextProtocol.DocumentsApi.Services;
 
 public interface ISearchService
 {
