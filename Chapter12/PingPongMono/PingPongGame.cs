@@ -9,11 +9,12 @@ public class PingPongGame : Game
 {
     private readonly GraphicsDeviceManager _graphics;
     private SpriteBatch? _spriteBatch;
-
-    private Paddle _paddle1;
-    private Paddle _paddle2;
-    private Rectangle _ball;
-    private Vector2 _ballVelocity;
+    private int Width => _graphics.PreferredBackBufferWidth;
+    private int Height => _graphics.PreferredBackBufferHeight;
+    
+    private Paddle? _paddle1;
+    private Paddle? _paddle2;
+    private Ball? _ball;
     private int _score1;
     private int _score2;
 
@@ -38,20 +39,23 @@ public class PingPongGame : Game
 
     protected override void Initialize()
     {
-        _paddle1 = new Paddle(30, 210, PaddleWidth, PaddleHeight)
+        int halfWidth = Width / 2;
+        int halfHeight = Height / 2;
+        
+        _paddle1 = new Paddle(30, halfHeight, PaddleWidth, PaddleHeight)
         {
             UpKey = Keys.W,
             DownKey = Keys.S,
             Color = Color.MediumPurple
         };
-        _paddle2 = new Paddle(Width - 30, 210, PaddleWidth, PaddleHeight)
+        _paddle2 = new Paddle(Width - 30, halfHeight, PaddleWidth, PaddleHeight)
         {
             UpKey = Keys.Up,
             DownKey = Keys.Down,
-            Color = Color.AliceBlue
+            Color = Color.Yellow
         };
-        _ball = new Rectangle(395, 235, BallSize, BallSize);
-        _ballVelocity = new Vector2(BallSpeed, BallSpeed);
+        _ball = new Ball(halfWidth, halfHeight, BallSize, BallSpeed);
+        
         base.Initialize();
     }
 
@@ -64,48 +68,35 @@ public class PingPongGame : Game
         _whiteTexture.SetData([Color.White]);
     }
 
-    private int Width => _graphics.PreferredBackBufferWidth;
-    private int Height => _graphics.PreferredBackBufferHeight;
-
     protected override void Update(GameTime gameTime)
     {
         KeyboardState keyboard = Keyboard.GetState();
 
-        _paddle1.Update(keyboard, Height);
-        _paddle2.Update(keyboard, Height);
-
-        // Move ball
-        _ball.X += (int)_ballVelocity.X;
-        _ball.Y += (int)_ballVelocity.Y;
-
-        // Ball collision with top/bottom
-        if (_ball.Y <= 0 || _ball.Y >= Height - BallSize)
-        {
-            _ballVelocity.Y *= -1;
-        }
+        _paddle1!.Update(keyboard, Height);
+        _paddle2!.Update(keyboard, Height);
+        _ball!.Update(Width, Height);
 
         // Ball collision with paddles
-        if (_ball.Intersects(_paddle1.Bounds) && _ballVelocity.X < 0)
+        if (_ball.Bounds.Intersects(_paddle1.Bounds) && _ball.IsFacingLeft)
         {
-            _ballVelocity.X *= -1;
+            _ball.FlipHorizontal();
         }
 
-        if (_ball.Intersects(_paddle2.Bounds) && _ballVelocity.X > 0)
+        if (_ball.Bounds.Intersects(_paddle2.Bounds) && _ball.IsFacingRight)
         {
-            _ballVelocity.X *= -1;
+            _ball.FlipHorizontal();
         }
 
         // Score
-        if (_ball.X < 0)
+        if (_ball.Bounds.X < 0)
         {
             _score2++;
-            ResetBall();
+            _ball.Reset(Width, Height);
         }
-
-        if (_ball.X > _graphics.PreferredBackBufferWidth)
+        if (_ball.Bounds.X > Width)
         {
             _score1++;
-            ResetBall();
+            _ball.Reset(Width, Height);
         }
 
         if (keyboard.IsKeyDown(Keys.Escape))
@@ -116,27 +107,15 @@ public class PingPongGame : Game
         base.Update(gameTime);
     }
 
-    private void ResetBall()
-    {
-        _ball.X = Width / 2 - BallSize / 2;
-        _ball.Y = Height / 2 - BallSize / 2;
-
-        bool isGoingLeft = Random.Shared.Next(2) == 0;
-        bool isGoingUp = Random.Shared.Next(2) == 0;
-
-        _ballVelocity = new Vector2(BallSpeed * (isGoingLeft ? -1 : 1),
-            BallSpeed * (isGoingUp ? -1 : 1));
-    }
-
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
 
         _spriteBatch!.Begin();
 
-        _paddle1.Draw(_spriteBatch, _whiteTexture!);
-        _paddle2.Draw(_spriteBatch, _whiteTexture!);
-        _spriteBatch.Draw(_whiteTexture, _ball, Color.Yellow);
+        _paddle1!.Draw(_spriteBatch, _whiteTexture!);
+        _paddle2!.Draw(_spriteBatch, _whiteTexture!);
+        _ball!.Draw(_spriteBatch, _whiteTexture!);
 
         // Draw score
         //_spriteBatch.DrawString(_font, $"{_score1}   {_score2}", new Vector2(370, 20), Color.White);
