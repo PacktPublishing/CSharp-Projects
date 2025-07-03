@@ -1,49 +1,65 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using Microsoft.ML;
+﻿using Microsoft.ML;
 using Microsoft.ML.AutoML;
 using Microsoft.ML.Data;
 using Spectre.Console;
 
-IAnsiConsole console = AnsiConsole.Console;
-
 // Display a header
+IAnsiConsole console = AnsiConsole.Console;
 console.MarkupLine("[bold blue]Student Mood Predictor[/]");
 console.MarkupLine("[bold green]Data Preparation[/]");
 
-MLContext context = new();
-
 // Load data and split into training and test sets
+MLContext context = new();
 IDataView data = context.Data.LoadFromTextFile<StudentData>("DataSet.csv", separatorChar: ',', hasHeader: true);
 DataOperationsCatalog.TrainTestData trainTest = context.Data.TrainTestSplit(data, testFraction: 0.2f);
 
 // Train a regression model
-uint maxSeconds = 20;
-RegressionExperiment experiment = context.Auto().CreateRegressionExperiment(maxSeconds);
+RegressionExperimentSettings settings = new()
+{
+    MaxModels = 5,
+    MaxExperimentTimeInSeconds = 10,
+    OptimizingMetric = RegressionMetric.RSquared
+};
+RegressionExperiment experiment = context.Auto().CreateRegressionExperiment(settings);
 
 ExperimentResult<RegressionMetrics>? result = null;
-
-console.Status()
-    .Start($"Training regression model for {maxSeconds} seconds...", ctx =>
+console.Status().Start($"Training regression model...", _ =>
     {
         result = experiment.Execute(trainTest.TrainSet, trainTest.TestSet);
     });
 
-// Display metrics on our best model
-console.MarkupLineInterpolated($"Best model found: [bold yellow]{result.BestRun.TrainerName}[/]");
-
-RegressionMetrics metrics = result.BestRun.ValidationMetrics;
-Table metricsTable = new Table()
-    .AddColumns("Metric","Value")
+// Display metrics for each model run
+Table runsTable = new Table()
+    .AddColumns("Trainer", "R-Squared (R2)", "MAE", "MSE", "RMSE")
     .Expand();
-metricsTable.AddRow("R-Squared (R2)", metrics.RSquared.ToString("P2"));
-metricsTable.AddRow("Mean Absolute Error (MAE)", metrics.MeanAbsoluteError.ToString("F2"));
-metricsTable.AddRow("Mean Squared Error (MSE)", metrics.MeanSquaredError.ToString("F2"));
-metricsTable.AddRow("Root Mean Squared Error (RMSE)", metrics.RootMeanSquaredError.ToString("F2"));
-console.Write(metricsTable);
+foreach (var run in result!.RunDetails)
+{
+    // Runs may not have validation metrics if they failed or were skipped
+    if (run.ValidationMetrics is null) continue;
+    
+    runsTable.AddRow(run.TrainerName,
+        run.ValidationMetrics.RSquared.ToString("P2"),
+        run.ValidationMetrics.MeanAbsoluteError.ToString("F2"),
+        run.ValidationMetrics.MeanSquaredError.ToString("F2"),
+        run.ValidationMetrics.RootMeanSquaredError.ToString("F2"));
+}
+console.Write(runsTable);
+console.MarkupLineInterpolated($"[bold green]Best Model:[/] {result.BestRun.TrainerName}");
+
+// Display detailed metrics on the best model
+RegressionMetrics metrics = result.BestRun.ValidationMetrics;
+Table table = new Table()
+    .AddColumns("Metric","Value")
+    .Expand()
+    .AddRow("R-Squared (R2)", metrics.RSquared.ToString("P2"))
+    .AddRow("Mean Absolute Error (MAE)", metrics.MeanAbsoluteError.ToString("F2"))
+    .AddRow("Mean Squared Error (MSE)", metrics.MeanSquaredError.ToString("F2"))
+    .AddRow("Root Mean Squared Error (RMSE)", metrics.RootMeanSquaredError.ToString("F2"));
+console.Write(table);
 
 // Build the final model using the best pipeline
 ITransformer finalModel = result.BestRun.Model;
+
 // Save the model to a file
 context.Model.Save(finalModel, data.Schema, "Model.zip");
 
@@ -66,5 +82,21 @@ StudentData sampleData = new()
     StressLevel = 3.0f,
     SleepHours = 7.0f
 };
+
 StudentPrediction prediction = predictionEngine.Predict(sampleData);
-console.MarkupLineInterpolated($"Predicted Mood Score: [bold cyan]{prediction.PredictedValue}[/]");
+float mood = prediction.PredictedValue;
+console.MarkupLineInterpolated($"Predicted Mood Score: [bold cyan]{mood}[/]");
+
+BarChart bar = new BarChart()
+    .Label("Mood Prediction by Lighting Lux")
+    .Width(60)
+    .CenterLabel();
+
+float[] luxValues = [100, 200, 300, 400, 500];
+foreach (float lux in luxValues)
+{
+    prediction = predictionEngine.Predict(new StudentData { LightingLux = lux });
+    mood = prediction.PredictedValue;
+    bar.AddItem($"{lux} Lux", Math.Round(mood, 2), Color.Yellow);
+}
+console.Write(bar);

@@ -2,9 +2,6 @@ using Microsoft.ML.Data;
 
 public class StudentData
 {
-    //[LoadColumn(0)]
-    //public string Timestamp { get; set; }
-
     [LoadColumn(1)]
     public float LocationId { get; set; }
 
@@ -34,7 +31,4 @@ public class StudentData
 
     [LoadColumn(10), ColumnName("Label")]
     public float MoodScore { get; set; }
-
-    //[LoadColumn(11), ColumnName("Label")]
-    //public float MentalHealthStatus { get; set; }
 }
