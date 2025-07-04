@@ -12,15 +12,16 @@ public class Paddle(int x, int y, int width, int height)
     public required Keys UpKey { get; init; }
     public required Keys DownKey { get; init; }
 
-    public void Update(KeyboardState keyboard, int maxY)
+    public void Update(KeyboardState keyboard, int maxY, float deltaTime)
     {
+        int moveAmount = (int)(PaddleSpeed * deltaTime * 60);
         if (keyboard.IsKeyDown(UpKey) && Bounds.Y > 0)
         {
-            Bounds = new Rectangle(Bounds.X, Bounds.Y - PaddleSpeed, Bounds.Width, Bounds.Height);
+            Bounds = new Rectangle(Bounds.X, Bounds.Y - moveAmount, Bounds.Width, Bounds.Height);
         }
         else if (keyboard.IsKeyDown(DownKey) && Bounds.Y < maxY - Bounds.Height)
         {
-            Bounds = new Rectangle(Bounds.X, Bounds.Y + PaddleSpeed, Bounds.Width, Bounds.Height);
+            Bounds = new Rectangle(Bounds.X, Bounds.Y + moveAmount, Bounds.Width, Bounds.Height);
         }
     }
     

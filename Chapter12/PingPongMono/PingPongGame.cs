@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -23,8 +22,6 @@ public class PingPongGame : Game
 
     private const int PaddleWidth = 10;
     private const int PaddleHeight = 60;
-    private const int BallSize = 10;
-    private const int BallSpeed = 4;
 
     public PingPongGame()
     {
@@ -54,7 +51,7 @@ public class PingPongGame : Game
             DownKey = Keys.Down,
             Color = Color.Yellow
         };
-        _ball = new Ball(halfWidth, halfHeight, BallSize, BallSpeed);
+        _ball = new Ball(halfWidth, halfHeight);
         
         base.Initialize();
     }
@@ -71,10 +68,11 @@ public class PingPongGame : Game
     protected override void Update(GameTime gameTime)
     {
         KeyboardState keyboard = Keyboard.GetState();
+        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        _paddle1!.Update(keyboard, Height);
-        _paddle2!.Update(keyboard, Height);
-        _ball!.Update(Width, Height);
+        _paddle1!.Update(keyboard, Height, deltaTime);
+        _paddle2!.Update(keyboard, Height, deltaTime);
+        _ball!.Update(Width, Height, deltaTime);
 
         // Ball collision with paddles
         if (_ball.Bounds.Intersects(_paddle1.Bounds) && _ball.IsFacingLeft)
