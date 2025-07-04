@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpriteFontPlus;
 
 namespace PingPongMono;
 
@@ -18,10 +20,13 @@ public class PingPongGame : Game
     private int _score2;
 
     private Texture2D? _whiteTexture;
-    //private SpriteFont _font;
+    private SpriteFont? _scoreFont;
+    private SpriteFont? _smallFont;
 
     private const int PaddleWidth = 10;
     private const int PaddleHeight = 60;
+    private const int SmallFontSize = 16;
+    private const int LargeFontSize = 32;
 
     public PingPongGame()
     {
@@ -59,10 +64,23 @@ public class PingPongGame : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        //_font = Content.Load<SpriteFont>("ScoreFont");
-
         _whiteTexture = new Texture2D(GraphicsDevice, 1, 1);
         _whiteTexture.SetData([Color.White]);
+        
+        // Load the font with SpriteFontPlus
+        _smallFont = LoadAndBakeFont(SmallFontSize);
+        _scoreFont = LoadAndBakeFont(LargeFontSize);
+    }
+
+    private SpriteFont LoadAndBakeFont(int size)
+    {
+        byte[] bytes = File.ReadAllBytes("Content/DroidSans.ttf");
+        CharacterRange[] ranges = [
+            CharacterRange.BasicLatin
+        ];
+        
+        TtfFontBakerResult bakeResult = TtfFontBaker.Bake(bytes, size, 512, 512, ranges);
+        return bakeResult.CreateSpriteFont(GraphicsDevice);
     }
 
     protected override void Update(GameTime gameTime)
@@ -116,8 +134,9 @@ public class PingPongGame : Game
         _ball!.Draw(_spriteBatch, _whiteTexture!);
 
         // Draw score
-        //_spriteBatch.DrawString(_font, $"{_score1}   {_score2}", new Vector2(370, 20), Color.White);
-
+        _spriteBatch.DrawString(_scoreFont, $"{_score1}   {_score2}", new Vector2(370, 20), Color.White);
+        _spriteBatch.DrawString(_smallFont, "Welcome to Ping Pong Mono", new Vector2(10, 10), Color.White);
+        _spriteBatch.DrawString(_smallFont, "Press ESC to exit", new Vector2(10, Height - 10 - SmallFontSize), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
