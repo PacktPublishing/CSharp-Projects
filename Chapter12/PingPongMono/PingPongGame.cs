@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using PingPongMono.Components;
 using PingPongMono.Entities;
 using PingPongMono.Helpers;
 using PingPongMono.Systems;
@@ -20,8 +21,11 @@ public class PingPongGame : Game
     private readonly List<IUpdateable> _updatable = [];
     private readonly List<IDrawable> _drawable = [];
 
+    private const int BallSize = 10;
     private const int PaddleWidth = 10;
     private const int PaddleHeight = 60;
+    private const int PaddleSpeed = 7;
+    private const int BallSpeed = 4;
     private const int SmallFontSize = 16;
     private const int LargeFontSize = 32;
 
@@ -41,20 +45,15 @@ public class PingPongGame : Game
         int halfWidth = Width / 2;
         int halfHeight = Height / 2;
         
-        // Entities
-        Paddle paddle1 = new(30, halfHeight, PaddleWidth, PaddleHeight)
-        {
-            UpKey = Keys.W,
-            DownKey = Keys.S,
-            Color = Color.MediumPurple
-        };
-        Paddle paddle2 = new(Width - 30, halfHeight, PaddleWidth, PaddleHeight)
-        {
-            UpKey = Keys.Up,
-            DownKey = Keys.Down,
-            Color = Color.Yellow
-        };
-        Ball ball = new(halfWidth, halfHeight);
+        // Entities + Components
+        Ball ball = new(halfWidth, halfHeight, BallSize, BallSpeed);
+
+        var paddle1 = new Paddle(30, halfHeight, PaddleWidth, PaddleHeight, Color.MediumPurple)
+            //.AddComponent(new PaddleKeyboardControlComponent(Keys.W, Keys.S, PaddleSpeed))
+            .AddComponent(new PaddleAiControlComponent(ball, PaddleSpeed));
+
+        var paddle2 = new Paddle(Width - 30, halfHeight, PaddleWidth, PaddleHeight, Color.Yellow)
+            .AddComponent(new PaddleKeyboardControlComponent(Keys.Up, Keys.Down, PaddleSpeed));
         
         // Systems
         ScoreManager score = new(ball);
@@ -134,7 +133,7 @@ public class PingPongGame : Game
         if (disposing)
         {
             _spriteBatch?.Dispose();
-            _context?.WhitePixel?.Dispose();
+            _context?.WhitePixel.Dispose();
         }
         base.Dispose(disposing);
     }

@@ -1,3 +1,5 @@
+using PingPongMono.Entities;
+
 namespace PingPongMono;
 
 public interface IUpdateable

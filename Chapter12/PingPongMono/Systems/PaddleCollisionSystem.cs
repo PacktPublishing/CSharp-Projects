@@ -2,7 +2,7 @@ using PingPongMono.Entities;
 
 namespace PingPongMono.Systems;
 
-public class PaddleCollisionSystem(Paddle left, Paddle right, Ball ball) : IPingPongSystem
+public class PaddleCollisionSystem(IPingPongEntity left, IPingPongEntity right, Ball ball) : IPingPongSystem
 {
     public void Update(PingPongContext context)
     {
@@ -10,6 +10,11 @@ public class PaddleCollisionSystem(Paddle left, Paddle right, Ball ball) : IPing
             (ball.Bounds.Intersects(right.Bounds) && ball.IsFacingRight))
         {
             ball.FlipHorizontal();
+        }
+        
+        if (ball.Bounds.Y <= 0 || ball.Bounds.Y >= context.Height - ball.Size)
+        {
+            ball.FlipVertical();
         }
     }
 }
