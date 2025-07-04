@@ -1,2 +1,4 @@
-﻿using var game = new PingPongMono.PingPongGame();
+﻿using PingPongMono;
+
+using PingPongGame game = new();
 game.Run();

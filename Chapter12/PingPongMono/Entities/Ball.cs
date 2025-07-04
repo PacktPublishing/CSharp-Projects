@@ -2,27 +2,29 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PingPongMono;
+namespace PingPongMono.Entities;
 
-public class Ball(int x, int y)
+public class Ball(int x, int y) : IPingPongEntity
 {
-    public const int Size = 10;
-    public const int Speed = 4;
+    private const int Size = 10;
+    private const int Speed = 4;
+    
     public Rectangle Bounds { get; private set; } = new(x, y, Size, Size);
     public bool IsFacingLeft => _velocity.X < 0;
     public bool IsFacingRight => _velocity.X > 0;
     
     private Vector2 _velocity = new(Speed, Speed);
 
-    public void Update(int width, int height, float deltaTime)
+    public void Update(PingPongContext context)
     {
+        float factor = context.DeltaTime * 60;
         Bounds = Bounds with
         {
-            X = Bounds.X + (int)(_velocity.X * deltaTime * 60),
-            Y = Bounds.Y + (int)(_velocity.Y * deltaTime * 60)
+            X = Bounds.X + (int)(_velocity.X * factor),
+            Y = Bounds.Y + (int)(_velocity.Y * factor)
         };
 
-        if (Bounds.Y <= 0 || Bounds.Y >= height - Size)
+        if (Bounds.Y <= 0 || Bounds.Y >= context.Height - Size)
         {
             FlipVertical();
         }
@@ -31,12 +33,12 @@ public class Ball(int x, int y)
     public void FlipHorizontal() => _velocity.X *= -1;
     public void FlipVertical() => _velocity.Y *= -1;
 
-    public void Reset(int width, int height)
+    public void Reset(PingPongContext context)
     {
         Bounds = Bounds with
         {
-            X = width / 2 - Size / 2,
-            Y = height / 2 - Size / 2
+            X = context.Width / 2 - Size / 2,
+            Y = context.Height / 2 - Size / 2
         };
 
         bool isGoingLeft = Random.Shared.Next(2) == 0;
@@ -47,8 +49,8 @@ public class Ball(int x, int y)
             Speed * (isGoingUp ? -1 : 1));
     }
 
-    public void Draw(SpriteBatch spriteBatch, Texture2D whiteTexture)
+    public void Draw(SpriteBatch spriteBatch, PingPongContext context)
     {
-        spriteBatch.Draw(whiteTexture, Bounds, Color.White);
+        spriteBatch.Draw(context.WhitePixel, Bounds, Color.White);
     }
 }
