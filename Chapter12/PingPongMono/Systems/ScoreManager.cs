@@ -1,14 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PingPongMono.Entities;
 
-namespace PingPongMono.Entities;
+namespace PingPongMono.Systems;
 
-public class ScoreManager(Ball ball) : IPingPongEntity
+public class ScoreManager(Ball ball) : IPingPongSystem, IDrawable
 {
-    public int Player1Score { get; private set; }
-    public int Player2Score { get; private set; }
-    public SpriteFont? Font { get; set; }
+    private int Player1Score { get; set; }
+    private int Player2Score { get; set; }
 
     public void Update(PingPongContext context)
     {
@@ -28,9 +28,10 @@ public class ScoreManager(Ball ball) : IPingPongEntity
     public void Draw(SpriteBatch spriteBatch, PingPongContext context)
     {
         string score = $"{Player1Score}   {Player2Score}";
-        int scoreWidth = (int) Font!.MeasureString(score).X;
+        SpriteFont font = context.LargeFont;
+        int scoreWidth = (int) font.MeasureString(score).X;
         Vector2 position = new (context.Width / 2 - scoreWidth / 2, 10);
         
-        spriteBatch.DrawString(Font, score, position, Color.White);
+        spriteBatch.DrawString(font, score, position, Color.White);
     }
 }
