@@ -128,4 +128,14 @@ public class PingPongGame : Game
             }
         }
     }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _spriteBatch?.Dispose();
+            _context?.WhitePixel?.Dispose();
+        }
+        base.Dispose(disposing);
+    }
 }
