@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PingPongMono.Components;
@@ -18,8 +17,7 @@ public class PingPongGame : Game
     private int Height => _graphics.PreferredBackBufferHeight;
 
     private PingPongContext? _context;
-    private readonly List<IUpdateable> _updatable = [];
-    private readonly List<IDrawable> _drawable = [];
+    private readonly World _world = new();
 
     private const int BallSize = 10;
     private const int PaddleWidth = 10;
@@ -45,22 +43,26 @@ public class PingPongGame : Game
         int halfWidth = Width / 2;
         int halfHeight = Height / 2;
         
-        // Entities + Components
+        // Entities with components
         Ball ball = new(halfWidth, halfHeight, BallSize, BallSpeed);
+        ball.Add(new RectangleRendererComponent(Color.White));
 
-        var paddle1 = new Paddle(30, halfHeight, PaddleWidth, PaddleHeight, Color.MediumPurple)
-            //.AddComponent(new PaddleKeyboardControlComponent(Keys.W, Keys.S, PaddleSpeed))
-            .AddComponent(new PaddleAiControlComponent(ball, PaddleSpeed));
+        Paddle paddle1 = new(30, halfHeight, PaddleWidth, PaddleHeight);
+        paddle1.Add(new RectangleRendererComponent(Color.MediumPurple));
+        paddle1.Add(new PaddleKeyboardControlComponent(Keys.Up, Keys.Down, PaddleSpeed));
 
-        var paddle2 = new Paddle(Width - 30, halfHeight, PaddleWidth, PaddleHeight, Color.Yellow)
-            .AddComponent(new PaddleKeyboardControlComponent(Keys.Up, Keys.Down, PaddleSpeed));
+        Paddle paddle2 = new(Width - 30, halfHeight, PaddleWidth, PaddleHeight);
+        paddle2.Add(new RectangleRendererComponent(Color.Yellow));
+        paddle2.Add(new PaddleAiControlComponent(PaddleSpeed));
+        
+        _world.Add(ball, paddle1, paddle2);
         
         // Systems
-        ScoreManager score = new(ball);
+        ScoreManager score = new();
         PaddleCollisionSystem collision = new(paddle1, paddle2, ball);
         ExitGameKeyHandlerSystem exit = new(this);
+        _world.Add(score, collision, exit);
         
-        Register(paddle1, paddle2, ball, score, collision, exit);
         base.Initialize();
     }
 
@@ -73,6 +75,7 @@ public class PingPongGame : Game
         
         _context = new PingPongContext
         {
+            World = _world,
             Width = Width,
             Height = Height,
             WhitePixel = whiteTexture,
@@ -91,7 +94,7 @@ public class PingPongGame : Game
         _context.Width = Width;
         _context.Height = Height;
 
-        foreach (var entity in _updatable)
+        foreach (var entity in _world.Updateable)
         {
             entity.Update(_context!);
         }
@@ -104,28 +107,13 @@ public class PingPongGame : Game
         GraphicsDevice.Clear(Color.Black);
         _spriteBatch!.Begin();
 
-        foreach (var entity in _drawable)
+        foreach (var entity in _world.Drawable)
         {
             entity.Draw(_spriteBatch, _context!);
         }
 
         _spriteBatch.End();
         base.Draw(gameTime);
-    }
-    
-    private void Register(params object[] objs)
-    {
-        foreach (var obj in objs)
-        {
-            if (obj is IUpdateable updateable)
-            {
-                _updatable.Add(updateable);
-            }
-            if (obj is IDrawable drawable)
-            {
-                _drawable.Add(drawable);
-            }
-        }
     }
 
     protected override void Dispose(bool disposing)

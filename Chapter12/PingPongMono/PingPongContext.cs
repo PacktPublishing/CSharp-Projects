@@ -12,4 +12,5 @@ public record PingPongContext
     public required Texture2D WhitePixel { get; init; }
     public required SpriteFont SmallFont { get; init; }
     public required SpriteFont LargeFont { get; init; }
+    public required World World { get; init; }
 }

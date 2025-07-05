@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -5,23 +6,28 @@ using PingPongMono.Entities;
 
 namespace PingPongMono.Systems;
 
-public class ScoreManager(Ball ball) : IPingPongSystem, IDrawable
+public class ScoreManager : IPingPongSystem, IDrawable
 {
     private int Player1Score { get; set; }
     private int Player2Score { get; set; }
 
     public void Update(PingPongContext context)
     {
-        if (ball.Bounds.X < 0)
+        IEnumerable<Ball> balls = context.World.FindEntities<Ball>();
+        
+        foreach (Ball ball in balls)
         {
-            Player2Score++;
-            ball.Reset(context);
-        } 
-        else if (ball.Bounds.X > context.Width)
-        {
-            Player1Score++;
-            ball.Reset(context);
-        }    
+            if (ball.Bounds.X < 0)
+            {
+                Player2Score++;
+                ball.Reset(context);
+            } 
+            else if (ball.Bounds.X > context.Width)
+            {
+                Player1Score++;
+                ball.Reset(context);
+            }    
+        }
     }
     
     [SuppressMessage("ReSharper", "PossibleLossOfFraction", Justification = "Fractional loss is fine since we're converting to pixels")]

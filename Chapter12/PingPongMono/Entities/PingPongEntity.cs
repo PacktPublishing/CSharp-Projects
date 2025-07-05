@@ -11,12 +11,15 @@ public abstract class PingPongEntity(Rectangle bounds) : IPingPongEntity
 
     private readonly List<IPingPongComponent> _components = [];
 
-    public PingPongEntity AddComponent(IPingPongComponent component)
+    public void Add(IPingPongComponent component) => _components.Add(component);
+
+    public virtual void Draw(SpriteBatch spriteBatch, PingPongContext context)
     {
-        _components.Add(component);
-        return this;
+        foreach (var component in _components)
+        {
+            component.Draw(this, spriteBatch, context);
+        }
     }
-    public abstract void Draw(SpriteBatch spriteBatch, PingPongContext context);
 
     public virtual void Update(PingPongContext context)
     {

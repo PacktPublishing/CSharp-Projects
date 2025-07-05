@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace PingPongMono.Entities;
 
@@ -41,10 +40,5 @@ public class Ball(int x, int y, int size, int speed) : PingPongEntity(new Rectan
         _velocity = new Vector2(
             speed * (isGoingLeft ? -1 : 1),
             speed * (isGoingUp ? -1 : 1));
-    }
-
-    public override void Draw(SpriteBatch spriteBatch, PingPongContext context)
-    {
-        spriteBatch.Draw(context.WhitePixel, Bounds, Color.White);
     }
 }
