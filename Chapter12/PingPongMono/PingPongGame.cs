@@ -25,6 +25,9 @@ public class PingPongGame : Game
 
     private const int PaddleWidth = 10;
     private const int PaddleHeight = 60;
+    private const int PaddleSpeed = 5;
+    private const int BallSize = 10;
+    private const int BallSpeed = 7;
     private const int SmallFontSize = 16;
     private const int LargeFontSize = 32;
 
@@ -41,22 +44,23 @@ public class PingPongGame : Game
 
     protected override void Initialize()
     {
-        int halfWidth = Width / 2;
-        int halfHeight = Height / 2;
+        int halfX = Width / 2;
+        int halfY = Height / 2;
         
-        _paddle1 = new Paddle(30, halfHeight, PaddleWidth, PaddleHeight)
+        _paddle1 = new Paddle(30, halfY, PaddleWidth, PaddleHeight, PaddleSpeed)
         {
             UpKey = Keys.W,
             DownKey = Keys.S,
             Color = Color.MediumPurple
         };
-        _paddle2 = new Paddle(Width - 30, halfHeight, PaddleWidth, PaddleHeight)
+        int rightX = Width - 30;
+        _paddle2 = new Paddle(rightX, halfY, PaddleWidth, PaddleHeight, PaddleSpeed)
         {
             UpKey = Keys.Up,
             DownKey = Keys.Down,
             Color = Color.Yellow
         };
-        _ball = new Ball(halfWidth, halfHeight);
+        _ball = new Ball(Width, Height, BallSize, BallSpeed);
         
         base.Initialize();
     }
@@ -90,7 +94,7 @@ public class PingPongGame : Game
 
         _paddle1!.Update(keyboard, Height, deltaTime);
         _paddle2!.Update(keyboard, Height, deltaTime);
-        _ball!.Update(Width, Height, deltaTime);
+        _ball!.Update(Height, deltaTime);
 
         // Ball collision with paddles
         if (_ball.Bounds.Intersects(_paddle1.Bounds) && _ball.IsFacingLeft)
@@ -104,12 +108,12 @@ public class PingPongGame : Game
         }
 
         // Score
-        if (_ball.Bounds.X < 0)
+        if (_ball.Bounds.Left < 0)
         {
             _score2++;
             _ball.Reset(Width, Height);
         }
-        if (_ball.Bounds.X > Width)
+        if (_ball.Bounds.Right > Width)
         {
             _score1++;
             _ball.Reset(Width, Height);
@@ -134,11 +138,21 @@ public class PingPongGame : Game
         _ball!.Draw(_spriteBatch, _whiteTexture!);
 
         // Draw score
-        _spriteBatch.DrawString(_scoreFont, $"{_score1}   {_score2}", new Vector2(370, 20), Color.White);
+        string scoreText = $"{_score1}   {_score2}";
+        Vector2 scoreSize = _scoreFont!.MeasureString(scoreText);
+        _spriteBatch.DrawString(_scoreFont, scoreText, new Vector2((Width / 2) - scoreSize.X / 2, 20), Color.White);
         _spriteBatch.DrawString(_smallFont, "Welcome to Ping Pong Mono", new Vector2(10, 10), Color.White);
         _spriteBatch.DrawString(_smallFont, "Press ESC to exit", new Vector2(10, Height - 10 - SmallFontSize), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+    
+    protected override void UnloadContent()
+    {
+        _spriteBatch?.Dispose();
+        _whiteTexture?.Dispose();
+        
+        base.UnloadContent();
     }
 }

@@ -4,17 +4,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PingPongMono;
 
-public class Ball(int x, int y)
+public class Ball
 {
-    public const int Size = 10;
-    public const int Speed = 4;
-    public Rectangle Bounds { get; private set; } = new(x, y, Size, Size);
+    public Rectangle Bounds { get; private set; }
     public bool IsFacingLeft => _velocity.X < 0;
     public bool IsFacingRight => _velocity.X > 0;
     
-    private Vector2 _velocity = new(Speed, Speed);
+    private Vector2 _velocity;
+    private readonly int _size;
+    private readonly int _speed;
 
-    public void Update(int width, int height, float deltaTime)
+    public Ball(int width, int height, int size, int speed)
+    {
+        _size = size;
+        _speed = speed;
+        Bounds = new Rectangle(0, 0, size, size);
+        Reset(width, height);
+    }
+
+    public void Update(int height, float deltaTime)
     {
         Bounds = Bounds with
         {
@@ -22,7 +30,7 @@ public class Ball(int x, int y)
             Y = Bounds.Y + (int)(_velocity.Y * deltaTime * 60)
         };
 
-        if (Bounds.Y <= 0 || Bounds.Y >= height - Size)
+        if (Bounds.Top <= 0 || Bounds.Bottom >= height)
         {
             FlipVertical();
         }
@@ -35,16 +43,19 @@ public class Ball(int x, int y)
     {
         Bounds = Bounds with
         {
-            X = width / 2 - Size / 2,
-            Y = height / 2 - Size / 2
+            X = width / 2 - _size / 2,
+            Y = height / 2 - _size / 2
         };
 
-        bool isGoingLeft = Random.Shared.Next(2) == 0;
-        bool isGoingUp = Random.Shared.Next(2) == 0;
+        float xFraction = 0.25f + (float)Random.Shared.NextDouble() * 0.75f;
+        float yFraction = (float)Math.Sqrt(1 - xFraction * xFraction);
+
+        int xSign = Random.Shared.Next(2) == 0 ? 1 : -1;
+        int ySign = Random.Shared.Next(2) == 0 ? 1 : -1;
 
         _velocity = new Vector2(
-            Speed * (isGoingLeft ? -1 : 1),
-            Speed * (isGoingUp ? -1 : 1));
+            xSign * xFraction * _speed,
+            ySign * yFraction * _speed);
     }
 
     public void Draw(SpriteBatch spriteBatch, Texture2D whiteTexture)
