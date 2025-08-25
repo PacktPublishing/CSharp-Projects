@@ -27,12 +27,12 @@ public class SpaceGame : Game
         _gameManager = new GameManager(this);
         
         _world = new WorldBuilder()
+            .AddSystem(new MapLoaderSystem(_gameManager, _sprites))
+            .AddSystem(new KeyboardInputSystem(_gameManager))
+            .AddSystem(new ShipSpawnerSystem(_gameManager, _sprites))
+            .AddSystem(new MovementSystem(_gameManager))
             .AddSystem(new SpriteRenderSystem(GraphicsDevice))
             .AddSystem(new TextRenderSystem(GraphicsDevice, _sprites))
-            .AddSystem(new MapLoaderSystem(_gameManager, _sprites))
-            .AddSystem(new ShipTrackerSystem(_gameManager))
-            .AddSystem(new ShipSpawnerSystem(_gameManager, _sprites))
-            .AddSystem(new KeyboardInputSystem(_gameManager))
             .Build();
     }
 

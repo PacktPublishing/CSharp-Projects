@@ -41,14 +41,19 @@ public class ShipSpawnerSystem(GameManager game, SpriteManager sprites)
                 Entity ship = CreateEntity();
                 ship.Attach(new Transform2(transform.Position.X, transform.Position.Y)
                 {
-                    Scale = new Vector2(hangar.ShipSize)
+                    Scale = new Vector2(hangar.ShipSize),
+                    Rotation = MathHelper.ToRadians(Random.Shared.Next(360))
                 });
-                ship.Attach(new TrackedShipComponent());
+                ship.Attach(new EngineComponent()
+                {
+                    MaxSpeed = 10f,
+                    MaxTurnRate = 30f,
+                    //TargetLocation = new Vector2(300, 300),
+                });
                 ship.Attach(new Sprite(sprites.SolidPixelTexture)
                 {
-                    Color = Color.OrangeRed
+                    Color = hangar.Faction.GetFactionColor()
                 });
-                // TODO: Give the ship a goal and a destination
                 
                 canSpawn = false; // We'll be able to spawn again next update loop
                 hangar.ResetSpawnTimer();

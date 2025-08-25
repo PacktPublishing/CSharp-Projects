@@ -9,7 +9,7 @@ namespace Chapter13.Components;
 public class HangarComponent
 {
     private double _timeUntilNextSpawn;
-    public double SpawnIntervalInSeconds { get; set; } = 5.0;
+    public double MinSpawnIntervalInSeconds { get; set; } = 30.0;
     
     public void Update(GameTime gameTime)
     {
@@ -25,6 +25,6 @@ public class HangarComponent
 
     public void ResetSpawnTimer()
     {
-        _timeUntilNextSpawn = SpawnIntervalInSeconds;
+        _timeUntilNextSpawn = MinSpawnIntervalInSeconds;
     }
 }
