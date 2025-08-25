@@ -1,2 +1,2 @@
-﻿using var game = new Chapter13.NaturalParkGame();
+﻿using var game = new Chapter13.SpaceGame();
 game.Run();
