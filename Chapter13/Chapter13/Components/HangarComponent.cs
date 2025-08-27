@@ -20,8 +20,9 @@ public class HangarComponent
     }
     
     public bool IsReadyToSpawn => _timeUntilNextSpawn <= 0;
-    public Faction Faction { get; set; }
-    public float ShipSize { get; set; } = 4f;
+    public Faction Faction { get; init; }
+    public ShipType ShipType { get; init; }
+    public Vector2? DefaultTargetLocation { get; init; }
 
     public void ResetSpawnTimer()
     {

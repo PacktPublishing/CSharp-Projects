@@ -1,3 +1,4 @@
+using System.Linq;
 using Chapter13.Components;
 using Chapter13.Domain;
 using Chapter13.Helpers;
@@ -59,11 +60,23 @@ public class MapLoaderSystem(GameManager game, SpriteManager sprites) : UpdateSy
             {
                 Color = color
             });
+            MapLocation target = _map.Locations.FirstOrDefault(l => l.Id == location.DefaultTargetLocationId);
             entity.Attach(new HangarComponent
             {
                 Faction = location.Owner,
+                ShipType = GetSpawnedShipType(location.Type, location.Owner),
+                DefaultTargetLocation = target?.StartPosition,
             });
         }
+    }
 
+    private static ShipType GetSpawnedShipType(LocationType locationType, Faction owner)
+    {
+        return locationType switch
+        {
+            LocationType.SpaceStation => owner == Faction.Criminal ? ShipType.Raider : ShipType.Freighter,
+            LocationType.CapitalShip => ShipType.Patrol,
+            _ => ShipType.Freighter
+        };
     }
 }

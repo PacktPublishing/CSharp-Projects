@@ -39,17 +39,7 @@ public class ShipSpawnerSystem(GameManager game, SpriteManager sprites)
                 Transform2 transform = _transformMapper.Get(entityId);
                 
                 Entity ship = CreateEntity();
-                ship.Attach(new Transform2(transform.Position.X, transform.Position.Y)
-                {
-                    Scale = new Vector2(hangar.ShipSize),
-                    Rotation = MathHelper.ToRadians(Random.Shared.Next(360))
-                });
-                ship.Attach(new EngineComponent()
-                {
-                    MaxSpeed = 10f,
-                    MaxTurnRate = 30f,
-                    //TargetLocation = new Vector2(300, 300),
-                });
+                ship.ConfigureShip(hangar.Faction, hangar.ShipType, transform.Position, hangar.DefaultTargetLocation);
                 ship.Attach(new Sprite(sprites.SolidPixelTexture)
                 {
                     Color = hangar.Faction.GetFactionColor()

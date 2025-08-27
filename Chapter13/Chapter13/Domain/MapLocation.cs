@@ -9,4 +9,6 @@ public class MapLocation
     public required Faction Owner { get; init; }
     public required float Size { get; init; }
     public required LocationType Type { get; init; }
+    public int Id { get; set; }
+    public int DefaultTargetLocationId { get; set; }
 }

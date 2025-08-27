@@ -12,38 +12,72 @@ public class MovementSystem(GameManager game) : EntityUpdateSystem(Aspect.All(ty
 {
     private ComponentMapper<EngineComponent> _engineMapper;
     private ComponentMapper<Transform2> _transformMapper;
+    private ComponentMapper<NavigationDataComponent> _navMapper;
 
     public override void Initialize(IComponentMapperService mapperService)
     {
         _engineMapper = mapperService.GetMapper<EngineComponent>();
         _transformMapper = mapperService.GetMapper<Transform2>();
+        _navMapper = mapperService.GetMapper<NavigationDataComponent>();
     }
 
     public override void Update(GameTime gameTime)
     {
         game.TrackedShipsCount = ActiveEntities.Count;
-        
-        foreach (var entityId in ActiveEntities)
+
+        foreach (int entityId in ActiveEntities)
         {
             EngineComponent engine = _engineMapper.Get(entityId);
             Transform2 transform = _transformMapper.Get(entityId);
-
-            if (engine.TargetLocation.HasValue)
+            NavigationDataComponent? navData = null;
+            if (_navMapper.Has(entityId))
             {
-                // Rotate towards target
-                Vector2 toTarget = engine.TargetLocation.Value - transform.Position;
-                float desiredAngle = (float)Math.Atan2(toTarget.Y, toTarget.X);
-                float angleDifference = MathHelper.WrapAngle(desiredAngle - transform.Rotation);
-                float maxTurn = engine.MaxTurnRate * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                float turnAmount = MathHelper.Clamp(angleDifference, -maxTurn, maxTurn);
-                transform.Rotation += turnAmount;
+                navData = _navMapper.Get(entityId);
             }
 
-            float moveAmount = engine.MaxSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (navData != null)
+            {
+                UpdateTargetLocation(engine, navData);
+            }
+            RotateTowardsTarget(gameTime, engine, transform);
+            MoveForwards(gameTime, engine, transform);
+            Vector2? distance = transform.Position - engine.TargetLocation;
+            if (distance.HasValue && distance.Value.Length() < 5f)
+            {
+                DestroyEntity(entityId); // TODO: Does this cause iteration issues?
+            }
+        }
+    }
 
-            // Move forward along the current rotation
-            Vector2 forward = new((float)Math.Cos(transform.Rotation), (float)Math.Sin(transform.Rotation));
-            transform.Position += forward * moveAmount;
+    private static void MoveForwards(GameTime gameTime, EngineComponent engine, Transform2 transform)
+    {
+        float moveAmount = engine.MaxSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        Vector2 forward = new((float)Math.Cos(transform.Rotation), (float)Math.Sin(transform.Rotation));
+        transform.Position += forward * moveAmount;
+    }
+
+    private static void RotateTowardsTarget(GameTime gameTime, EngineComponent engine, Transform2 transform)
+    {
+        if (!engine.TargetLocation.HasValue) return;
+
+        Vector2 toTarget = engine.TargetLocation.Value - transform.Position;
+        float desiredAngle = (float)Math.Atan2(toTarget.Y, toTarget.X);
+        float angleDifference = MathHelper.WrapAngle(desiredAngle - transform.Rotation);
+        float maxTurn = engine.MaxTurnRate * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        float turnAmount = MathHelper.Clamp(angleDifference, -maxTurn, maxTurn);
+        transform.Rotation += turnAmount;
+    }
+
+    private void UpdateTargetLocation(EngineComponent engine, NavigationDataComponent navData)
+    {
+        if (navData.TargetEntityId.HasValue)
+        {
+            Transform2 targetTransform = _transformMapper.Get(navData.TargetEntityId.Value);
+            engine.TargetLocation = targetTransform.Position;
+        }
+        else if (navData.TargetLocation.HasValue)
+        {
+            engine.TargetLocation = navData.TargetLocation;
         }
     }
 }
