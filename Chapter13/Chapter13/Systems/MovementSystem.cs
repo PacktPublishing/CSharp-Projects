@@ -41,11 +41,6 @@ public class MovementSystem(GameManager game) : EntityUpdateSystem(Aspect.All(ty
             }
             RotateTowardsTarget(gameTime, engine, transform);
             MoveForwards(gameTime, engine, transform);
-            Vector2? distance = transform.Position - engine.TargetLocation;
-            if (distance.HasValue && distance.Value.Length() < 5f)
-            {
-                DestroyEntity(entityId); // TODO: Does this cause iteration issues?
-            }
         }
     }
 

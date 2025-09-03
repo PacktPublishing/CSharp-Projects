@@ -21,7 +21,7 @@ public class MapLoaderSystem(GameManager game, SpriteManager sprites) : UpdateSy
     public override void Initialize(World world)
     {
         _world = world;
-        
+
         _legend = _world.CreateEntity();
         _legend.Attach(new Transform2(10, 10));
         

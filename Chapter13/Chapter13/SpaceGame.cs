@@ -31,6 +31,7 @@ public class SpaceGame : Game
             .AddSystem(new KeyboardInputSystem(_gameManager))
             .AddSystem(new ShipSpawnerSystem(_gameManager, _sprites))
             .AddSystem(new MovementSystem(_gameManager))
+            .AddSystem(new CollisionSystem())
             .AddSystem(new SpriteRenderSystem(GraphicsDevice))
             .AddSystem(new TextRenderSystem(GraphicsDevice, _sprites))
             .Build();

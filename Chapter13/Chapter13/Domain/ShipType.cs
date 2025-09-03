@@ -4,5 +4,6 @@ public enum ShipType
 {
     Patrol,
     Raider,
-    Freighter
+    Freighter,
+    Missile
 }

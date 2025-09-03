@@ -22,7 +22,7 @@ public class GameManager
                 Type = LocationType.SpaceStation,
                 Owner = Faction.Neutral,
                 StartPosition = new Vector2(140, 90),
-                Size = 32f,
+                Size = 20f,
                 DefaultTargetLocationId = 7
             },
             new MapLocation {
@@ -67,7 +67,7 @@ public class GameManager
                 Type = LocationType.JumpGate,
                 Owner = Faction.Neutral,
                 StartPosition = new Vector2(60, 200),
-                Size = 8f,
+                Size = 10f,
                 DefaultTargetLocationId = 1
             },
             new MapLocation {
@@ -76,7 +76,7 @@ public class GameManager
                 Type = LocationType.JumpGate,
                 Owner = Faction.Neutral,
                 StartPosition = new Vector2(750, 320),
-                Size = 8f,
+                Size = 10f,
                 DefaultTargetLocationId = 2
             },
         ]
@@ -85,7 +85,7 @@ public class GameManager
 
     public GameMap CurrentMap { get; set; }
 
-    private const int MaxShips = 3;
+    private const int MaxShips = 15;
     public int TrackedShipsCount { get; set; }
     public bool CanSpawnMoreShips => TrackedShipsCount < MaxShips;
     public void Exit() => _game.Exit();

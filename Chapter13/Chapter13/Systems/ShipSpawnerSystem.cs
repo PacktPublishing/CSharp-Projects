@@ -39,7 +39,7 @@ public class ShipSpawnerSystem(GameManager game, SpriteManager sprites)
                 Transform2 transform = _transformMapper.Get(entityId);
                 
                 Entity ship = CreateEntity();
-                ship.ConfigureShip(hangar.Faction, hangar.ShipType, transform.Position, hangar.DefaultTargetLocation);
+                ship.ConfigureShip(transform.Position, hangar.ShipType, hangar.DefaultTargetLocation);
                 ship.Attach(new Sprite(sprites.SolidPixelTexture)
                 {
                     Color = hangar.Faction.GetFactionColor()
