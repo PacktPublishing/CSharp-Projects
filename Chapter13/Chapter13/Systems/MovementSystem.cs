@@ -23,7 +23,7 @@ public class MovementSystem(GameManager game) : EntityUpdateSystem(Aspect.All(ty
 
     public override void Update(GameTime gameTime)
     {
-        game.TrackedShipsCount = ActiveEntities.Count;
+        //game.TrackedShipsCount = ActiveEntities.Count;
 
         foreach (int entityId in ActiveEntities)
         {

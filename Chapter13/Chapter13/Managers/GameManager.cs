@@ -85,8 +85,5 @@ public class GameManager
 
     public GameMap CurrentMap { get; set; }
 
-    private const int MaxShips = 15;
-    public int TrackedShipsCount { get; set; }
-    public bool CanSpawnMoreShips => TrackedShipsCount < MaxShips;
     public void Exit() => _game.Exit();
 }

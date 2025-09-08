@@ -27,7 +27,7 @@ public class ShipSpawnerSystem(GameManager game, SpriteManager sprites)
     
     public override void Update(GameTime gameTime)
     {
-        bool canSpawn = game.CanSpawnMoreShips;
+        bool canSpawn = true;
         
         foreach (var entityId in ActiveEntities.OrderBy(_ => _random.Next()))
         {

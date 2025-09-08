@@ -21,3 +21,10 @@
 - Jump Departure Effect
 
 ## TODO: Behavior tree for spacecraft
+
+- If enemy detected, go towards enemy
+- Land if at final destination
+- Go towards destination
+- Fire projectile if enemy in range and launcher ready
+- If obstacle / missile ahead, steer to avoid it
+- Set waypoint

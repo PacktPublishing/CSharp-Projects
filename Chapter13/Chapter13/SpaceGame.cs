@@ -1,9 +1,10 @@
-﻿using Chapter13.Helpers;
+﻿using Chapter13.Entities;
+using Chapter13.Helpers;
 using Chapter13.Managers;
-using Chapter13.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.ECS;
+using MonoGame.Extended.Collections;
+using MonoGame.Extended.Graphics;
 
 namespace Chapter13;
 public class SpaceGame : Game
@@ -11,7 +12,17 @@ public class SpaceGame : Game
     private readonly GraphicsDeviceManager _graphics;
     private SpriteManager _sprites;
     private GameManager _gameManager;
-    private World _world;
+    private SpriteBatch _spriteBatch;
+
+    private const int MaxShips = 15;
+    private const int InitialShips = 4;
+    public Bag<ShipEntity> Ships { get; } = [];
+    public Pool<ShipEntity> ShipPool { get; } = new(
+        createItem: () => new ShipEntity(), 
+        resetItem: ship => ship.Reset(), 
+        maximum: MaxShips);
+    
+    public bool CanSpawnMoreShips => Ships.Count < MaxShips;
 
     public SpaceGame()
     {
@@ -26,22 +37,24 @@ public class SpaceGame : Game
 
         _gameManager = new GameManager(this);
         
-        _world = new WorldBuilder()
-            .AddSystem(new MapLoaderSystem(_gameManager, _sprites))
-            .AddSystem(new KeyboardInputSystem(_gameManager))
-            .AddSystem(new ShipSpawnerSystem(_gameManager, _sprites))
-            .AddSystem(new MovementSystem(_gameManager))
-            .AddSystem(new CollisionSystem())
-            .AddSystem(new SpriteRenderSystem(GraphicsDevice))
-            .AddSystem(new TextRenderSystem(GraphicsDevice, _sprites))
-            .Build();
+        for (int i = 0; i < InitialShips; i++)
+        {
+            ShipEntity ship = ShipPool.Obtain();
+            ship.Sprite = new Sprite(_sprites.SolidPixelTexture)
+            {
+                Color = Color.MediumPurple
+            };
+            Ships.Add(ship);
+        }
     }
 
     protected override void LoadContent()
     {
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+
         Texture2D solidPixelTexture = new(GraphicsDevice, 1, 1);
         solidPixelTexture.SetData([Color.White]);
-
+        
         _sprites = new SpriteManager
         {
             SolidPixelTexture = solidPixelTexture,
@@ -52,7 +65,10 @@ public class SpaceGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        _world.Update(gameTime);
+        foreach (var ship in Ships)
+        {
+            ship.Update(gameTime);
+        }
         
         base.Update(gameTime);
     }
@@ -60,7 +76,13 @@ public class SpaceGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
-        _world.Draw(gameTime);
+
+        _spriteBatch.Begin();
+        foreach (var ship in Ships)
+        {
+            ship.Draw(_spriteBatch, gameTime);
+        }
+        _spriteBatch.End();
         
         base.Draw(gameTime);
     }
