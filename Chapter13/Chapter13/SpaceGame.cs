@@ -1,10 +1,15 @@
-﻿using Chapter13.Entities;
+﻿using System;
+using Chapter13.Components;
+using Chapter13.Entities;
 using Chapter13.Helpers;
 using Chapter13.Managers;
+using Chapter13.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.Graphics;
+using MonoGame.Extended.Input.InputListeners;
 
 namespace Chapter13;
 public class SpaceGame : Game
@@ -13,6 +18,7 @@ public class SpaceGame : Game
     private SpriteManager _sprites;
     private GameManager _gameManager;
     private SpriteBatch _spriteBatch;
+    private readonly Random _rand = Random.Shared;
 
     private const int MaxShips = 15;
     private const int InitialShips = 4;
@@ -40,12 +46,26 @@ public class SpaceGame : Game
         for (int i = 0; i < InitialShips; i++)
         {
             ShipEntity ship = ShipPool.Obtain();
-            ship.Sprite = new Sprite(_sprites.SolidPixelTexture)
+            ship.Attach(new Sprite(_sprites.SolidPixelTexture)
             {
-                Color = Color.MediumPurple
-            };
+                Color = Color.MediumPurple,
+                OriginNormalized = new Vector2(0.5f, 0.5f)
+            });
+            ship.Attach(new SensorsComponent()
+            {
+                DetectionRadius = 200f
+            });
+            
+            ship.Initialize(
+                x: _rand.Next(32, _graphics.PreferredBackBufferWidth - 32),
+                y: _rand.Next(32, _graphics.PreferredBackBufferHeight - 32),
+                rotation: MovementHelpers.GetRandomHeadingInRadians());
+            
             Ships.Add(ship);
         }
+        
+        this.Components.Add(new SpriteRendererSystem(this));
+        this.Components.Add(new SensorRendererSystem(this));
     }
 
     protected override void LoadContent()
@@ -77,13 +97,6 @@ public class SpaceGame : Game
     {
         GraphicsDevice.Clear(Color.Black);
 
-        _spriteBatch.Begin();
-        foreach (var ship in Ships)
-        {
-            ship.Draw(_spriteBatch, gameTime);
-        }
-        _spriteBatch.End();
-        
         base.Draw(gameTime);
     }
 }

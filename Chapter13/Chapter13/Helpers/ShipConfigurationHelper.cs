@@ -24,7 +24,7 @@ public static class ShipConfigurationHelper
         Transform2 shipPos = new(position.X, position.Y)
         {
             Scale = new Vector2(stats.Size),
-            Rotation = GetRandomHeadingInRadians()
+            Rotation = MovementHelpers.GetRandomHeadingInRadians()
         };
         ship.Attach(shipPos);
         ship.Attach(new EngineComponent
@@ -42,10 +42,5 @@ public static class ShipConfigurationHelper
         {
             ship.Attach(new LauncherComponent());
         }
-    }
-
-    private static float GetRandomHeadingInRadians()
-    {
-        return MathHelper.ToRadians(Random.Shared.Next(360));
     }
 }

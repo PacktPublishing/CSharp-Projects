@@ -1,27 +1,46 @@
+using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Graphics;
+using MonoGame.Extended;
+using MonoGame.Extended.Collections;
 
 namespace Chapter13.Entities;
 
 public class ShipEntity
 {
+    public Bag<object> Components { get; } = [];
+
+    public float MaxSpeed { get; set; } = 10f;
+    
     public void Update(GameTime gameTime)
     {
+        float moveAmount = MaxSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        Vector2 forward = new((float)Math.Cos(Transform.Rotation), (float)Math.Sin(Transform.Rotation));
+        Transform.Position += forward * moveAmount;
+        Bounds = Bounds with { Center = Transform.Position, Radius = Transform.Scale.X / 2f};
     }
 
-    public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+    public void Attach(object component)
     {
-        if (Sprite != null)
-        {
-            spriteBatch.Draw(Sprite, Vector2.Zero, rotation: 0f, scale: new Vector2(16,16));
-        }
+        Components.Add(component);
     }
-
-    public Sprite Sprite { get; set; }
 
     public void Reset()
     {
-        Sprite = null;
+        Components.Clear();
+        Transform.Position = Vector2.Zero;
+        Transform.Rotation = 0f;
+        Transform.Scale = Vector2.One;
+    }
+
+    public Transform2 Transform { get; } = new();
+
+    public CircleF Bounds { get; private set; } = new(Vector2.Zero, 1f);
+
+    public void Initialize(int x, int y, float rotation)
+    {
+        Transform.Position = new Vector2(x, y);
+        Transform.Rotation = rotation;
+        Transform.Scale = new Vector2(16, 16);
     }
 }
