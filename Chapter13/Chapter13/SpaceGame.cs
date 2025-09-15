@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using Chapter13.Components;
 using Chapter13.Entities;
 using Chapter13.Helpers;
@@ -8,6 +9,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collections;
+using MonoGame.Extended.Collisions;
+using MonoGame.Extended.Collisions.Layers;
+using MonoGame.Extended.Collisions.QuadTree;
 using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Input.InputListeners;
 
@@ -19,9 +23,10 @@ public class SpaceGame : Game
     private GameManager _gameManager;
     private SpriteBatch _spriteBatch;
     private readonly Random _rand = Random.Shared;
+    private CollisionComponent _collision;
 
     private const int MaxShips = 15;
-    private const int InitialShips = 4;
+    private const int InitialShips = 3;
     public Bag<ShipEntity> Ships { get; } = [];
     public Pool<ShipEntity> ShipPool { get; } = new(
         createItem: () => new ShipEntity(), 
@@ -43,6 +48,17 @@ public class SpaceGame : Game
 
         _gameManager = new GameManager(this);
         
+        RectangleF worldBounds = new(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+        Layer defaultLayer = new(new QuadTreeSpace(worldBounds));
+        Layer sensorLayer = new(new QuadTreeSpace(worldBounds));
+        _collision = new CollisionComponent(defaultLayer);
+        _collision.Add("Sensors", sensorLayer);
+        _collision.AddCollisionBetweenLayer(defaultLayer, sensorLayer);
+        this.Components.Add(_collision);
+        
+        this.Components.Add(new SpriteRendererSystem(this));
+        this.Components.Add(new SensorRendererSystem(this));
+        
         for (int i = 0; i < InitialShips; i++)
         {
             ShipEntity ship = ShipPool.Obtain();
@@ -51,10 +67,12 @@ public class SpaceGame : Game
                 Color = Color.MediumPurple,
                 OriginNormalized = new Vector2(0.5f, 0.5f)
             });
-            ship.Attach(new SensorsComponent()
+            SensorsComponent sensors = new(ship)
             {
                 DetectionRadius = 200f
-            });
+            };
+            ship.Attach(sensors);
+            sensorLayer.Space.Insert(sensors);
             
             ship.Initialize(
                 x: _rand.Next(32, _graphics.PreferredBackBufferWidth - 32),
@@ -62,10 +80,8 @@ public class SpaceGame : Game
                 rotation: MovementHelpers.GetRandomHeadingInRadians());
             
             Ships.Add(ship);
+            _collision.Insert(ship);
         }
-        
-        this.Components.Add(new SpriteRendererSystem(this));
-        this.Components.Add(new SensorRendererSystem(this));
     }
 
     protected override void LoadContent()

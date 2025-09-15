@@ -1,10 +1,8 @@
-using System;
 using System.Linq;
 using Chapter13.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using MonoGame.Extended.Graphics;
 
 namespace Chapter13.Systems;
 
@@ -19,9 +17,9 @@ public class SensorRendererSystem(SpaceGame game) : DrawableGameComponent(game)
         {
             foreach (var sensors in ship.Components.OfType<SensorsComponent>())
             {
-                _spriteBatch.DrawCircle(ship.Bounds.Center, sensors.DetectionRadius, sides: 32, color: Color.Cyan);
+                Color color = sensors.HasContact ? Color.Red : Color.Cyan;
+                _spriteBatch.DrawCircle(ship.Bounds.Position, sensors.DetectionRadius, sides: 32, color);
             }
-
         }
         _spriteBatch.End();
         

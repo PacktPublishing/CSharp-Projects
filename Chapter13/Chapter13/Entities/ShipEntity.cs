@@ -3,26 +3,38 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Collections;
+using MonoGame.Extended.Collisions;
 
 namespace Chapter13.Entities;
 
-public class ShipEntity
+public class ShipEntity : Updateable, ICollisionActor
 {
+    private CircleF _bounds = new(Vector2.Zero, 1f);
+    private readonly Bag<IUpdateable> _updateables = [];
     public Bag<object> Components { get; } = [];
 
     public float MaxSpeed { get; set; } = 10f;
     
-    public void Update(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
         float moveAmount = MaxSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         Vector2 forward = new((float)Math.Cos(Transform.Rotation), (float)Math.Sin(Transform.Rotation));
         Transform.Position += forward * moveAmount;
-        Bounds = Bounds with { Center = Transform.Position, Radius = Transform.Scale.X / 2f};
+        _bounds = _bounds with { Center = Transform.Position, Radius = Transform.Scale.X / 2f};
+        
+        foreach (var updateable in _updateables)
+        {
+            updateable.Update(gameTime);
+        }
     }
 
     public void Attach(object component)
     {
         Components.Add(component);
+        if (component is IUpdateable u)
+        {
+            _updateables.Add(u);
+        } 
     }
 
     public void Reset()
@@ -35,7 +47,15 @@ public class ShipEntity
 
     public Transform2 Transform { get; } = new();
 
-    public CircleF Bounds { get; private set; } = new(Vector2.Zero, 1f);
+    public void OnCollision(CollisionEventArgs collisionInfo)
+    {
+        // No operation needed
+    }
+
+    public IShapeF Bounds
+    {
+        get => _bounds;
+    }
 
     public void Initialize(int x, int y, float rotation)
     {
