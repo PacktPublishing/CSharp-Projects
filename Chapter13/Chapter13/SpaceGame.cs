@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Chapter13.Components;
 using Chapter13.Entities;
 using Chapter13.Helpers;
@@ -13,7 +14,6 @@ using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Collisions.Layers;
 using MonoGame.Extended.Collisions.QuadTree;
 using MonoGame.Extended.Graphics;
-using MonoGame.Extended.Input.InputListeners;
 
 namespace Chapter13;
 public class SpaceGame : Game
@@ -26,7 +26,7 @@ public class SpaceGame : Game
     private CollisionComponent _collision;
 
     private const int MaxShips = 15;
-    private const int InitialShips = 3;
+    private const int InitialShips = 5;
     public Bag<ShipEntity> Ships { get; } = [];
     public Pool<ShipEntity> ShipPool { get; } = new(
         createItem: () => new ShipEntity(), 
@@ -38,6 +38,11 @@ public class SpaceGame : Game
     public SpaceGame()
     {
         _graphics = new GraphicsDeviceManager(this);
+
+        // Set the window size
+        _graphics.PreferredBackBufferWidth = 1280;
+        _graphics.PreferredBackBufferHeight = 800;
+
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
     }
@@ -67,12 +72,6 @@ public class SpaceGame : Game
                 Color = Color.MediumPurple,
                 OriginNormalized = new Vector2(0.5f, 0.5f)
             });
-            SensorsComponent sensors = new(ship)
-            {
-                DetectionRadius = 200f
-            };
-            ship.Attach(sensors);
-            sensorLayer.Space.Insert(sensors);
             
             ship.Initialize(
                 x: _rand.Next(32, _graphics.PreferredBackBufferWidth - 32),
@@ -103,6 +102,7 @@ public class SpaceGame : Game
     {
         foreach (var ship in Ships)
         {
+            ship.DetectedShips = Ships.Where(s => s != ship && s.Bounds.Intersects(ship.DetectionBounds));
             ship.Update(gameTime);
         }
         

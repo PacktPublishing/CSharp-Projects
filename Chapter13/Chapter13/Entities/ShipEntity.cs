@@ -1,5 +1,6 @@
 using System;
-using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Collections;
@@ -10,17 +11,24 @@ namespace Chapter13.Entities;
 public class ShipEntity : Updateable, ICollisionActor
 {
     private CircleF _bounds = new(Vector2.Zero, 1f);
+    private CircleF _detection = new(Vector2.Zero, 1f);
+
     private readonly Bag<IUpdateable> _updateables = [];
     public Bag<object> Components { get; } = [];
 
     public float MaxSpeed { get; set; } = 10f;
     
+    public float DetectionRadius { get; set; } = 100f;
+
+    public IEnumerable<ShipEntity> DetectedShips { get; set; } = [];
+
     public override void Update(GameTime gameTime)
     {
         float moveAmount = MaxSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         Vector2 forward = new((float)Math.Cos(Transform.Rotation), (float)Math.Sin(Transform.Rotation));
         Transform.Position += forward * moveAmount;
         _bounds = _bounds with { Center = Transform.Position, Radius = Transform.Scale.X / 2f};
+        _detection = _detection with { Center = Transform.Position, Radius = DetectionRadius};
         
         foreach (var updateable in _updateables)
         {
@@ -52,10 +60,8 @@ public class ShipEntity : Updateable, ICollisionActor
         // No operation needed
     }
 
-    public IShapeF Bounds
-    {
-        get => _bounds;
-    }
+    public IShapeF Bounds => _bounds;
+    public IShapeF DetectionBounds => _detection;
 
     public void Initialize(int x, int y, float rotation)
     {

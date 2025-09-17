@@ -15,11 +15,8 @@ public class SensorRendererSystem(SpaceGame game) : DrawableGameComponent(game)
         _spriteBatch.Begin();
         foreach (var ship in game.Ships)
         {
-            foreach (var sensors in ship.Components.OfType<SensorsComponent>())
-            {
-                Color color = sensors.HasContact ? Color.Red : Color.Cyan;
-                _spriteBatch.DrawCircle(ship.Bounds.Position, sensors.DetectionRadius, sides: 32, color);
-            }
+            Color color = ship.DetectedShips.Count() > 0 ? Color.Red : Color.Cyan;
+            _spriteBatch.DrawCircle(ship.Bounds.Position, ship.DetectionRadius, sides: 32, color);
         }
         _spriteBatch.End();
         
