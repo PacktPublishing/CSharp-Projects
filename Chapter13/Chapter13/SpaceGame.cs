@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Linq;
-using Chapter13.Components;
 using Chapter13.Entities;
 using Chapter13.Helpers;
 using Chapter13.Managers;
@@ -11,8 +9,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.Collisions;
-using MonoGame.Extended.Collisions.Layers;
-using MonoGame.Extended.Collisions.QuadTree;
 using MonoGame.Extended.Graphics;
 
 namespace Chapter13;
@@ -54,11 +50,7 @@ public class SpaceGame : Game
         _gameManager = new GameManager(this);
         
         RectangleF worldBounds = new(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
-        Layer defaultLayer = new(new QuadTreeSpace(worldBounds));
-        Layer sensorLayer = new(new QuadTreeSpace(worldBounds));
-        _collision = new CollisionComponent(defaultLayer);
-        _collision.Add("Sensors", sensorLayer);
-        _collision.AddCollisionBetweenLayer(defaultLayer, sensorLayer);
+        _collision = new CollisionComponent(worldBounds);
         this.Components.Add(_collision);
         
         this.Components.Add(new SpriteRendererSystem(this));
