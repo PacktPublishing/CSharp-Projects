@@ -54,6 +54,7 @@ public class SpaceGame : Game
         
         this.Components.Add(new SpriteRendererSystem(this));
         this.Components.Add(new SensorRendererSystem(this));
+        this.Components.Add(new WaypointManagementSystem(worldBounds, this));
         
         for (int i = 0; i < InitialShips; i++)
         {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
@@ -16,16 +15,32 @@ public class ShipEntity : Updateable, ICollisionActor
     private readonly Bag<IUpdateable> _updateables = [];
     public Bag<object> Components { get; } = [];
 
+    public Vector2? Waypoint { get; set; }
+
     public float MaxSpeed { get; set; } = 10f;
-    
+    public float MaxTurnRate { get; set; } = MathHelper.PiOver4; // Radians per second
+
     public float DetectionRadius { get; set; } = 100f;
 
     public IEnumerable<ShipEntity> DetectedShips { get; set; } = [];
 
     public override void Update(GameTime gameTime)
     {
+        // Turn towards the waypoint if one is set
+        if (Waypoint is not null)
+        {
+            float desiredAngle = (float)Math.Atan2(Waypoint.Value.Y - Transform.Position.Y, Waypoint.Value.X - Transform.Position.X);
+            float angleDifference = MathHelper.WrapAngle(desiredAngle - Transform.Rotation);
+            float maxTurn = MaxTurnRate * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            angleDifference = MathHelper.Clamp(angleDifference, -maxTurn, maxTurn);
+            Transform.Rotation += angleDifference;
+        }
+
+        // Move forward in current direction
         float moveAmount = MaxSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         Vector2 forward = new((float)Math.Cos(Transform.Rotation), (float)Math.Sin(Transform.Rotation));
+
+        // Update position and associated bounds
         Transform.Position += forward * moveAmount;
         _bounds = _bounds with { Center = Transform.Position, Radius = Transform.Scale.X / 2f};
         _detection = _detection with { Center = Transform.Position, Radius = DetectionRadius};
