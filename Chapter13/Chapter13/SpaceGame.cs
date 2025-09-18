@@ -17,7 +17,6 @@ public class SpaceGame : Game
     private readonly GraphicsDeviceManager _graphics;
     private SpriteManager _sprites;
     private GameManager _gameManager;
-    private SpriteBatch _spriteBatch;
     private readonly Random _rand = Random.Shared;
     private CollisionComponent _collision;
 
@@ -77,8 +76,6 @@ public class SpaceGame : Game
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
-
         Texture2D solidPixelTexture = new(GraphicsDevice, 1, 1);
         solidPixelTexture.SetData([Color.White]);
         
