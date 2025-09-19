@@ -1,4 +1,4 @@
-namespace Chapter13.Behaviors;
+namespace Chapter13.Behaviors.Planned;
 
 public class AttackTargetBehavior
 {

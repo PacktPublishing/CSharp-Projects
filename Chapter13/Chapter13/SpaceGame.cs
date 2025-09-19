@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Chapter13.Behaviors;
+using Chapter13.Behaviors.Combat;
+using Chapter13.Behaviors.Waypoints;
 using Chapter13.Entities;
 using Chapter13.Helpers;
 using Chapter13.Managers;
@@ -55,7 +57,8 @@ public class SpaceGame : Game
         
         this.Components.Add(new SpriteRendererSystem(this));
         this.Components.Add(new SensorRendererSystem(this));
-        this.Components.Add(new WaypointManagementSystem(this));
+        this.Components.Add(new WaypointRenderingSystem(this));
+        this.Components.Add(new TargetRenderingSystem(this));
         
         for (int i = 0; i < InitialShips; i++)
         {
@@ -67,6 +70,8 @@ public class SpaceGame : Game
             });
             ship.BehaviorTree.Add(
                 new ClearReachedWaypointBehavior(),
+                new SetTargetBehavior(),
+                new SteerTowardsTargetBehavior(),
                 new SteerTowardsWaypointBehavior(),
                 new SetRandomWaypointBehavior(worldBounds)
             );
@@ -98,7 +103,7 @@ public class SpaceGame : Game
     {
         foreach (var ship in Ships)
         {
-            ship.DetectedShips = Ships.Where(s => s != ship && s.Bounds.Intersects(ship.DetectionBounds));
+            ship.DetectedShips = Ships.Where(s => s != ship && ship.DetectionBounds.Intersects(s.Bounds));
             ship.Update(gameTime);
         }
         

@@ -1,7 +1,7 @@
 ﻿using Chapter13.Entities;
 using Microsoft.Xna.Framework;
 
-namespace Chapter13.Behaviors;
+namespace Chapter13.Behaviors.Waypoints;
 
 public class ClearReachedWaypointBehavior : IBehavior
 {

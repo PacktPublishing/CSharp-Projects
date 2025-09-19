@@ -4,7 +4,7 @@ using MonoGame.Extended;
 
 namespace Chapter13.Systems;
 
-public class WaypointManagementSystem(SpaceGame game) : DrawableGameComponent(game)
+public class TargetRenderingSystem(SpaceGame game) : DrawableGameComponent(game)
 {
     private readonly SpriteBatch _spriteBatch = new SpriteBatch(game.GraphicsDevice);
 
@@ -14,9 +14,9 @@ public class WaypointManagementSystem(SpaceGame game) : DrawableGameComponent(ga
 
         foreach (var ship in game.Ships)
         {
-            if (ship.Waypoint is null) continue;
+            if (ship.Target is null) continue;
 
-            _spriteBatch.DrawLine(ship.Bounds.Position, ship.Waypoint.Value, Color.Yellow, 2);
+            _spriteBatch.DrawLine(ship.Bounds.Position, ship.Target.Transform.Position, Color.OrangeRed, 2);
         }
 
         _spriteBatch.End();

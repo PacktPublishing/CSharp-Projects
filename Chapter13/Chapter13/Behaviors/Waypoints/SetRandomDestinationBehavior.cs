@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
 
-namespace Chapter13.Behaviors;
+namespace Chapter13.Behaviors.Waypoints;
 
 public class SetRandomWaypointBehavior(RectangleF worldBounds) : IBehavior
 {

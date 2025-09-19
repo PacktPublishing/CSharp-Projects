@@ -73,6 +73,8 @@ public class ShipEntity : Updateable, ICollisionActor
     public IShapeF Bounds => _bounds;
     public IShapeF DetectionBounds => _detection;
 
+    public ShipEntity? Target { get; set; }
+
     public void Initialize(int x, int y, float rotation)
     {
         Transform.Position = new Vector2(x, y);
