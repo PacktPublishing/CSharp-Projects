@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Chapter13.Behaviors;
 using Chapter13.Entities;
 using Chapter13.Helpers;
 using Chapter13.Managers;
@@ -64,6 +65,7 @@ public class SpaceGame : Game
                 Color = Color.MediumPurple,
                 OriginNormalized = new Vector2(0.5f, 0.5f)
             });
+            ship.BehaviorTree.Add(new SteerTowardsWaypointBehavior());
             
             ship.Initialize(
                 x: _rand.Next(32, _graphics.PreferredBackBufferWidth - 32),

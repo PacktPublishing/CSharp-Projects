@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Chapter13.Behaviors;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Collections;
@@ -20,21 +21,14 @@ public class ShipEntity : Updateable, ICollisionActor
     public float MaxSpeed { get; set; } = 10f;
     public float MaxTurnRate { get; set; } = MathHelper.PiOver4; // Radians per second
 
-    public float DetectionRadius { get; set; } = 100f;
+    public float DetectionRadius { get; set; } = 250f;
+    public BehaviorTree BehaviorTree { get; set; } = new();
 
     public IEnumerable<ShipEntity> DetectedShips { get; set; } = [];
 
     public override void Update(GameTime gameTime)
     {
-        // Turn towards the waypoint if one is set
-        if (Waypoint is not null)
-        {
-            float desiredAngle = (float)Math.Atan2(Waypoint.Value.Y - Transform.Position.Y, Waypoint.Value.X - Transform.Position.X);
-            float angleDifference = MathHelper.WrapAngle(desiredAngle - Transform.Rotation);
-            float maxTurn = MaxTurnRate * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            angleDifference = MathHelper.Clamp(angleDifference, -maxTurn, maxTurn);
-            Transform.Rotation += angleDifference;
-        }
+        BehaviorTree.Execute(this, gameTime);
 
         // Move forward in current direction
         float moveAmount = MaxSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -66,6 +60,7 @@ public class ShipEntity : Updateable, ICollisionActor
         Transform.Position = Vector2.Zero;
         Transform.Rotation = 0f;
         Transform.Scale = Vector2.One;
+        BehaviorTree.Clear();
     }
 
     public Transform2 Transform { get; } = new();
