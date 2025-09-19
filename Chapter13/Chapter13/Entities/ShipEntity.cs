@@ -36,9 +36,8 @@ public class ShipEntity : Updateable, ICollisionActor
 
         // Update position and associated bounds
         Transform.Position += forward * moveAmount;
-        _bounds = _bounds with { Center = Transform.Position, Radius = Transform.Scale.X / 2f};
-        _detection = _detection with { Center = Transform.Position, Radius = DetectionRadius};
-        
+        MaintainBoundsAndDetection();
+
         foreach (var updateable in _updateables)
         {
             updateable.Update(gameTime);
@@ -80,5 +79,12 @@ public class ShipEntity : Updateable, ICollisionActor
         Transform.Position = new Vector2(x, y);
         Transform.Rotation = rotation;
         Transform.Scale = new Vector2(16, 16);
+        MaintainBoundsAndDetection();
+    }
+
+    private void MaintainBoundsAndDetection()
+    {
+        _bounds = _bounds with { Center = Transform.Position, Radius = Transform.Scale.X / 2f };
+        _detection = _detection with { Center = Transform.Position, Radius = DetectionRadius };
     }
 }
