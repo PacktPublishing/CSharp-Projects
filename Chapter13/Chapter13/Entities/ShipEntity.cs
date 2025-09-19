@@ -18,7 +18,7 @@ public class ShipEntity : Updateable, ICollisionActor
 
     public Vector2? Waypoint { get; set; }
 
-    public float MaxSpeed { get; set; } = 10f;
+    public float MaxSpeed { get; set; } = 15f;
     public float MaxTurnRate { get; set; } = MathHelper.PiOver4; // Radians per second
 
     public float DetectionRadius { get; set; } = 250f;

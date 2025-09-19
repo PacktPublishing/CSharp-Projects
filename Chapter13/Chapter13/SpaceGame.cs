@@ -22,7 +22,7 @@ public class SpaceGame : Game
     private CollisionComponent _collision;
 
     private const int MaxShips = 15;
-    private const int InitialShips = 5;
+    private const int InitialShips = 3;
     public Bag<ShipEntity> Ships { get; } = [];
     public Pool<ShipEntity> ShipPool { get; } = new(
         createItem: () => new ShipEntity(), 
@@ -55,7 +55,7 @@ public class SpaceGame : Game
         
         this.Components.Add(new SpriteRendererSystem(this));
         this.Components.Add(new SensorRendererSystem(this));
-        this.Components.Add(new WaypointManagementSystem(worldBounds, this));
+        this.Components.Add(new WaypointManagementSystem(this));
         
         for (int i = 0; i < InitialShips; i++)
         {
@@ -65,7 +65,11 @@ public class SpaceGame : Game
                 Color = Color.MediumPurple,
                 OriginNormalized = new Vector2(0.5f, 0.5f)
             });
-            ship.BehaviorTree.Add(new SteerTowardsWaypointBehavior());
+            ship.BehaviorTree.Add(
+                new ClearReachedWaypointBehavior(),
+                new SteerTowardsWaypointBehavior(),
+                new SetRandomWaypointBehavior(worldBounds)
+            );
             
             ship.Initialize(
                 x: _rand.Next(32, _graphics.PreferredBackBufferWidth - 32),
