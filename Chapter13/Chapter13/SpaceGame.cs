@@ -24,14 +24,8 @@ public class SpaceGame : Game
 
     private const int MaxShips = 15;
     private const int InitialShips = 3;
-    public Bag<ShipEntity> Ships { get; } = [];
-    public Pool<ShipEntity> ShipPool { get; } = new(
-        createItem: () => new ShipEntity(), 
-        resetItem: ship => ship.Reset(), 
-        maximum: MaxShips);
-    
-    public bool CanSpawnMoreShips => Ships.Count < MaxShips;
-
+    public Bag<SpaceEntityBase> Entities { get; } = [];
+ 
     public SpaceGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -61,7 +55,7 @@ public class SpaceGame : Game
         
         for (int i = 0; i < InitialShips; i++)
         {
-            ShipEntity ship = ShipPool.Obtain();
+            ShipEntity ship = new();
             ship.Sprite = new Sprite(_sprites.SolidPixelTexture)
             {
                 Color = Color.MediumPurple,
@@ -81,7 +75,7 @@ public class SpaceGame : Game
                 y: _rand.Next(32, _graphics.PreferredBackBufferHeight - 32),
                 rotation: MovementHelpers.GetRandomHeadingInRadians());
             
-            Ships.Add(ship);
+            Entities.Add(ship);
             _collision.Insert(ship);
         }
     }
@@ -101,10 +95,10 @@ public class SpaceGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        foreach (var ship in Ships)
+        foreach (var entity in Entities)
         {
-            ship.DetectedShips = Ships.Where(s => s != ship && ship.DetectionBounds.Intersects(s.Bounds));
-            ship.Update(gameTime);
+            entity.DetectedEntities = Entities.Where(s => s != entity && entity.DetectionBounds.Intersects(s.Bounds));
+            entity.Update(gameTime);
         }
         
         base.Update(gameTime);
@@ -119,6 +113,24 @@ public class SpaceGame : Game
 
     public void SpawnMissile(Transform2 origin, ShipEntity target)
     {
+        MissileEntity missile = new()
+        {
+            Sprite = new Sprite(_sprites.SolidPixelTexture)
+            {
+                Color = Color.OrangeRed,
+                OriginNormalized = new Vector2(0.5f, 0.5f)
+            }
+        };
 
+        missile.Initialize((int)origin.Position.X, (int)origin.Position.Y, origin.Rotation);
+        missile.Target = target;
+        _collision.Insert(missile);
+
+        missile.BehaviorTree.Add(
+            new SteerTowardsTargetBehavior(),
+            new SetTargetBehavior()
+        );
+
+        Entities.Add(missile);
     }
 }

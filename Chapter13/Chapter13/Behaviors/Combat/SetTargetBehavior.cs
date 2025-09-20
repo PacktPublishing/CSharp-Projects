@@ -8,19 +8,12 @@ public class SetTargetBehavior : IBehavior
 {
     public bool CanExecute(SpaceEntityBase entity, GameTime time)
     {
-        if (entity is not ShipEntity ship)
-        {
-            return false;
-        }
-
         // TODO: Will also need to check target alive
-        return ship.Target is null && ship.DetectedShips.Any();
+        return entity.Target is null && entity.DetectedEntities.OfType<ShipEntity>().Any();
     }
 
     public void Execute(SpaceEntityBase entity, GameTime time)
     {
-        ShipEntity ship = (ShipEntity)entity;
-
-        ship.Target = ship.DetectedShips.First();
+        entity.Target = entity.DetectedEntities.OfType<ShipEntity>().First();
     }
 }

@@ -11,9 +11,9 @@ public class SpriteRendererSystem(SpaceGame game) : DrawableGameComponent(game)
     public override void Draw(GameTime gameTime)
     {
         _spriteBatch.Begin();
-        foreach (var ship in game.Ships)
+        foreach (var entity in game.Entities)
         {
-            _spriteBatch.Draw(ship.Sprite, ship.Transform);
+            _spriteBatch.Draw(entity.Sprite, entity.Transform);
         }
         _spriteBatch.End();
 

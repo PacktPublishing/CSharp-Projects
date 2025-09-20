@@ -12,11 +12,11 @@ public class TargetRenderingSystem(SpaceGame game) : DrawableGameComponent(game)
     {
         _spriteBatch.Begin();
 
-        foreach (var ship in game.Ships)
+        foreach (var entity in game.Entities)
         {
-            if (ship.Target is null) continue;
+            if (entity.Target is null) continue;
 
-            _spriteBatch.DrawLine(ship.Bounds.Position, ship.Target.Transform.Position, Color.OrangeRed, 2);
+            _spriteBatch.DrawLine(entity.Bounds.Position, entity.Target.Transform.Position, Color.OrangeRed, 2);
         }
 
         _spriteBatch.End();

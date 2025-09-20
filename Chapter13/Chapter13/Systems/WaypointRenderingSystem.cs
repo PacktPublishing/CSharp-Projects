@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Chapter13.Entities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using System.Linq;
 
 namespace Chapter13.Systems;
 
@@ -12,7 +14,7 @@ public class WaypointRenderingSystem(SpaceGame game) : DrawableGameComponent(gam
     {
         _spriteBatch.Begin();
 
-        foreach (var ship in game.Ships)
+        foreach (var ship in game.Entities.OfType<ShipEntity>())
         {
             if (ship.Waypoint is null) continue;
 

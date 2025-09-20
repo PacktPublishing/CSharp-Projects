@@ -12,10 +12,10 @@ public class SensorRendererSystem(SpaceGame game) : DrawableGameComponent(game)
     public override void Draw(GameTime gameTime)
     {
         _spriteBatch.Begin();
-        foreach (var ship in game.Ships)
+        foreach (var entity in game.Entities)
         {
-            Color color = ship.DetectedShips.Count() > 0 ? Color.Red : Color.Cyan;
-            _spriteBatch.DrawCircle(ship.Bounds.Position, ship.DetectionRadius, sides: 32, color);
+            Color color = entity.DetectedEntities.Count() > 0 ? Color.Red : Color.Cyan;
+            _spriteBatch.DrawCircle(entity.Bounds.Position, entity.DetectionRadius, sides: 32, color);
         }
         _spriteBatch.End();
         

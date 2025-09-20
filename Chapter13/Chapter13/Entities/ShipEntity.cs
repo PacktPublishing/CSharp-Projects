@@ -1,61 +1,13 @@
-using System;
-using System.Collections.Generic;
 using Chapter13.Behaviors;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 
 namespace Chapter13.Entities;
 
 public class ShipEntity : SpaceEntityBase
 {
-    private CircleF _bounds = new(Vector2.Zero, 1f);
-    private CircleF _detection = new(Vector2.Zero, 1f);
-
     public Vector2? Waypoint { get; set; }
 
-    public float MaxSpeed { get; set; } = 15f;
+    public override float MaxSpeed => 15f;
     public override float MaxTurnRate => 1f;
-
-    public float DetectionRadius { get; set; } = 250f;
-    public BehaviorTree BehaviorTree { get; set; } = new();
-
-    public IEnumerable<ShipEntity> DetectedShips { get; set; } = [];
-
-    public override void Update(GameTime gameTime)
-    {
-        BehaviorTree.Execute(this, gameTime);
-
-        // Move forward in current direction
-        float moveAmount = MaxSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        Vector2 forward = new((float)Math.Cos(Transform.Rotation), (float)Math.Sin(Transform.Rotation));
-
-        // Update position and associated bounds
-        Transform.Position += forward * moveAmount;
-        MaintainBoundsAndDetection();
-    }
-
-    public void Reset()
-    {
-        Transform.Position = Vector2.Zero;
-        Transform.Rotation = 0f;
-        Transform.Scale = Vector2.One;
-        BehaviorTree.Clear();
-    }
-
-    public override IShapeF Bounds => _bounds;
-    public IShapeF DetectionBounds => _detection;
-
-    public void Initialize(int x, int y, float rotation)
-    {
-        Transform.Position = new Vector2(x, y);
-        Transform.Rotation = rotation;
-        Transform.Scale = new Vector2(16, 16);
-        MaintainBoundsAndDetection();
-    }
-
-    private void MaintainBoundsAndDetection()
-    {
-        _bounds = _bounds with { Center = Transform.Position, Radius = Transform.Scale.X / 2f };
-        _detection = _detection with { Center = Transform.Position, Radius = DetectionRadius };
-    }
+    public override float DetectionRadius => 250f;
 }
