@@ -1,30 +1,20 @@
-## Components
+Art
 
-- Hangar Component - Spawns spacecraft
-- Engine Component - Moves spacecraft forwards, optionally towards a target
-- Destination Component - Sets target location for spacecraft
-- Fuel Component - Craft without fuel are destroyed
-- Missile Launcher Component - Fires missiles at targets
-- Detonator Component - Destroys nearby craft when triggered
-- Jump Drive Component - Teleports craft when the jumpgate is reached
+- Graphics for Spacecraft
+- Background Image
+- Animation for Thrusters?
+- Explosion animation
 
-## Graphics
+Game 
 
-- Background image of space with stars and planets
-- Space Station
-- Fighter
-- Freighter
-- Missile
-- Carrier
-- Explosion
-- Jump Arrival Effect
-- Jump Departure Effect
+- Player control for one ship?
+- Kills / Deaths Count?
 
-## TODO: Behavior tree for spacecraft
+Combat
 
-- If enemy detected, go towards enemy
-- Land if at final destination
-- Go towards destination
-- Fire projectile if enemy in range and launcher ready
-- If obstacle / missile ahead, steer to avoid it
-- Set waypoint
+- Launch missile behavior
+- Missiles with their own behavior tree
+- Destroy ship on impact
+- Steer away from missiles
+- Auto-detonate missiles after a time
+- Debug display of last behavior to execute?

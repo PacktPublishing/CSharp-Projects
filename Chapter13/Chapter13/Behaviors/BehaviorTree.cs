@@ -1,6 +1,5 @@
 ﻿using Chapter13.Entities;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,14 +9,14 @@ public class BehaviorTree : IBehavior
 {
     public List<IBehavior> Behaviors { get; init; } = [];
 
-    public bool CanExecute(ShipEntity ship) 
-        => Behaviors.Any(b => b.CanExecute(ship));
+    public bool CanExecute(SpaceEntityBase ship, GameTime time) 
+        => Behaviors.Any(b => b.CanExecute(ship, time));
 
-    public void Execute(ShipEntity ship, GameTime time)
+    public void Execute(SpaceEntityBase ship, GameTime time)
     {
         foreach (var behavior in Behaviors)
         {
-            if (behavior.CanExecute(ship))
+            if (behavior.CanExecute(ship, time))
             {
                 behavior.Execute(ship, time);
                 return;

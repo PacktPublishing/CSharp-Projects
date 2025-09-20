@@ -1,25 +1,17 @@
 using System;
-using System.Collections.Generic;
 using Chapter13.Behaviors;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Chapter13.Entities;
 
-public class ShipEntity : SpaceEntityBase
+public class MissileEntity : SpaceEntityBase
 {
     private CircleF _bounds = new(Vector2.Zero, 1f);
-    private CircleF _detection = new(Vector2.Zero, 1f);
 
-    public Vector2? Waypoint { get; set; }
-
-    public float MaxSpeed { get; set; } = 15f;
-    public override float MaxTurnRate => 1f;
-
-    public float DetectionRadius { get; set; } = 250f;
+    public float MaxSpeed { get; set; } = 25f;
+    public override float MaxTurnRate => 0.75f;
     public BehaviorTree BehaviorTree { get; set; } = new();
-
-    public IEnumerable<ShipEntity> DetectedShips { get; set; } = [];
 
     public override void Update(GameTime gameTime)
     {
@@ -43,7 +35,6 @@ public class ShipEntity : SpaceEntityBase
     }
 
     public override IShapeF Bounds => _bounds;
-    public IShapeF DetectionBounds => _detection;
 
     public void Initialize(int x, int y, float rotation)
     {
@@ -56,6 +47,5 @@ public class ShipEntity : SpaceEntityBase
     private void MaintainBoundsAndDetection()
     {
         _bounds = _bounds with { Center = Transform.Position, Radius = Transform.Scale.X / 2f };
-        _detection = _detection with { Center = Transform.Position, Radius = DetectionRadius };
     }
 }

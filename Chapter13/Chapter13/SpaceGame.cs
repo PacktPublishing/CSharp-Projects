@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Chapter13.Behaviors;
 using Chapter13.Behaviors.Combat;
 using Chapter13.Behaviors.Waypoints;
 using Chapter13.Entities;
@@ -63,14 +62,15 @@ public class SpaceGame : Game
         for (int i = 0; i < InitialShips; i++)
         {
             ShipEntity ship = ShipPool.Obtain();
-            ship.Attach(new Sprite(_sprites.SolidPixelTexture)
+            ship.Sprite = new Sprite(_sprites.SolidPixelTexture)
             {
                 Color = Color.MediumPurple,
                 OriginNormalized = new Vector2(0.5f, 0.5f)
-            });
+            };
             ship.BehaviorTree.Add(
                 new ClearReachedWaypointBehavior(),
                 new SetTargetBehavior(),
+                new AttackTargetBehavior(this),
                 new SteerTowardsTargetBehavior(),
                 new SteerTowardsWaypointBehavior(),
                 new SetRandomWaypointBehavior(worldBounds)
@@ -115,5 +115,10 @@ public class SpaceGame : Game
         GraphicsDevice.Clear(Color.Black);
 
         base.Draw(gameTime);
+    }
+
+    public void SpawnMissile(Transform2 origin, ShipEntity target)
+    {
+
     }
 }

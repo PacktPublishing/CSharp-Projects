@@ -1,5 +1,4 @@
 using System.Linq;
-using Chapter13.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;

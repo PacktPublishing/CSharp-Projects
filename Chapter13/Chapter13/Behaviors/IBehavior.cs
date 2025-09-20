@@ -5,6 +5,6 @@ namespace Chapter13.Behaviors;
 
 public interface IBehavior
 {
-    public bool CanExecute(ShipEntity ship);
-    public void Execute(ShipEntity ship, GameTime time);
+    public bool CanExecute(SpaceEntityBase ship, GameTime time);
+    public void Execute(SpaceEntityBase ship, GameTime time);
 }

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Chapter13.Domain;
 using Microsoft.Xna.Framework;
 

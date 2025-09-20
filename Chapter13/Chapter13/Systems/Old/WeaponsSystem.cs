@@ -1,14 +1,12 @@
 using System;
 using System.Linq;
 using Chapter13.Components;
-using Chapter13.Domain;
 using Chapter13.Helpers;
 using Chapter13.Managers;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.ECS;
 using MonoGame.Extended.ECS.Systems;
-using MonoGame.Extended.Graphics;
 
 namespace Chapter13.Systems;
 

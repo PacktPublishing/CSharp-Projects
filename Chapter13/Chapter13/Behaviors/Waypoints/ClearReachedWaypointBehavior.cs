@@ -7,8 +7,10 @@ public class ClearReachedWaypointBehavior : IBehavior
 {
     public const float ReachedWaypointDistance = 10f;
 
-    public bool CanExecute(ShipEntity ship)
+    public bool CanExecute(SpaceEntityBase entity, GameTime time)
     {
+        if (entity is not ShipEntity ship) return false;
+
         if (ship.Waypoint is null) return false;
 
         float distance = Vector2.Distance(ship.Bounds.Position, ship.Waypoint.Value);
@@ -16,8 +18,9 @@ public class ClearReachedWaypointBehavior : IBehavior
         return distance <= ReachedWaypointDistance;
     }
 
-    public void Execute(ShipEntity ship, GameTime time)
+    public void Execute(SpaceEntityBase entity, GameTime time)
     {
+        ShipEntity ship = (ShipEntity)entity;
         ship.Waypoint = null;
     }
 }
