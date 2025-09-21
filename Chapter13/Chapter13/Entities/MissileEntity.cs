@@ -3,19 +3,22 @@ using MonoGame.Extended.Collisions;
 
 namespace Chapter13.Entities;
 
-public class MissileEntity(SpaceGame game) : SpaceEntityBase
+public class MissileEntity(SpaceGame game, SpaceEntityBase owner) : SpaceEntityBase
 {
-    public override float MaxSpeed => 35f;
+    public override float MaxSpeed => 50f;
     public override float MaxTurnRate => 0.25f;
     public override float DetectionRadius => 100f;
-    private float _lifeTime = 5f; // seconds
+    private float _lifeTime = 7f;
 
     public override void Update(GameTime gameTime)
     {
-        _lifeTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
         if (_lifeTime <= 0f)
         {
             game.QueueDespawn(this);
+        }
+        else
+        {
+            _lifeTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
         base.Update(gameTime);
     }
@@ -24,13 +27,14 @@ public class MissileEntity(SpaceGame game) : SpaceEntityBase
     {
         base.OnCollision(collisionInfo);
 
-        if (collisionInfo.Other is SpaceEntityBase otherEntity)
+        // Ensure we're not colliding with the originating ship
+        if (collisionInfo.Other != owner)
         {
             game.QueueDespawn(this);
             
-            if (otherEntity is ShipEntity)
+            if (collisionInfo.Other is ShipEntity otherShip)
             {
-                game.QueueDespawn(otherEntity);
+                game.QueueDespawn(otherShip);
             }
 
             // TODO: Spawn explosion effect

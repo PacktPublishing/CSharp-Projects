@@ -117,9 +117,9 @@ public class SpaceGame : Game
         base.Draw(gameTime);
     }
 
-    public void SpawnMissile(Transform2 origin, ShipEntity target)
+    public void SpawnMissile(SpaceEntityBase attacker, ShipEntity target)
     {
-        MissileEntity missile = new(this)
+        MissileEntity missile = new(this, attacker)
         {
             Sprite = new Sprite(_sprites.SolidPixelTexture)
             {
@@ -128,7 +128,15 @@ public class SpaceGame : Game
             }
         };
 
-        missile.Initialize((int)origin.Position.X, (int)origin.Position.Y, origin.Rotation);
+        Transform2 trans = attacker.Transform;
+        Vector2 pos = trans.Position;
+
+        // Set the missile's rotation to face the target
+        float angleToTarget = (float)Math.Atan2(
+            target.Transform.Position.Y - pos.Y,
+            target.Transform.Position.X - pos.X);
+
+        missile.Initialize((int)pos.X, (int)pos.Y, angleToTarget);
         missile.Target = target;
         _collision.Insert(missile);
 

@@ -36,6 +36,6 @@ public class AttackTargetBehavior(SpaceGame game) : IBehavior
     {
         ShipEntity ship = (ShipEntity)entity;
         ship.TimeUntilReadyToFire = MinSecondsBetweenLaunch;
-        game.SpawnMissile(entity.Transform, entity.Target);
+        game.SpawnMissile(entity, entity.Target);
     }
 }
