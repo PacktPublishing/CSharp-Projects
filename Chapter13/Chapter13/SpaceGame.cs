@@ -18,11 +18,9 @@ public class SpaceGame : Game
 {
     private readonly GraphicsDeviceManager _graphics;
     private SpriteManager _sprites;
-    private GameManager _gameManager;
     private readonly Random _rand = Random.Shared;
     private CollisionComponent _collision;
 
-    private const int MaxShips = 15;
     private const int InitialShips = 3;
     public Bag<SpaceEntityBase> Entities { get; } = [];
     private Bag<SpaceEntityBase> _despawn = [];
@@ -42,8 +40,6 @@ public class SpaceGame : Game
     protected override void Initialize()
     {
         base.Initialize();
-
-        _gameManager = new GameManager(this);
         
         RectangleF worldBounds = new(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
         _collision = new CollisionComponent(worldBounds);
@@ -96,6 +92,9 @@ public class SpaceGame : Game
 
     protected override void Update(GameTime gameTime)
     {
+        // Despawn any queued entities.
+        // We do this here to avoid modifying Entities while iterating
+        // or using a temporary collection each update.
         foreach (var entity in _despawn)
         {
             Despawn(entity);

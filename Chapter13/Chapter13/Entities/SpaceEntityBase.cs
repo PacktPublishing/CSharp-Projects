@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Chapter13.Entities;
 
-public abstract class SpaceEntityBase : Updateable, ICollisionActor
+public abstract class SpaceEntityBase : IUpdateable, ICollisionActor
 {
     public Transform2 Transform { get; } = new();
 
@@ -31,7 +31,7 @@ public abstract class SpaceEntityBase : Updateable, ICollisionActor
         // No operation needed
     }
 
-    public override void Update(GameTime gameTime)
+    public virtual void Update(GameTime gameTime)
     {
         BehaviorTree.Execute(this, gameTime);
 
@@ -60,4 +60,9 @@ public abstract class SpaceEntityBase : Updateable, ICollisionActor
 
     private CircleF _bounds = new(Vector2.Zero, 1f);
     private CircleF _detection = new(Vector2.Zero, 1f);
+
+    public bool Enabled { get; }
+    public int UpdateOrder { get; }
+    public event EventHandler<EventArgs> EnabledChanged;
+    public event EventHandler<EventArgs> UpdateOrderChanged;
 }
