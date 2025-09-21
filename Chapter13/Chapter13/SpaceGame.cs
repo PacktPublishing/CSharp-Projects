@@ -113,7 +113,7 @@ public class SpaceGame : Game
 
     public void SpawnMissile(Transform2 origin, ShipEntity target)
     {
-        MissileEntity missile = new()
+        MissileEntity missile = new(this)
         {
             Sprite = new Sprite(_sprites.SolidPixelTexture)
             {
@@ -132,5 +132,20 @@ public class SpaceGame : Game
         );
 
         Entities.Add(missile);
+    }
+
+    public void Despawn(SpaceEntityBase entity)
+    {
+        _collision.Remove(entity);
+        Entities.Remove(entity);
+
+        // Clear any references to this entity from other entities
+        foreach (var other in Entities)
+        {
+            if (other.Target == entity)
+            {
+                other.Target = null;
+            }
+        }
     }
 }

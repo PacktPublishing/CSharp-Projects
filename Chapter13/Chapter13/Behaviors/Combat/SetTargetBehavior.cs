@@ -8,7 +8,6 @@ public class SetTargetBehavior : IBehavior
 {
     public bool CanExecute(SpaceEntityBase entity, GameTime time)
     {
-        // TODO: Will also need to check target alive
         return entity.Target is null && entity.DetectedEntities.OfType<ShipEntity>().Any();
     }
 

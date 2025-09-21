@@ -6,21 +6,20 @@ namespace Chapter13.Behaviors.Combat;
 
 public class AttackTargetBehavior(SpaceGame game) : IBehavior
 {
-    private GameTime? _lastLaunchTime;
-
     public float MaxLaunchDistance { get; set; } = 250f;
-    public float MaxLaunchAngle { get; set; } = 15f;
-    public float MinSecondsBetweenLaunch { get; set; } = 2f;
+    public float MaxLaunchAngle { get; set; } = 5f;
+    public float MinSecondsBetweenLaunch { get; set; } = 3.5f;
 
     public bool CanExecute(SpaceEntityBase entity, GameTime time)
     {
+        // Only ships can attack
+        if (entity is not ShipEntity ship) return false;
+
         // If we don't have a target, we can't launch
         if (entity.Target is null) return false;
 
         // If we're not reloaded, we can't launch again
-        if (_lastLaunchTime is not null &&
-            (time.TotalGameTime - _lastLaunchTime.TotalGameTime).TotalSeconds < MinSecondsBetweenLaunch)
-            return false;
+        if (ship.TimeUntilReadyToFire > 0) return false;
 
         // If the target is too far from the ship, we can't launch
         Vector2 toTarget = entity.Transform.Position - entity.Target.Transform.Position;
@@ -35,8 +34,8 @@ public class AttackTargetBehavior(SpaceGame game) : IBehavior
 
     public void Execute(SpaceEntityBase entity, GameTime time)
     {
-        _lastLaunchTime = time;
-
+        ShipEntity ship = (ShipEntity)entity;
+        ship.TimeUntilReadyToFire = MinSecondsBetweenLaunch;
         game.SpawnMissile(entity.Transform, entity.Target);
     }
 }
