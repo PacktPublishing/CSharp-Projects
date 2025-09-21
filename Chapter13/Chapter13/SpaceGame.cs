@@ -25,6 +25,7 @@ public class SpaceGame : Game
     private const int MaxShips = 15;
     private const int InitialShips = 3;
     public Bag<SpaceEntityBase> Entities { get; } = [];
+    private Bag<SpaceEntityBase> _despawn = [];
  
     public SpaceGame()
     {
@@ -95,6 +96,12 @@ public class SpaceGame : Game
 
     protected override void Update(GameTime gameTime)
     {
+        foreach (var entity in _despawn)
+        {
+            Despawn(entity);
+        }
+        _despawn.Clear();
+
         foreach (var entity in Entities)
         {
             entity.DetectedEntities = Entities.Where(s => s != entity && entity.DetectionBounds.Intersects(s.Bounds));
@@ -134,7 +141,12 @@ public class SpaceGame : Game
         Entities.Add(missile);
     }
 
-    public void Despawn(SpaceEntityBase entity)
+    public void QueueDespawn(SpaceEntityBase entity)
+    {
+        _despawn.Add(entity);
+    }
+
+    private void Despawn(SpaceEntityBase entity)
     {
         _collision.Remove(entity);
         Entities.Remove(entity);

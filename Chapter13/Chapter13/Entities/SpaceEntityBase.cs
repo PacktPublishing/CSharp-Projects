@@ -26,7 +26,7 @@ public abstract class SpaceEntityBase : Updateable, ICollisionActor
     public IEnumerable<SpaceEntityBase> DetectedEntities { get; set; } = [];
 
 
-    public void OnCollision(CollisionEventArgs collisionInfo)
+    public virtual void OnCollision(CollisionEventArgs collisionInfo)
     {
         // No operation needed
     }
