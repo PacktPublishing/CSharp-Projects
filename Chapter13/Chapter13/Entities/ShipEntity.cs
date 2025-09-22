@@ -11,6 +11,7 @@ public class ShipEntity : SpaceEntityBase
     public override float MaxSpeed => 20f;
     public override float MaxTurnRate => 0.7f;
     public override float DetectionRadius => 250f;
+    public override Vector2 Scale => new(3,3);
 
     public override void Update(GameTime gameTime)
     {

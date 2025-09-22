@@ -17,6 +17,7 @@ public abstract class SpaceEntityBase : IUpdateable, ICollisionActor
     public abstract float MaxTurnRate { get; }
     public abstract float MaxSpeed { get; }
     public abstract float DetectionRadius { get; }
+    public virtual Vector2 Scale => new(1,1);
 
     public BehaviorTree BehaviorTree { get; set; } = new();
 
@@ -48,7 +49,7 @@ public abstract class SpaceEntityBase : IUpdateable, ICollisionActor
     {
         Transform.Position = new Vector2(x, y);
         Transform.Rotation = rotation;
-        Transform.Scale = new Vector2(16, 16);
+        Transform.Scale = Scale;
         MaintainBoundsAndDetection();
     }
 

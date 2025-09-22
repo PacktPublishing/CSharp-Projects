@@ -1,7 +1,7 @@
 Art
 
-- Graphics for Spacecraft
-- Background Image
+- Graphics crispness
+- Graphics transparency
 - Animation for Thrusters?
 - Explosion animation
 
@@ -12,9 +12,9 @@ Game
 
 Combat
 
-- Launch missile behavior
-- Missiles with their own behavior tree
-- Destroy ship on impact
 - Steer away from missiles
-- Auto-detonate missiles after a time
-- Debug display of last behavior to execute?
+
+Sound
+
+- Missile launch sound
+- Explosion sound

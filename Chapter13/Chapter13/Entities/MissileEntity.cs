@@ -8,7 +8,7 @@ public class MissileEntity(SpaceGame game, SpaceEntityBase owner) : SpaceEntityB
     public override float MaxSpeed => 50f;
     public override float MaxTurnRate => 0.25f;
     public override float DetectionRadius => 100f;
-    private float _lifeTime = 7f;
+    private float _lifeTime = 8f;
 
     public override void Update(GameTime gameTime)
     {
