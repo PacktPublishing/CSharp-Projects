@@ -10,10 +10,6 @@ Game
 - Player control for one ship?
 - Kills / Deaths Count?
 
-Combat
-
-- BUG: Ships fire missiles at the wrong angle
-
 Sound
 
 - Missile launch sound

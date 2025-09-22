@@ -22,14 +22,20 @@ public class AttackTargetBehavior(SpaceGame game) : IBehavior
         if (ship.TimeUntilReadyToFire > 0) return false;
 
         // If the target is too far from the ship, we can't launch
-        Vector2 toTarget = entity.Transform.Position - entity.Target.Transform.Position;
+        Vector2 toTarget = entity.Target.Transform.Position - entity.Transform.Position;
         float distance = toTarget.Length();
         if (distance > MaxLaunchDistance) return false;
 
-        // Determine the angle of the target from the ship's facing
-        float angleToTarget = (float)Math.Atan2(toTarget.Y, toTarget.X);
-        float relativeAngle = MathHelper.WrapAngle(angleToTarget - entity.Transform.Rotation);
-        return relativeAngle <= MaxLaunchAngle;
+        // Determine the angle between the ship's facing (front) and the direction to the target
+        Vector2 shipFront = new Vector2((float)Math.Cos(entity.Transform.Rotation), (float)Math.Sin(entity.Transform.Rotation));
+        Vector2 toTargetNormalized = Vector2.Normalize(toTarget);
+        float dot = Vector2.Dot(shipFront, toTargetNormalized);
+        float angleToTarget = MathF.Acos(Math.Clamp(dot, -1f, 1f)); // Angle in radians
+
+        // Convert MaxLaunchAngle from degrees to radians for comparison
+        float maxLaunchAngleRad = MathHelper.ToRadians(MaxLaunchAngle);
+
+        return angleToTarget <= maxLaunchAngleRad;
     }
 
     public void Execute(SpaceEntityBase entity, GameTime time)
