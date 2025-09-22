@@ -66,6 +66,7 @@ public class SpaceGame : Game
                 new ClearReachedWaypointBehavior(),
                 new SetTargetBehavior(),
                 new AttackTargetBehavior(this),
+                new SteerAwayFromMissileBehavior(),
                 new SteerTowardsTargetBehavior(),
                 new SteerTowardsWaypointBehavior(),
                 new SetRandomWaypointBehavior(worldBounds)

@@ -12,7 +12,7 @@ Game
 
 Combat
 
-- Steer away from missiles
+- BUG: Ships fire missiles at the wrong angle
 
 Sound
 
