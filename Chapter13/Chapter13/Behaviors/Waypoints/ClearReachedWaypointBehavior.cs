@@ -5,7 +5,7 @@ namespace Chapter13.Behaviors.Waypoints;
 
 public class ClearReachedWaypointBehavior : IBehavior
 {
-    public const float ReachedWaypointDistance = 10f;
+    public const float ReachedWaypointDistance = 15f;
 
     public bool CanExecute(SpaceEntityBase entity, GameTime time)
     {

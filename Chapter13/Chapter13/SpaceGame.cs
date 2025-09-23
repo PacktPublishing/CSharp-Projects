@@ -1,34 +1,36 @@
-﻿using System;
-using System.Linq;
+﻿using Chapter13.Behaviors;
 using Chapter13.Behaviors.Combat;
 using Chapter13.Behaviors.Waypoints;
 using Chapter13.Entities;
 using Chapter13.Helpers;
-using Chapter13.Managers;
-using Chapter13.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Graphics;
+using System;
+using System.Linq;
 
 namespace Chapter13;
 
 public class SpaceGame : Game
 {
     private readonly GraphicsDeviceManager _graphics;
-    private SpriteManager _sprites;
     private readonly Random _rand = Random.Shared;
+    private RectangleF _worldBounds;
     private CollisionComponent _collision;
+    private BehaviorTree _shipBehaviors;
+    private BehaviorTree _missileBehaviors;
     private Texture2D _background;
     private Texture2D _shipArt;
     private Texture2DRegion _shipTextureRegion;
     private Texture2DRegion _missileTextureRegion;
-    private const int InitialShips = 3;
+    private const int DesiredActiveShips = 4;
     public Bag<SpaceEntityBase> Entities { get; } = [];
     private Bag<SpaceEntityBase> _despawn = [];
     private SpriteBatch _sb;
+    private const bool ShowDebugVisuals = false;
 
     public SpaceGame()
     {
@@ -46,54 +48,46 @@ public class SpaceGame : Game
     {
         base.Initialize();
 
-        RectangleF worldBounds = new(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
-        _collision = new CollisionComponent(worldBounds);
-        this.Components.Add(_collision);
+        _worldBounds = new RectangleF(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+        _collision = new CollisionComponent(_worldBounds);
+        _shipBehaviors = new BehaviorTree(
+            new ClearReachedWaypointBehavior(),
+            new SetTargetBehavior(),
+            new AttackTargetBehavior(this),
+            new SteerAwayFromMissileBehavior(),
+            new SteerTowardsTargetBehavior(),
+            new SteerTowardsWaypointBehavior(),
+            new SetRandomWaypointBehavior(_worldBounds)
+        );
+        _missileBehaviors = new BehaviorTree(
+            new SteerTowardsTargetBehavior(),
+            new SetTargetBehavior()
+        );
+    }
 
-        this.Components.Add(new SpriteRendererSystem(this));
-        //this.Components.Add(new SensorRendererSystem(this));
-        //this.Components.Add(new WaypointRenderingSystem(this));
-        //this.Components.Add(new TargetRenderingSystem(this));
-
-        for (int i = 0; i < InitialShips; i++)
+    private void SpawnShip()
+    {
+        ShipEntity ship = new()
         {
-            ShipEntity ship = new();
-            ship.Sprite = new Sprite(_shipTextureRegion)
+            BehaviorTree = _shipBehaviors,
+            Sprite = new Sprite(_shipTextureRegion)
             {
                 OriginNormalized = new Vector2(0.5f, 0.5f),
-            };
-            ship.BehaviorTree.Add(
-                new ClearReachedWaypointBehavior(),
-                new SetTargetBehavior(),
-                new AttackTargetBehavior(this),
-                new SteerAwayFromMissileBehavior(),
-                new SteerTowardsTargetBehavior(),
-                new SteerTowardsWaypointBehavior(),
-                new SetRandomWaypointBehavior(worldBounds)
-            );
+            }
+        };
 
-            ship.Initialize(
-                x: _rand.Next(32, _graphics.PreferredBackBufferWidth - 32),
-                y: _rand.Next(32, _graphics.PreferredBackBufferHeight - 32),
-                rotation: MovementHelpers.GetRandomHeadingInRadians());
+        int x = _rand.Next(0, _graphics.PreferredBackBufferWidth);
+        int y = _rand.Next(0, _graphics.PreferredBackBufferHeight);
+        float heading = MovementHelpers.GetRandomHeadingInRadians();
 
-            Entities.Add(ship);
-            _collision.Insert(ship);
-        }
+        ship.Initialize(x, y, heading);
+
+        Entities.Add(ship);
+        _collision.Insert(ship);
     }
 
     protected override void LoadContent()
     {
-        Texture2D solidPixelTexture = new(GraphicsDevice, 1, 1);
-        solidPixelTexture.SetData([Color.White]);
-
-        _sprites = new SpriteManager
-        {
-            SolidPixelTexture = solidPixelTexture,
-            SmallFont = GraphicsDevice.LoadAndBakeFont(size: 10, "Content/DroidSans.ttf"),
-            LargeFont = GraphicsDevice.LoadAndBakeFont(size: 18, "Content/DroidSans.ttf"),
-        };
-
         // Background by leyren at https://opengameart.org/content/starsspace-background
         _background = Content.Load<Texture2D>("Starset");
 
@@ -116,11 +110,19 @@ public class SpaceGame : Game
         }
         _despawn.Clear();
 
+        // Spawn new ships if needed
+        if (Entities.OfType<ShipEntity>().Count() < DesiredActiveShips)
+        {
+            SpawnShip();
+        }
+
         foreach (var entity in Entities)
         {
             entity.DetectedEntities = Entities.Where(s => s != entity && entity.DetectionBounds.Intersects(s.Bounds));
             entity.Update(gameTime);
         }
+
+        _collision.Update(gameTime);
 
         base.Update(gameTime);
     }
@@ -129,18 +131,46 @@ public class SpaceGame : Game
     {
         GraphicsDevice.Clear(Color.Black);
 
-        // Draw the background
         _sb.Begin();
+
+        // Draw the background
         _sb.Draw(_background, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
+
+        // Render each entity
+        foreach (var entity in Entities)
+        {
+            if (ShowDebugVisuals && entity is ShipEntity ship)
+            {
+                DrawShipDebugVisuals(entity, ship);
+            }
+
+            _sb.Draw(entity.Sprite, entity.Transform);
+        }
+
         _sb.End();
 
         base.Draw(gameTime);
+    }
+
+    private void DrawShipDebugVisuals(SpaceEntityBase entity, ShipEntity ship)
+    {
+        _sb.DrawCircle(entity.Bounds.Position, entity.DetectionRadius, sides: 32, Color.Yellow);
+
+        if (entity.Target is not null)
+        {
+            _sb.DrawLine(entity.Bounds.Position, entity.Target.Transform.Position, Color.OrangeRed, 2);
+        }
+        if (ship.Waypoint is not null)
+        {
+            _sb.DrawLine(entity.Bounds.Position, ship.Waypoint.Value, Color.CornflowerBlue, 2);
+        }
     }
 
     public void SpawnMissile(SpaceEntityBase attacker, ShipEntity target)
     {
         MissileEntity missile = new(this, attacker)
         {
+            BehaviorTree = _missileBehaviors,
             Sprite = new Sprite(_missileTextureRegion)
             {
                 OriginNormalized = new Vector2(0.5f, 0.5f)
@@ -158,11 +188,6 @@ public class SpaceGame : Game
         missile.Initialize((int)pos.X, (int)pos.Y, angleToTarget);
         missile.Target = target;
         _collision.Insert(missile);
-
-        missile.BehaviorTree.Add(
-            new SteerTowardsTargetBehavior(),
-            new SetTargetBehavior()
-        );
 
         Entities.Add(missile);
     }

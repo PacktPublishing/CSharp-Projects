@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace Chapter13.Behaviors;
 
-public class BehaviorTree : IBehavior
+public class BehaviorTree(params IBehavior[] behaviors) : IBehavior
 {
-    public List<IBehavior> Behaviors { get; init; } = [];
+    public IEnumerable<IBehavior> Behaviors { get; } = [..behaviors];
 
     public bool CanExecute(SpaceEntityBase ship, GameTime time) 
         => Behaviors.Any(b => b.CanExecute(ship, time));
@@ -22,15 +22,5 @@ public class BehaviorTree : IBehavior
                 return;
             }
         }
-    }
-
-    public void Clear()
-    {
-        Behaviors.Clear();
-    }
-
-    public void Add(params IBehavior[] behaviors)
-    {
-        Behaviors.AddRange(behaviors);
     }
 }
