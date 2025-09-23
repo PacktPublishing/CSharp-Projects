@@ -24,12 +24,12 @@ public class SpaceGame : Game
     private BehaviorTree _missileBehaviors;
     private Texture2D _background;
     private Texture2D _shipArt;
-    private Texture2DRegion _shipTextureRegion;
-    private Texture2DRegion _missileTextureRegion;
     private const int DesiredActiveShips = 4;
     public Bag<SpaceEntityBase> Entities { get; } = [];
     private Bag<SpaceEntityBase> _despawn = [];
+    private Sprite _missileSprite;
     private SpriteBatch _sb;
+    private Sprite _shipSprite;
     private const bool ShowDebugVisuals = false;
 
     public SpaceGame()
@@ -70,10 +70,7 @@ public class SpaceGame : Game
         ShipEntity ship = new()
         {
             BehaviorTree = _shipBehaviors,
-            Sprite = new Sprite(_shipTextureRegion)
-            {
-                OriginNormalized = new Vector2(0.5f, 0.5f),
-            }
+            Sprite = _shipSprite
         };
 
         int x = _rand.Next(0, _graphics.PreferredBackBufferWidth);
@@ -93,10 +90,20 @@ public class SpaceGame : Game
 
         // Ship art by Master484 at https://opengameart.org/content/1616-ship-collection
         _shipArt = Content.Load<Texture2D>("Ships");
-        _shipTextureRegion = new Texture2DRegion(_shipArt, new Rectangle(528, 42, 16, 16));
-        _missileTextureRegion = new Texture2DRegion(_shipArt, new Rectangle(248, 62, 16, 16));
+        Texture2DRegion shipTextureRegion = new(_shipArt, new Rectangle(528, 42, 16, 16));
+        _shipSprite = new Sprite(shipTextureRegion)
+        {
+            OriginNormalized = new Vector2(0.5f, 0.5f),
+        };
+
+        Texture2DRegion missileTextureRegion = new(_shipArt, new Rectangle(248, 62, 16, 16));
+        _missileSprite = new Sprite(missileTextureRegion)
+        {
+            OriginNormalized = new Vector2(0.5f, 0.5f)
+        };
 
         _sb = new SpriteBatch(GraphicsDevice);
+
     }
 
     protected override void Update(GameTime gameTime)
@@ -116,6 +123,7 @@ public class SpaceGame : Game
             SpawnShip();
         }
 
+        // Run ship AI and movement
         foreach (var entity in Entities)
         {
             entity.DetectedEntities = Entities.Where(s => s != entity && entity.DetectionBounds.Intersects(s.Bounds));
@@ -130,7 +138,6 @@ public class SpaceGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
-
         _sb.Begin();
 
         // Draw the background
@@ -148,7 +155,6 @@ public class SpaceGame : Game
         }
 
         _sb.End();
-
         base.Draw(gameTime);
     }
 
@@ -171,10 +177,7 @@ public class SpaceGame : Game
         MissileEntity missile = new(this, attacker)
         {
             BehaviorTree = _missileBehaviors,
-            Sprite = new Sprite(_missileTextureRegion)
-            {
-                OriginNormalized = new Vector2(0.5f, 0.5f)
-            }
+            Sprite = _missileSprite
         };
 
         Transform2 trans = attacker.Transform;
