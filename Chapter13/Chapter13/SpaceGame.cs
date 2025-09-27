@@ -23,13 +23,12 @@ public class SpaceGame : Game
     private BehaviorTree _shipBehaviors;
     private BehaviorTree _missileBehaviors;
     private Texture2D _background;
-    private Texture2D _shipArt;
     private const int DesiredActiveShips = 4;
     public Bag<SpaceEntityBase> Entities { get; } = [];
     private Bag<SpaceEntityBase> _despawn = [];
-    private Sprite _missileSprite;
     private SpriteBatch _sb;
-    private Sprite _shipSprite;
+    private AnimatedSprite _shipSprite;
+    private AnimatedSprite _missileSprite;
     private const bool ShowDebugVisuals = false;
 
     public SpaceGame()
@@ -88,26 +87,50 @@ public class SpaceGame : Game
         // Background by leyren at https://opengameart.org/content/starsspace-background
         _background = Content.Load<Texture2D>("Starset");
 
-        // Ship art by Master484 at https://opengameart.org/content/1616-ship-collection
-        _shipArt = Content.Load<Texture2D>("Ships");
-        Texture2DRegion shipTextureRegion = new(_shipArt, new Rectangle(528, 42, 16, 16));
-        _shipSprite = new Sprite(shipTextureRegion)
-        {
-            OriginNormalized = new Vector2(0.5f, 0.5f),
-        };
+        TimeSpan frameTime = TimeSpan.FromSeconds(1.0 / 30);
 
-        Texture2DRegion missileTextureRegion = new(_shipArt, new Rectangle(248, 62, 16, 16));
-        _missileSprite = new Sprite(missileTextureRegion)
+        // Ship art created by Matt Eland for this book
+        Texture2D shipArt = Content.Load<Texture2D>("FighterShip");
+        Texture2DAtlas shipAtlas = Texture2DAtlas.Create("ShipAtlas", shipArt, 16, 16, maxRegionCount: 7);
+        SpriteSheet shipSheet = new SpriteSheet("ShipSheet", shipAtlas);
+        shipSheet.DefineAnimation("Flight", builder =>
         {
-            OriginNormalized = new Vector2(0.5f, 0.5f)
-        };
+            builder.IsLooping(true);
+            for (int i = 0; i < shipAtlas.RegionCount; i++)
+            {
+                builder.AddFrame(i, frameTime);
+            }
+        });
+
+        _shipSprite = new AnimatedSprite(shipSheet, "Flight");
+        _shipSprite.OriginNormalized = new Vector2(0.5f, 0.5f);
+
+        // Missile art created by Matt Eland for this book
+        Texture2D missileArt = Content.Load<Texture2D>("Missile");
+        Texture2DAtlas missAtlas = Texture2DAtlas.Create("MissileAtlas", missileArt, 16, 16);
+        SpriteSheet missSheet = new SpriteSheet("MissileSheet", missAtlas);
+        missSheet.DefineAnimation("Flight", builder =>
+        {
+            builder.IsLooping(true);
+            builder.IsPingPong(true);
+            for (int i = 0; i < missAtlas.RegionCount; i++)
+            {
+                builder.AddFrame(i, frameTime);
+            }
+        });
+
+        _missileSprite = new AnimatedSprite(missSheet, "Flight");
+        _missileSprite.OriginNormalized = new Vector2(0.5f, 0.5f);
 
         _sb = new SpriteBatch(GraphicsDevice);
-
     }
 
     protected override void Update(GameTime gameTime)
     {
+        // Update our animations
+        _shipSprite.Update(gameTime);
+        _missileSprite.Update(gameTime);
+
         // Despawn any queued entities.
         // We do this here to avoid modifying Entities while iterating
         // or using a temporary collection each update.
