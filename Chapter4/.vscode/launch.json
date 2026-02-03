@@ -8,9 +8,9 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/ConsoleRolePlayingGame.ConsoleApp/bin/Debug/net10.0/ConsoleRolePlayingGame.ConsoleApp.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/ConsoleRolePlayingGame.ConsoleApp",
+            "cwd": "${workspaceFolder}/ConsoleRolePlayingGame.Domain",
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "integratedTerminal"
         }
     ]
 }
