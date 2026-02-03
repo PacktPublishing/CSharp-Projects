@@ -1,0 +1,7 @@
+{
+  "rest-client.environmentVariables": {
+    "dev": {
+      "BaseUrl": "http://localhost:5197"
+    }
+  }
+}
