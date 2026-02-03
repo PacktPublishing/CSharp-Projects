@@ -25,7 +25,7 @@
                         <CardComponent Card="card"/>
                         <label for="amount-@card.Id" class="mt-2">Amount:</label>
                         <input id="amount-@card.Id" type="number" class="form-control" min="0" value="@allocation.Count"
-                               @onchange="(e) => allocation.Count = int.Parse(e.Value.ToString()!)"/>
+                               @onchange="(e) => allocation.Count = int.Parse(e.Value!.ToString()!)"/>
                     </div>
                 }
             }
