@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -16,9 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ModelContextProtocol">
-      <HintPath>..\..\..\..\..\.nuget\packages\modelcontextprotocol\0.2.0-preview.1\lib\net9.0\ModelContextProtocol.dll</HintPath>
-    </Reference>
+    <PackageReference Include="ModelContextProtocol" Version="0.2.0-preview.1" />
   </ItemGroup>
 
 </Project>
