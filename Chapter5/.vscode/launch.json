@@ -12,7 +12,7 @@
             "stopAtEntry": false,
             "serverReadyAction": {
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
-                "uriFormat": "%s",
+                "uriFormat": "%s/cards",
                 "action": "openExternally"
             },
             "console": "internalConsole"
