@@ -10,7 +10,7 @@
             "args": [],
             "cwd": "${workspaceFolder}/EnigmaSimulator",
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "integratedTerminal"
         }
     ]
 }
