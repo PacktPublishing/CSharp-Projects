@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: AI Storyteller (Desktop)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/AiStoryteller/AiStoryteller/bin/Release/net10.0-windows/AiStoryteller.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/AiStoryteller/AiStoryteller",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
+    ]
+}

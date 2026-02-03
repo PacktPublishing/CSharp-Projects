@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: Ping Pong Mono",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/PingPongMono/PingPongMono/bin/Debug/net10.0-windows/PingPongMono.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/PingPongMono/PingPongMono",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
+    ]
+}

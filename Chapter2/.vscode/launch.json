@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: Enigma Simulator",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/EnigmaSimulator/bin/Debug/net10.0/EnigmaSimulator.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/EnigmaSimulator",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
+    ]
+}

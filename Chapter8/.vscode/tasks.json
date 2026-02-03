@@ -1,0 +1,13 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": ["build", "AiStoryteller/AiStoryteller.sln", "-c", "Release", "-f", "net10.0-windows"],
+            "problemMatcher": "$msCompile",
+            "group": {"kind": "build", "isDefault": true}
+        }
+    ]
+}
