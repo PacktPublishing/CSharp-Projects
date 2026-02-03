@@ -10,7 +10,7 @@
             "args": [],
             "cwd": "${workspaceFolder}/ConsoleAppAdventureGame",
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "integratedTerminal"
         }
     ]
 }
