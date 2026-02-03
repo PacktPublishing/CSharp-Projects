@@ -1,4 +1,3 @@
-using Chapter13.Behaviors;
 using Microsoft.Xna.Framework;
 
 namespace Chapter13.Entities;

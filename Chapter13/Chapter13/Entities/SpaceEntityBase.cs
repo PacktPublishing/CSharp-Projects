@@ -8,11 +8,11 @@ using System.Collections.Generic;
 
 namespace Chapter13.Entities;
 
-public abstract class SpaceEntityBase : IUpdateable, ICollisionActor
+public abstract class SpaceEntityBase : ICollisionActor
 {
     public Transform2 Transform { get; } = new();
 
-    public ShipEntity? Target { get; set; }
+    public SpaceEntityBase? Target { get; set; }
     public Sprite Sprite { get; internal set; }
     public abstract float MaxTurnRate { get; }
     public abstract float MaxSpeed { get; }
@@ -61,9 +61,4 @@ public abstract class SpaceEntityBase : IUpdateable, ICollisionActor
 
     private CircleF _bounds = new(Vector2.Zero, 1f);
     private CircleF _detection = new(Vector2.Zero, 1f);
-
-    public bool Enabled { get; }
-    public int UpdateOrder { get; }
-    public event EventHandler<EventArgs> EnabledChanged;
-    public event EventHandler<EventArgs> UpdateOrderChanged;
 }

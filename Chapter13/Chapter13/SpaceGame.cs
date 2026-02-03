@@ -2,7 +2,6 @@
 using Chapter13.Behaviors.Combat;
 using Chapter13.Behaviors.Waypoints;
 using Chapter13.Entities;
-using Chapter13.Helpers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -24,7 +23,7 @@ public class SpaceGame : Game
     private BehaviorTree _missileBehaviors;
     private Texture2D _background;
     private const int DesiredActiveShips = 4;
-    public Bag<SpaceEntityBase> Entities { get; } = [];
+    private Bag<SpaceEntityBase> _entities = [];
     private Bag<SpaceEntityBase> _despawn = [];
     private SpriteBatch _sb;
     private AnimatedSprite _shipSprite;
@@ -64,65 +63,44 @@ public class SpaceGame : Game
         );
     }
 
-    private void SpawnShip()
-    {
-        ShipEntity ship = new()
-        {
-            BehaviorTree = _shipBehaviors,
-            Sprite = _shipSprite
-        };
-
-        int x = _rand.Next(0, _graphics.PreferredBackBufferWidth);
-        int y = _rand.Next(0, _graphics.PreferredBackBufferHeight);
-        float heading = MovementHelpers.GetRandomHeadingInRadians();
-
-        ship.Initialize(x, y, heading);
-
-        Entities.Add(ship);
-        _collision.Insert(ship);
-    }
-
     protected override void LoadContent()
     {
         // Background by leyren at https://opengameart.org/content/starsspace-background
         _background = Content.Load<Texture2D>("Starset");
 
-        TimeSpan frameTime = TimeSpan.FromSeconds(1.0 / 30);
-
         // Ship art created by Matt Eland for this book
-        Texture2D shipArt = Content.Load<Texture2D>("FighterShip");
-        Texture2DAtlas shipAtlas = Texture2DAtlas.Create("ShipAtlas", shipArt, 16, 16, maxRegionCount: 7);
-        SpriteSheet shipSheet = new SpriteSheet("ShipSheet", shipAtlas);
-        shipSheet.DefineAnimation("Flight", builder =>
-        {
-            builder.IsLooping(true);
-            for (int i = 0; i < shipAtlas.RegionCount; i++)
-            {
-                builder.AddFrame(i, frameTime);
-            }
-        });
-
-        _shipSprite = new AnimatedSprite(shipSheet, "Flight");
-        _shipSprite.OriginNormalized = new Vector2(0.5f, 0.5f);
+        _shipSprite = LoadAnimatedSprite("FighterShip");
 
         // Missile art created by Matt Eland for this book
-        Texture2D missileArt = Content.Load<Texture2D>("Missile");
-        Texture2DAtlas missAtlas = Texture2DAtlas.Create("MissileAtlas", missileArt, 16, 16);
-        SpriteSheet missSheet = new SpriteSheet("MissileSheet", missAtlas);
-        missSheet.DefineAnimation("Flight", builder =>
+        _missileSprite = LoadAnimatedSprite("Missile", pingPong: true);
+
+        _sb = new SpriteBatch(GraphicsDevice);
+    }
+
+    private AnimatedSprite LoadAnimatedSprite(string texture, bool pingPong = false)
+    {
+        Texture2D tex = Content.Load<Texture2D>(texture);
+        Texture2DAtlas atlas = Texture2DAtlas.Create("Atlas", tex, 16, 16);
+        SpriteSheet sheet = new("priteSheet", atlas);
+        sheet.DefineAnimation("Default", builder =>
         {
             builder.IsLooping(true);
-            builder.IsPingPong(true);
-            for (int i = 0; i < missAtlas.RegionCount; i++)
+
+            if (pingPong)
             {
-                builder.AddFrame(i, frameTime);
+                builder.IsPingPong(true);
+            }
+
+            for (int i = 0; i < atlas.RegionCount; i++)
+            {
+                builder.AddFrame(i, TimeSpan.FromSeconds(1.0 / 30));
             }
         });
 
-        _missileSprite = new AnimatedSprite(missSheet, "Flight");
-        _missileSprite.OriginNormalized = new Vector2(0.5f, 0.5f);
+        AnimatedSprite sprite = new(sheet, "Default");
+        sprite.OriginNormalized = new Vector2(0.5f, 0.5f);
 
-        _sb = new SpriteBatch(GraphicsDevice);
+        return sprite;
     }
 
     protected override void Update(GameTime gameTime)
@@ -141,15 +119,15 @@ public class SpaceGame : Game
         _despawn.Clear();
 
         // Spawn new ships if needed
-        if (Entities.OfType<ShipEntity>().Count() < DesiredActiveShips)
+        if (_entities.OfType<ShipEntity>().Count() < DesiredActiveShips)
         {
             SpawnShip();
         }
 
         // Run ship AI and movement
-        foreach (var entity in Entities)
+        foreach (var entity in _entities)
         {
-            entity.DetectedEntities = Entities.Where(s => s != entity && entity.DetectionBounds.Intersects(s.Bounds));
+            entity.DetectedEntities = _entities.Where(s => s != entity && entity.DetectionBounds.Intersects(s.Bounds));
             entity.Update(gameTime);
         }
 
@@ -164,15 +142,16 @@ public class SpaceGame : Game
         _sb.Begin();
 
         // Draw the background
-        _sb.Draw(_background, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
+        _sb.Draw(_background, _worldBounds.ToRectangle(), Color.White);
 
         // Render each entity
-        foreach (var entity in Entities)
+        foreach (var entity in _entities)
         {
             if (ShowDebugVisuals && entity is ShipEntity ship)
             {
                 DrawShipDebugVisuals(entity, ship);
             }
+
 
             _sb.Draw(entity.Sprite, entity.Transform);
         }
@@ -195,28 +174,42 @@ public class SpaceGame : Game
         }
     }
 
-    public void SpawnMissile(SpaceEntityBase attacker, ShipEntity target)
+    private void SpawnShip()
+    {
+        ShipEntity ship = new()
+        {
+            BehaviorTree = _shipBehaviors,
+            Sprite = _shipSprite
+        };
+
+        int x = _rand.Next(0, _graphics.PreferredBackBufferWidth);
+        int y = _rand.Next(0, _graphics.PreferredBackBufferHeight);
+        float heading = MathHelper.ToRadians(Random.Shared.Next(360));
+
+        ship.Initialize(x, y, heading);
+
+        _entities.Add(ship);
+        _collision.Insert(ship);
+    }
+
+
+    public void SpawnMissile(SpaceEntityBase attacker, SpaceEntityBase target)
     {
         MissileEntity missile = new(this, attacker)
         {
             BehaviorTree = _missileBehaviors,
-            Sprite = _missileSprite
+            Sprite = _missileSprite,
+            Target = target
         };
 
         Transform2 trans = attacker.Transform;
         Vector2 pos = trans.Position;
-
-        // Set the missile's rotation to face the target
-        float angleToTarget = (float)Math.Atan2(
-            target.Transform.Position.Y - pos.Y,
-            target.Transform.Position.X - pos.X);
-
-        missile.Initialize((int)pos.X, (int)pos.Y, angleToTarget);
-        missile.Target = target;
+        missile.Initialize((int)pos.X, (int)pos.Y, trans.Rotation);
         _collision.Insert(missile);
 
-        Entities.Add(missile);
+        _entities.Add(missile);
     }
+
 
     public void QueueDespawn(SpaceEntityBase entity)
     {
@@ -226,10 +219,13 @@ public class SpaceGame : Game
     private void Despawn(SpaceEntityBase entity)
     {
         _collision.Remove(entity);
-        Entities.Remove(entity);
+        _entities.Remove(entity);
+
+        entity.Target = null;
+        entity.DetectedEntities = [];
 
         // Clear any references to this entity from other entities
-        foreach (var other in Entities)
+        foreach (var other in _entities)
         {
             if (other.Target == entity)
             {

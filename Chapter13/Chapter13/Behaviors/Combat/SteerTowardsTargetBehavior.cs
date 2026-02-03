@@ -13,6 +13,7 @@ public class SteerTowardsTargetBehavior : IBehavior
 
     public void Execute(SpaceEntityBase ship, GameTime time)
     {
-        ship.Transform.RotateTowardsTarget(ship.Target.Transform.Position, ship.MaxTurnRate, time);
+        Vector2 target = ship.Target.Transform.Position;
+        ship.Transform.RotateTowardsTarget(target, ship.MaxTurnRate, time);
     }
 }

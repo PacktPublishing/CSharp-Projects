@@ -6,11 +6,6 @@ namespace Chapter13.Helpers;
 
 public static class MovementHelpers
 {
-    public static float GetRandomHeadingInRadians()
-    {
-        return MathHelper.ToRadians(Random.Shared.Next(360));
-    }
-
     public static void RotateTowardsTarget(this Transform2 transform, Vector2 targetPos, float turnRate, GameTime time)
     {
         float angle = CalculateSteeringAngle(transform, targetPos, turnRate, time);
