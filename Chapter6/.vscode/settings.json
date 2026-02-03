@@ -3,5 +3,8 @@
     "dev": {
       "BaseUrl": "http://localhost:5197"
     }
+  },
+  "launch": {
+    "default": "Card Tracker: Full Stack"
   }
 }

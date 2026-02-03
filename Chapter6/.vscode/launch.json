@@ -10,12 +10,17 @@
             "args": [],
             "cwd": "${workspaceFolder}/CardTracker/CardTrackerWebApi",
             "stopAtEntry": false,
-            "serverReadyAction": {
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
-                "uriFormat": "%s",
-                "action": "openExternally"
-            },
             "console": "internalConsole"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Card Tracker: Full Stack",
+            "configurations": [
+                "C#: Card Tracker Web API"
+            ],
+            "preLaunchTask": "open-browser",
+            "stopAll": true
         }
     ]
 }
