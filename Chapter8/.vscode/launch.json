@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/AiStoryteller/AiStoryteller/bin/Release/net10.0-windows/AiStoryteller.dll",
+            "program": "${workspaceFolder}/AiStoryteller/AiStoryteller/bin/Release/net10.0-desktop/AiStoryteller.dll",
             "args": [],
             "cwd": "${workspaceFolder}/AiStoryteller/AiStoryteller",
             "stopAtEntry": false,

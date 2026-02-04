@@ -5,7 +5,7 @@
             "label": "build",
             "command": "dotnet",
             "type": "process",
-            "args": ["build", "AiStoryteller/AiStoryteller.sln", "-c", "Release", "-f", "net10.0-windows"],
+            "args": ["build", "AiStoryteller/AiStoryteller.sln", "-c", "Release"],
             "problemMatcher": "$msCompile",
             "group": {"kind": "build", "isDefault": true}
         }
