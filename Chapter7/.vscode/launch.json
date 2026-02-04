@@ -48,13 +48,13 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build-desktop",
-      "program": "${workspaceFolder}/Chatbot/bin/Debug/net9.0-desktop/Chatbot.dll",
+      "program": "${workspaceFolder}/Chatbot/Chatbot/bin/Debug/net10.0-desktop/Chatbot.dll",
       "args": [],
       "launchSettingsProfile": "Chatbot (Desktop)",
       "env": {
         "DOTNET_MODIFIABLE_ASSEMBLIES": "debug"
       },
-      "cwd": "${workspaceFolder}/Chatbot",
+      "cwd": "${workspaceFolder}/Chatbot/Chatbot",
       "console": "internalConsole",
       "stopAtEntry": false
     }

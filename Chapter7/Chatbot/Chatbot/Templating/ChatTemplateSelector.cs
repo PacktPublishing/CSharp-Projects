@@ -18,6 +18,6 @@ public class ChatTemplateSelector : DataTemplateSelector
             return base.SelectTemplateCore(item);
         }
 
-        return message.Role == ChatRole.User ? UserTemplate : AssistantTemplate;
+        return message.Role == ChatRole.User ? UserTemplate! : AssistantTemplate!;
     }
 }
