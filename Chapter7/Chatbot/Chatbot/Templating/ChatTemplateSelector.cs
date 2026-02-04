@@ -8,8 +8,8 @@ using Microsoft.Extensions.AI;
 namespace Chatbot.Templating;
 public class ChatTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate UserTemplate { get; set; }
-    public DataTemplate AssistantTemplate { get; set; }
+    public DataTemplate? UserTemplate { get; set; }
+    public DataTemplate? AssistantTemplate { get; set; }
 
     protected override DataTemplate SelectTemplateCore(object item)
     {
