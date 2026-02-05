@@ -6,6 +6,7 @@ GET {{BaseUrl}}/tea
 
 ### LOGIN ENDPOINTS #######################################################################################
 ### Login
+# @name login
 POST {{BaseUrl}}/login
 Content-Type: application/json
 
@@ -14,12 +15,10 @@ Content-Type: application/json
   "password": "PacktBooks"
 }
 
-> {% client.global.set("auth_token", response.body.token); %}
-
 ### USERS ENDPOINTS #######################################################################################
 ### Get all users (requires admin)
 GET {{BaseUrl}}/users
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 ### Create user (Requires admin)
 POST {{BaseUrl}}/users
@@ -33,7 +32,7 @@ Content-Type: application/json
 
 ### Get User (requires admin)
 GET {{BaseUrl}}/users/testuser
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 ### CARD ENDPOINTS ########################################################################################
 
@@ -48,7 +47,7 @@ Accept: application/json
 ### Create a creature card
 POST {{BaseUrl}}/cards
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 {
   "type": "Creature",
@@ -68,7 +67,7 @@ Authorization: Bearer {{auth_token}}
 ### Create an action card
 POST {{BaseUrl}}/cards
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 {
   "type": "Action",
@@ -82,7 +81,7 @@ Authorization: Bearer {{auth_token}}
 ### Another action
 POST {{BaseUrl}}/cards
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 {
   "type": "Action",
@@ -97,19 +96,19 @@ Authorization: Bearer {{auth_token}}
 ### Delete a card
 DELETE {{BaseUrl}}/cards/1
 Accept: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 ### DECK ENDPOINTS ########################################################################################
 
 ### Get all decks
 GET {{BaseUrl}}/decks/
 Accept: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 ### Create a deck
 POST {{BaseUrl}}/decks
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 {
   "name": "Test Deck 3"
@@ -118,12 +117,12 @@ Authorization: Bearer {{auth_token}}
 ### Get a specific deck
 GET {{BaseUrl}}/decks/1
 Accept: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 ### Update a specific deck and add cards
 PUT {{BaseUrl}}/decks/1
 Content-Type: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}
 
 {
   "name": "Edited Deck",
@@ -133,4 +132,4 @@ Authorization: Bearer {{auth_token}}
 ### DELETE a specific deck
 DELETE {{BaseUrl}}/decks/0
 Accept: application/json
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{login.response.body.token}}

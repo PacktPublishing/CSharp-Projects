@@ -1,15 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <Reference Include="SimplexNoise">
-        <HintPath>..\..\..\..\.nuget\packages\simplexnoise\2.0.0\lib\netcoreapp2.2\SimplexNoise.dll</HintPath>
-      </Reference>
+      <PackageReference Include="SimplexNoise" Version="2.0.0" />
     </ItemGroup>
 
 </Project>

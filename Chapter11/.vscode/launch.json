@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: Student Mood Predictor",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/StudentMoodPredictor/StudentMoodPredictor/bin/Debug/net10.0/StudentMoodPredictor.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/StudentMoodPredictor/StudentMoodPredictor",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
+        }
+    ]
+}

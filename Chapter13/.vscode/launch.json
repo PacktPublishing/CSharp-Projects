@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: Fighter Ship",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Chapter13/bin/Debug/net10.0/Chapter13.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Chapter13",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
+        }
+    ]
+}

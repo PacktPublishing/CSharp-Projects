@@ -2,6 +2,21 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "Chatbot/Chatbot/Chatbot.csproj",
+        "-c",
+        "Release",
+        "-f",
+        "net10.0-desktop"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {"kind": "build", "isDefault": true}
+    },
+    {
       "label": "build-wasm",
       "command": "dotnet",
       "type": "process",
@@ -33,12 +48,14 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/Chatbot/Chatbot.csproj",
-        "/property:GenerateFullPaths=true",
-        "/property:TargetFramework=net9.0-desktop",
-        "/consoleloggerparameters:NoSummary"
+        "Chatbot/Chatbot/Chatbot.csproj",
+        "-c",
+        "Debug",
+        "-f",
+        "net10.0-desktop"
       ],
-      "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile",
+      "group": {"kind": "build", "isDefault": true}
     },
     {
       "label": "publish-desktop",
@@ -46,9 +63,9 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/Chatbot/Chatbot.csproj",
+        "Chatbot/Chatbot/Chatbot.csproj",
         "/property:GenerateFullPaths=true",
-        "/property:TargetFramework=net9.0-desktop",
+        "/property:TargetFramework=net10.0-desktop",
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile"

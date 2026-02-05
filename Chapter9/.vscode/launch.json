@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: AI Personal Assistant",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/AiPersonalAssistant/AiPersonalAssistant.ConsoleApp/bin/Debug/net10.0/AiPersonalAssistant.ConsoleApp.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/AiPersonalAssistant/AiPersonalAssistant.ConsoleApp",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
+        }
+    ]
+}

@@ -27,7 +27,7 @@ public class JwtGenerationService(IOptionsSnapshot<AuthSettings> jwtSettings) : 
                     new Claim(ClaimTypes.Role, role),
                     new Claim(ClaimTypes.Name, username),
                 ],
-                expires: DateTime.Now.AddDays(7),
+                expires: DateTime.UtcNow.AddDays(7),
                 signingCredentials: creds));
     }
 }

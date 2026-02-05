@@ -17,16 +17,17 @@ DataOperationsCatalog.TrainTestData trainTest = context.Data.TrainTestSplit(data
 RegressionExperimentSettings settings = new()
 {
     MaxModels = 5,
-    MaxExperimentTimeInSeconds = 10,
+    MaxExperimentTimeInSeconds = 15,
     OptimizingMetric = RegressionMetric.RSquared
 };
 RegressionExperiment experiment = context.Auto().CreateRegressionExperiment(settings);
 
 ExperimentResult<RegressionMetrics>? result = null;
-console.Status().Start($"Training regression model...", _ =>
-    {
-        result = experiment.Execute(trainTest.TrainSet, trainTest.TestSet);
-    });
+console.Status()
+       .Start($"Training regression model for {settings.MaxExperimentTimeInSeconds} seconds...", 
+        _ => {
+                result = experiment.Execute(trainTest.TrainSet, trainTest.TestSet);
+             });
 
 // Display metrics for each model run
 Table runsTable = new Table()

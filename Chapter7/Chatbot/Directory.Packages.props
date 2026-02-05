@@ -9,5 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="9.4.3-preview.1.25230.7" />
+    <PackageVersion Include="Refit" Version="7.2.22" />
+    <PackageVersion Include="Refit.HttpClientFactory" Version="7.2.22" />
   </ItemGroup>
 </Project>

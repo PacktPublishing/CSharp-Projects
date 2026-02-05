@@ -29,14 +29,16 @@ console.WriteLine($"Server instructions: {mcpClient.ServerInstructions ?? "No in
 Table table = BuildMetadataTable("Prompts");
 await foreach (var prompt in mcpClient.EnumeratePromptsAsync())
 {
-    table.AddRow(prompt.Name, prompt.Description);
+    string[] columns = { prompt.Name ?? string.Empty, prompt.Description ?? string.Empty };
+    table.AddRow(columns ?? Array.Empty<string>());
 }
 console.Write(table);
 
 table = BuildMetadataTable("Tools");
 await foreach (var tool in mcpClient.EnumerateToolsAsync())
 {
-    table.AddRow(tool.Name, tool.Description);
+    string[] columns = { tool.Name ?? string.Empty, tool.Description ?? string.Empty };
+    table.AddRow(columns ?? Array.Empty<string>());
 }
 console.Write(table);
 
@@ -44,11 +46,23 @@ table = BuildMetadataTable("Resources");
 table.AddColumn("[yellow]Uri[/]");
 await foreach (var res in mcpClient.EnumerateResourcesAsync())
 {
-    table.AddRow(res.Name, res.Description, res.Uri);
+    string[] columns =
+    {
+        res.Name ?? string.Empty,
+        res.Description ?? string.Empty,
+        res.Uri ?? string.Empty
+    };
+    table.AddRow(columns ?? Array.Empty<string>());
 }
 await foreach (var res in mcpClient.EnumerateResourceTemplatesAsync())
 {
-    table.AddRow(res.Name, res.Description, res.UriTemplate);
+    string[] columns =
+    {
+        res.Name ?? string.Empty,
+        res.Description ?? string.Empty,
+        res.UriTemplate ?? string.Empty
+    };
+    table.AddRow(columns ?? Array.Empty<string>());
 }
 console.Write(table);
 

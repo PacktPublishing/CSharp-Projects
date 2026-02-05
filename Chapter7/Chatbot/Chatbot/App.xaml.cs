@@ -1,6 +1,9 @@
 using Chatbot.Services.Chat;
+using Chatbot.Services.Endpoints;
+using Refit;
 using Microsoft.Extensions.AI;
 using Uno.Resizetizer;
+using Uno.Extensions.Http;
 
 namespace Chatbot;
 public partial class App : Application
@@ -74,8 +77,9 @@ public partial class App : Application
                     // DelegatingHandler will be automatically injected into Refit Client
                     .AddTransient<DelegatingHandler, DebugHttpHandler>()
 #endif
+                    .AddHttpClient()
                     .AddSingleton<IWeatherCache, WeatherCache>()
-                    .AddRefitClient<IApiClient>(context))
+                    .AddScoped(s => RestService.For<IApiClient>(s.GetRequiredService<HttpClient>())))
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<IChatClient, ElizaChatService>();

@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: Card Tracker Web API",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/CardTracker/CardTrackerWebApi/bin/Debug/net10.0/CardTrackerWebApi.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/CardTracker/CardTrackerWebApi",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Card Tracker: Full Stack",
+            "configurations": [
+                "C#: Card Tracker Web API"
+            ],
+            "preLaunchTask": "open-browser",
+            "stopAll": true
+        }
+    ]
+}

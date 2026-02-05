@@ -9,19 +9,19 @@ namespace PingPongMono;
 public class PingPongGame : Game
 {
     private readonly GraphicsDeviceManager _graphics;
-    private SpriteBatch? _spriteBatch;
+    private SpriteBatch _spriteBatch;
     private int Width => _graphics.PreferredBackBufferWidth;
     private int Height => _graphics.PreferredBackBufferHeight;
     
-    private Paddle? _paddle1;
-    private Paddle? _paddle2;
-    private Ball? _ball;
+    private Paddle _paddle1;
+    private Paddle _paddle2;
+    private Ball _ball;
     private int _score1;
     private int _score2;
 
-    private Texture2D? _whiteTexture;
-    private SpriteFont? _scoreFont;
-    private SpriteFont? _smallFont;
+    private Texture2D _whiteTexture;
+    private SpriteFont _scoreFont;
+    private SpriteFont _smallFont;
 
     private const int PaddleWidth = 10;
     private const int PaddleHeight = 60;
@@ -92,9 +92,9 @@ public class PingPongGame : Game
         KeyboardState keyboard = Keyboard.GetState();
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        _paddle1!.Update(keyboard, Height, deltaTime);
-        _paddle2!.Update(keyboard, Height, deltaTime);
-        _ball!.Update(Height, deltaTime);
+        _paddle1.Update(keyboard, Height, deltaTime);
+        _paddle2.Update(keyboard, Height, deltaTime);
+        _ball.Update(Height, deltaTime);
 
         // Ball collision with paddles
         if (_ball.Bounds.Intersects(_paddle1.Bounds) && _ball.IsFacingLeft)
@@ -131,15 +131,15 @@ public class PingPongGame : Game
     {
         GraphicsDevice.Clear(Color.Black);
 
-        _spriteBatch!.Begin();
+        _spriteBatch.Begin();
 
-        _paddle1!.Draw(_spriteBatch, _whiteTexture!);
-        _paddle2!.Draw(_spriteBatch, _whiteTexture!);
-        _ball!.Draw(_spriteBatch, _whiteTexture!);
+        _paddle1.Draw(_spriteBatch, _whiteTexture);
+        _paddle2.Draw(_spriteBatch, _whiteTexture);
+        _ball.Draw(_spriteBatch, _whiteTexture);
 
         // Draw score
         string scoreText = $"{_score1}   {_score2}";
-        Vector2 scoreSize = _scoreFont!.MeasureString(scoreText);
+        Vector2 scoreSize = _scoreFont.MeasureString(scoreText);
         _spriteBatch.DrawString(_scoreFont, scoreText, new Vector2((Width / 2) - scoreSize.X / 2, 20), Color.White);
         _spriteBatch.DrawString(_smallFont, "Welcome to Ping Pong Mono", new Vector2(10, 10), Color.White);
         _spriteBatch.DrawString(_smallFont, "Press ESC to exit", new Vector2(10, Height - 10 - SmallFontSize), Color.White);

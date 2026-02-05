@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": ["build", "CardTracker/CardTracker.sln"],
+            "problemMatcher": "$msCompile",
+            "group": {"kind": "build", "isDefault": true}
+        },
+        {
+            "label": "run-client",
+            "command": "dotnet",
+            "type": "process",
+            "args": ["run", "--project", "CardTracker/CardTrackerClient/CardTrackerClient.csproj"],
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*",
+                    "endsPattern": "Now listening on:.*"
+                }
+            },
+            "dependsOn": ["build"]
+        },
+        {
+            "label": "open-browser",
+            "type": "shell",
+            "command": "start",
+            "args": ["http://localhost:5211"],
+            "dependsOn": ["run-client"],
+            "problemMatcher": []
+        }
+    ]
+}

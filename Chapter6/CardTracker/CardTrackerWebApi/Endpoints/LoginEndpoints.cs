@@ -17,15 +17,15 @@ public static class LoginEndpoints
 
     private static IResult HandleLogin(LoginRequest request, CardsDbContext db, IHashingService hasher, ITokenGenerationService tokenGenerator)
     {
-        request.Username = request.Username.ToLowerInvariant();
-        User? user = db.Users.AsNoTracking().FirstOrDefault(u => u.Username == request.Username);
+        string username = request.Username!.ToLowerInvariant();
+        User? user = db.Users.AsNoTracking().FirstOrDefault(u => u.Username == username);
 
         if (user == null)
         {
             return Results.BadRequest("Invalid username or password.");
         }
 
-        byte[] hash = hasher.ComputeHash(request.Password, user.Salt);
+        byte[] hash = hasher.ComputeHash(request.Password!, user.Salt);
         if (!user.PasswordHash.SequenceEqual(hash))
         {
             return Results.BadRequest("Invalid username or password.");
@@ -33,7 +33,7 @@ public static class LoginEndpoints
 
         // Generate and return a signed JWT
         string role = user.IsAdmin ? "Admin" : "User";
-        string jwt = tokenGenerator.GenerateToken(request.Username, role);
+        string jwt = tokenGenerator.GenerateToken(username, role);
 
         return Results.Ok(new LoginResponse(jwt));
     }

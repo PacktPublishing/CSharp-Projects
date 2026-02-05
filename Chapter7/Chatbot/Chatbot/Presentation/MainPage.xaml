@@ -7,7 +7,7 @@
       xmlns:um="using:Uno.Material" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:ai="clr-namespace:Microsoft.Extensions.AI;assembly=Microsoft.Extensions.AI.Abstractions"
-      xmlns:templating="clr-namespace:Chatbot.Templating"
+      xmlns:templating="using:Chatbot.Templating"
       mc:Ignorable="d"
       NavigationCacheMode="Required"
       Background="{ThemeResource BackgroundBrush}" d:DataContext="{d:DesignInstance local:MainViewModel}">

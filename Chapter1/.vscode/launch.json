@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C#: Console App Adventure Game",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/ConsoleAppAdventureGame/bin/Debug/net10.0/ConsoleAppAdventureGame.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/ConsoleAppAdventureGame",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
+        }
+    ]
+}
