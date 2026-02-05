@@ -6,11 +6,11 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/PingPongMono/PingPongMono/bin/Debug/net10.0-windows/PingPongMono.dll",
+            "program": "${workspaceFolder}/PingPongMono/bin/Debug/net10.0/PingPongMono.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/PingPongMono/PingPongMono",
+            "cwd": "${workspaceFolder}/PingPongMono",
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "integratedTerminal"
         }
     ]
 }
