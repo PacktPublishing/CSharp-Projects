@@ -6,11 +6,11 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Chapter13/bin/Debug/net10.0-windows/Chapter13.dll",
+            "program": "${workspaceFolder}/Chapter13/bin/Debug/net10.0/Chapter13.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Chapter13",
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "integratedTerminal"
         }
     ]
 }

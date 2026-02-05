@@ -1,5 +1,7 @@
 using Microsoft.Xna.Framework;
 
+#nullable enable
+
 namespace Chapter13.Entities;
 
 public class ShipEntity : SpaceEntityBase

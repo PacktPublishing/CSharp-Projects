@@ -12,7 +12,7 @@ public abstract class SpaceEntityBase : ICollisionActor
 {
     public Transform2 Transform { get; } = new();
 
-    public SpaceEntityBase? Target { get; set; }
+    public SpaceEntityBase Target { get; set; }
     public Sprite Sprite { get; internal set; }
     public abstract float MaxTurnRate { get; }
     public abstract float MaxSpeed { get; }
