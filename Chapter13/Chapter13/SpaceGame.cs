@@ -81,7 +81,7 @@ public class SpaceGame : Game
     {
         Texture2D tex = Content.Load<Texture2D>(texture);
         Texture2DAtlas atlas = Texture2DAtlas.Create("Atlas", tex, 16, 16);
-        SpriteSheet sheet = new("priteSheet", atlas);
+        SpriteSheet sheet = new("spriteSheet", atlas);
         sheet.DefineAnimation("Default", builder =>
         {
             builder.IsLooping(true);
@@ -152,7 +152,6 @@ public class SpaceGame : Game
                 DrawShipDebugVisuals(entity, ship);
             }
 
-
             _sb.Draw(entity.Sprite, entity.Transform);
         }
 
@@ -192,7 +191,6 @@ public class SpaceGame : Game
         _collision.Insert(ship);
     }
 
-
     public void SpawnMissile(SpaceEntityBase attacker, SpaceEntityBase target)
     {
         MissileEntity missile = new(this, attacker)
@@ -209,7 +207,6 @@ public class SpaceGame : Game
 
         _entities.Add(missile);
     }
-
 
     public void QueueDespawn(SpaceEntityBase entity)
     {
