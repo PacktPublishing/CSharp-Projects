@@ -1,8 +1,6 @@
 using CardTrackerWebApi.Converters;
 using CardTrackerWebApi.Helpers;
 using CardTrackerWebApi.Settings;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -52,17 +50,20 @@ builder.Services.AddAuthorization(options =>
 
 WebApplication app = builder.Build();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-// Configure the request pipeline.
+// Configure the request pipeline - order matters!
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseDeveloperExceptionPage();
+    app.MapOpenApi();
+}
+else
+{
+    // Only redirect to HTTPS in production - avoids issues with development tools
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Endpoints
 app.AddLoginEndpoints();
