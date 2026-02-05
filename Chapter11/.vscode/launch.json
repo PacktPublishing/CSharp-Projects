@@ -10,7 +10,7 @@
             "args": [],
             "cwd": "${workspaceFolder}/StudentMoodPredictor/StudentMoodPredictor",
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "integratedTerminal"
         }
     ]
 }
