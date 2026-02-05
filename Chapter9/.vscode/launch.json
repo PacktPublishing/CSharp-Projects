@@ -10,7 +10,7 @@
             "args": [],
             "cwd": "${workspaceFolder}/AiPersonalAssistant/AiPersonalAssistant.ConsoleApp",
             "stopAtEntry": false,
-            "console": "internalConsole"
+            "console": "integratedTerminal"
         }
     ]
 }
