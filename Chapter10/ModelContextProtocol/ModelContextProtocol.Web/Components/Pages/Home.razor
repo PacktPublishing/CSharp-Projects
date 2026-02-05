@@ -40,7 +40,7 @@
     <MudDivider Class="my-8" />
     
     <div class="d-flex flex-row mt-8 gap-4">
-        <MudTextField @bind-Value="Text"
+        <MudTextField @bind-Value="_text"
                       Immediate="true"
                       Label="Message" 
                       OnKeyDown="OnTextKeyDown"
@@ -64,17 +64,17 @@
         new(Role.Assistant, "Hello. How can I help you today?"),
     ];
     
-    public string Text { get; set; }
+    private string _text = string.Empty;
 
     private async Task SendMessage()
     {
-        if (string.IsNullOrWhiteSpace(Text))
+        if (string.IsNullOrWhiteSpace(_text))
         {
             return;
         }
         
-        _messages.Add(new ApiChatMessage(Role.User, Text));
-        Text = string.Empty;
+        _messages.Add(new ApiChatMessage(Role.User, _text));
+        _text = string.Empty;
         StateHasChanged();
         
         IEnumerable<ApiChatMessage> newMessages = await ChatApi.ChatAsync(_messages);
