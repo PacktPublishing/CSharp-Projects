@@ -7,13 +7,10 @@ global using Spectre.Console.Json;
 
 global using System.Text;
 global using System.ComponentModel;
-global using System.Diagnostics.CodeAnalysis;
 
-global using Microsoft.SemanticKernel;
-global using Microsoft.SemanticKernel.ChatCompletion;
-global using Microsoft.SemanticKernel.Connectors.Ollama;
+global using System.Numerics.Tensors;
 
-global using Microsoft.KernelMemory;
-global using Microsoft.KernelMemory.AI.Ollama;
+global using Microsoft.Extensions.AI;
+global using Microsoft.Agents.AI;
 
 global using Microsoft.Extensions.Configuration;

@@ -1,10 +1,9 @@
 ﻿namespace AiPersonalAssistant.ConsoleApp.Modes;
 
-public class CombinedChatMode(IAnsiConsole console) : SemanticKernelChatMode(console)
+public class CombinedChatMode(IAnsiConsole console) : AgentChatMode(console)
 {
-    private IKernelMemory? _memory;
+    private DocumentMemory? _memory;
 
-    [Experimental("SKEXP0070")]
     public override async Task InitializeAsync(AlfredOptions options)
     {
         _memory = await MemoryHelpers.LoadMemory(options, Console);
@@ -12,13 +11,32 @@ public class CombinedChatMode(IAnsiConsole console) : SemanticKernelChatMode(con
         await base.InitializeAsync(options);
     }
 
-    public override void LoadPlugins(Kernel kernel)
+    public override List<AITool> GetTools()
     {
-        base.LoadPlugins(kernel);
+        var tools = base.GetTools();
 
-        if (_memory is null) throw new InvalidOperationException("Memory not set");
+        tools.Add(AIFunctionFactory.Create(SearchDocuments,
+            name: "Search",
+            description: "Searches documents and history for answers to a question"));
 
-        ReadOnlyKernelMemoryPlugin plugin = new(_memory, Console);
-        kernel.ImportPluginFromObject(plugin);
+        return tools;
+    }
+
+    [Description("A question to search documents for")]
+    private async Task<string> SearchDocuments(string question)
+    {
+        Console.MarkupLineInterpolated($"[cyan]RAG Search[/]: {question}");
+
+        var results = await _memory!.SearchAsync(question);
+
+        StringBuilder sb = new();
+        foreach (var (text, sourceName, score) in results)
+        {
+            Console.MarkupLineInterpolated($"[grey]Source:[/] {sourceName} ({score:P2} Relevance)");
+            sb.AppendLine($"Snippet found in {sourceName}:");
+            sb.AppendLine(text);
+        }
+
+        return sb.ToString();
     }
 }

@@ -2,21 +2,15 @@
 
 public class MemoryHelpers
 {
-    public static async Task<IKernelMemory> LoadMemory(AlfredOptions options, IAnsiConsole console)
+    public static async Task<DocumentMemory> LoadMemory(AlfredOptions options, IAnsiConsole console)
     {
         console.MarkupLine("[orange3]Initializing Memory[/]");
 
-        OllamaConfig config = new()
-        {
-            Endpoint = options.Endpoint,
-            TextModel = new OllamaModelConfig(options.ChatModelId),
-            EmbeddingModel = new OllamaModelConfig(options.EmbeddingModelId) // 2048
-        };
+        var embeddingGenerator = new OllamaEmbeddingGenerator(
+            new Uri(options.Endpoint), options.EmbeddingModelId);
 
-        IKernelMemory mem = new KernelMemoryBuilder()
-            .WithOllamaTextGeneration(config)
-            .WithOllamaTextEmbeddingGeneration(config)
-            .Build<MemoryServerless>();
+        // Plain list — no external vector store needed for small document sets
+        var chunks = new List<DocumentChunk>();
 
         console.MarkupLineInterpolated($"Searching for documents in [yellow]{options.DataDirectory}[/]");
         string directory = GetEffectiveDirectory(options);
@@ -24,24 +18,55 @@ public class MemoryHelpers
 
         await console.Progress().StartAsync(async context =>
         {
-            foreach (var file in documentFiles.AsParallel())
+            foreach (var file in documentFiles)
             {
                 FileInfo fileInfo = new(file);
                 ProgressTask task = context.AddTask(fileInfo.Name);
                 task.IsIndeterminate = true;
-                await mem.ImportDocumentAsync(file);
-                task.Increment(100); // Mark the task as complete
+
+                var paragraphs = ChunkFile(file);
+                foreach (var paragraph in paragraphs)
+                {
+                    var embedding = await embeddingGenerator.GenerateAsync(paragraph.Text);
+                    var record = new DocumentChunk
+                    {
+                        Text = paragraph.Text,
+                        SourceName = paragraph.SourceName,
+                        Embedding = embedding.Vector
+                    };
+                    chunks.Add(record);
+                }
+
+                task.Increment(100);
             }
         });
 
-        return mem;
+        return new DocumentMemory(chunks, embeddingGenerator);
+    }
+
+    private static IEnumerable<(string Text, string SourceName)> ChunkFile(string filePath)
+    {
+        string text = File.ReadAllText(filePath);
+        string sourceName = Path.GetFileName(filePath);
+
+        // Split by double newlines (paragraphs)
+        string[] paragraphs = text.Split(["\r\n\r\n", "\n\n"], StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string para in paragraphs)
+        {
+            string trimmed = para.Trim();
+            if (trimmed.Length > 20) // Skip very short fragments
+            {
+                yield return (trimmed, sourceName);
+            }
+        }
     }
 
     private static string[] FindDocuments(string directory)
     {
         HashSet<string> supported = new(StringComparer.OrdinalIgnoreCase)
         {
-            ".txt", ".docx", ".pdf", ".md", ".html", ".htm", ".pptx"
+            ".txt", ".md", ".html", ".htm"
         };
 
         DirectoryInfo dir = new DirectoryInfo(directory);

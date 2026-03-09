@@ -20,9 +20,9 @@ ApplicationMode mode = console.Prompt(new SelectionPrompt<ApplicationMode>()
 
 AlfredChatHandler handler = mode switch
 {
-    ApplicationMode.KernelMemorySearch => new KernelMemorySearchMode(console),
-    ApplicationMode.KernelMemoryChat => new KernelMemoryChatMode(console),
-    ApplicationMode.SemanticKernel => new SemanticKernelChatMode(console),
+    ApplicationMode.VectorSearch => new VectorSearchMode(console),
+    ApplicationMode.RagChat => new RagChatMode(console),
+    ApplicationMode.AgentChat => new AgentChatMode(console),
     ApplicationMode.Combined => new CombinedChatMode(console),
     _ => throw new NotSupportedException()
 };
