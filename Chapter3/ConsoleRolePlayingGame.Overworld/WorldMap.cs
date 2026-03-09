@@ -4,7 +4,7 @@ using ConsoleRolePlayingGame.Overworld.Structure;
 
 namespace ConsoleRolePlayingGame.Overworld;
 
-public class WorldMap(MapGenerator mapGenerator)
+public class WorldMap(MapGenerator map)
 {
     public MapCell[,] GetMapWindow(Pos topLeft, int width, int height)
     {
@@ -18,7 +18,7 @@ public class WorldMap(MapGenerator mapGenerator)
             for (int x = topLeft.X; x < topLeft.X + width; x++)
             {
                 Pos pos = new(x, y);
-                TerrainType terrain = mapGenerator.CalculateTerrain(pos);
+                TerrainType terrain = map.CalculateTerrain(pos);
                 mapWindow[x - topLeft.X, y - topLeft.Y] = new MapCell(terrain, pos);
             }
         }
@@ -26,8 +26,8 @@ public class WorldMap(MapGenerator mapGenerator)
         return mapWindow;
     }
 
+    private readonly List<IMapEntity> _entities = [];
     public IEnumerable<IMapEntity> Entities => _entities.AsReadOnly();
-    private readonly List<IMapEntity> _entities = new();
     
     public void AddEntity(IMapEntity entity) => _entities.Add(entity);
     public void RemoveEntity(IMapEntity entity) => _entities.Remove(entity);

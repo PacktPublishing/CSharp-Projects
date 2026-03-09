@@ -19,10 +19,7 @@ public class InteractiveEnigmaCommand(EnigmaMachine enigma) : Command
             char input = keyInfo.GetValueOrDefault().KeyChar;
             output = enigma.Encode(input);
 
-            if (!char.IsWhiteSpace(output))
-            {
-                AnsiConsole.Write(output);
-            }
+            AnsiConsole.Write(output);
 
         } while (!Environment.NewLine.Contains(output));
 

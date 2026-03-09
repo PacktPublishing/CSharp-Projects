@@ -11,7 +11,7 @@ public record Ability
     public float MaxMultiplier { get; init; } = 1.0f;
     public Trait Attribute { get; init; } = Trait.None;
 
-    public int CalculateAmount(Combatant activator, Combatant target, Random random)
+    public int CalculateAmount(Combatant activator, Random random)
     {
         int mult = Attribute switch
         {

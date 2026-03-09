@@ -1,6 +1,6 @@
 namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
-public class CombatGroupRenderer(ICombatGroup group, Combatant? activeCharacter, bool includeStats = false)
+public class CombatGroupRenderer(ICombatGroup group, Combatant? active, bool includeStats = false)
 {
     public IRenderable GenerateVisual()
     {
@@ -16,7 +16,7 @@ public class CombatGroupRenderer(ICombatGroup group, Combatant? activeCharacter,
         List<IRenderable> visuals = [
             ..c.AsciiArt.Select(l => new Markup(c.IsDead ? " " : l)
                 .Justify(Justify.Center)), 
-            new Markup(activeCharacter == c ? $"[bold yellow]{c.Name}[/]" : c.Name)
+            new Markup(active == c ? $"[bold yellow]{c.Name}[/]" : c.Name)
                 .Justify(Justify.Center)
         ];
         
@@ -33,8 +33,8 @@ public class CombatGroupRenderer(ICombatGroup group, Combatant? activeCharacter,
 
     private IRenderable BuildStatsBlock(Combatant c)
     {
-        string statsText = $"[red]HP: {c.Health}/{c.MaxHealth}[/] " +
-                           $"[blue]MP: {c.Mana}/{c.MaxMana}[/]";
-        return new Markup(statsText).Justify(Justify.Center);
+        string text = $"[red]HP: {c.Health}/{c.MaxHealth}[/] " +
+                      $"[blue]MP: {c.Mana}/{c.MaxMana}[/]";
+        return new Markup(text).Justify(Justify.Center);
     }
 }

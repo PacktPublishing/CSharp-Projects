@@ -10,10 +10,10 @@ public class EncounterRepository(EnemyRepository enemyRepository) : FileReposito
     
     public EnemyGroup CreateRandomEncounter(Pos position)
     {
-        List<EncounterInformation> encounters = LoadManyFromJsonFile<EncounterInformation>("Encounters.json");
+        List<EncounterInfo> encounters = LoadManyFromJsonFile<EncounterInfo>("Encounters.json");
         
         // Select a random element of encounters
-        EncounterInformation encounter = encounters[Random.Next(encounters.Count)];
+        EncounterInfo encounter = encounters[Random.Next(encounters.Count)];
         
         return new EnemyGroup()
         {

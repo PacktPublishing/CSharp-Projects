@@ -14,9 +14,12 @@ public class BattleScreen(GameManager game, IAnsiConsole console)
     {
         Battle? battle = game.Battle;
         if (battle is null) throw new InvalidOperationException("No active battle to render.");
-        
-        _layout["Enemies"].Update(new CombatGroupRenderer(battle.Enemies, battle.ActiveMember).GenerateVisual());
-        _layout["Party"].Update(new CombatGroupRenderer(battle.Party, battle.ActiveMember, includeStats: true).GenerateVisual());
+
+        CombatGroupRenderer enemies = new(battle.Enemies, battle.ActiveMember);
+        _layout["Enemies"].Update(enemies.GenerateVisual());
+
+        CombatGroupRenderer party = new(battle.Party, battle.ActiveMember, includeStats: true);
+        _layout["Party"].Update(party.GenerateVisual());
         
         return _layout;
     }

@@ -62,7 +62,7 @@ public class Battle
 
     private string ActivateAbilityOnTarget(Combatant character, Ability ability, Combatant target)
     {
-        int amount = ability.CalculateAmount(character, target, _random);
+        int amount = ability.CalculateAmount(character, _random);
 
         if (ability.IsHeal)
         {

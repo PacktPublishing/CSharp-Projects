@@ -83,7 +83,9 @@ public partial class App : Application
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddTransient<IChatPartner, HaikuChatPartner>();
+                    // Configure this to use different providers to test different parts of the chapter
+                    services.AddTransient<IChatPartner, JokeChatPartner>();
+                    //services.AddTransient<IChatPartner, HaikuChatPartner>();
                     services.AddTransient<IChatClient>(_ => 
                         new OllamaChatClient(new Uri("http://localhost:11434/"), "llama3.2:latest")
                             .AsBuilder()

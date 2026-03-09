@@ -14,11 +14,11 @@ public class TerrainProviderTests
     public void ProducesExpectedResult(int x, int y, TerrainType expected)
     {
         // Arrange
-        MapGenerator generator = new();
+        MapGenerator gen = new();
         Pos pos = new(x, y);
         
         // Act
-        TerrainType actual = generator.CalculateTerrain(pos);
+        TerrainType actual = gen.CalculateTerrain(pos);
         
         // Assert
         actual.ShouldBe(expected);

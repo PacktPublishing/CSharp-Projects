@@ -5,7 +5,6 @@ namespace ConsoleRolePlayingGame.ConsoleApp.Visuals;
 
 public class MapRenderer(GameManager game, int width, int height)
 {
-    
     public IRenderable GenerateVisual()
     {
         Pos center = game.Party.MapPos;

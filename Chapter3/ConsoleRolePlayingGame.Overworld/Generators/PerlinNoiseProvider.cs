@@ -9,7 +9,6 @@ public class PerlinNoiseProvider(int seed, float scale = 0.05f)
     public float Generate(int x, int y)
     {
         float result;
-        
         lock (_lock)
         {
             Noise.Seed = seed;
