@@ -1,8 +1,5 @@
-#pragma warning disable SKEXP0070
-#pragma warning disable SKEXP0001
-
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
-using Microsoft.SemanticKernel;
 using ModelContextProtocol.ChatApi;
 using ModelContextProtocol.ChatApi.Services;
 using ModelContextProtocol.Client;
@@ -17,16 +14,10 @@ builder.Services.Configure<ChatSettings>(builder.Configuration.GetSection("Chat"
 
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IChatService, ChatService>();
-builder.Services.AddSingleton<IKernelBuilder>(sp =>
+builder.Services.AddSingleton<IChatClient>(sp =>
 {
     var options = sp.GetRequiredService<IOptions<ChatSettings>>().Value;
-    IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
-        .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.ChatEndpoint));
-    
-    ILoggerFactory logFactory = sp.GetRequiredService<ILoggerFactory>();
-    kernelBuilder.Services.AddSingleton(logFactory);
-
-    return kernelBuilder;
+    return new OllamaChatClient(new Uri(options.ChatEndpoint), options.ChatModelId);
 });
 builder.Services.AddSingleton<IMcpClient>(sp =>
 {
@@ -44,19 +35,11 @@ builder.Services.AddSingleton<IClientTransport>(sp =>
         UseStreamableHttp = true
     });
 });
-builder.Services.AddSingleton<Kernel>(sp =>
+builder.Services.AddSingleton<IList<AITool>>(sp =>
 {
-    IKernelBuilder kernelBuilder = sp.GetRequiredService<IKernelBuilder>();
-    Kernel kernel = kernelBuilder.Build();
-    
     IMcpClient client = sp.GetRequiredService<IMcpClient>();
     IList<McpClientTool> tools = client.ListToolsAsync().Result;
-    foreach (var tool in tools)
-    {
-        kernel.Plugins.AddFromFunctions(tool.Name, tool.Description, [tool.AsKernelFunction()]);
-    }
-    
-    return kernel;
+    return tools.Cast<AITool>().ToList();
 });
 
 WebApplication app = builder.Build();

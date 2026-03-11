@@ -2,5 +2,5 @@
 
 public record McpServerSettings
 {
-    public required string KernelMemoryEndpoint { get; init; }
+    public required string DocumentsApiEndpoint { get; init; }
 }

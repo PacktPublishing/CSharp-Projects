@@ -5,7 +5,7 @@ var docs = builder.AddProject<Projects.ModelContextProtocol_DocumentsApi>("docum
 
 var sse = builder.AddProject<Projects.ModelContextProtocol_SseServer>("mcpserver-sse")
     .WithExternalHttpEndpoints()
-    .WithEnvironment("McpServer:KernelMemoryEndpoint", docs.GetEndpoint("http"))
+    .WithEnvironment("McpServer:DocumentsApiEndpoint", docs.GetEndpoint("http"))
     .WaitFor(docs);
 
 builder.AddProject<Projects.ModelContextProtocol_TestClient>("mcpclient")

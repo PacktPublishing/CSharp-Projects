@@ -1,71 +1,63 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.Ollama;
 using ModelContextProtocol.Domain.Requests;
 using ModelContextProtocol.Protocol;
 
 namespace ModelContextProtocol.ChatApi.Services;
 
-public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory, Kernel kernel) : IChatService
+public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory, IChatClient chatClient, IList<AITool> tools) : IChatService
 {
     private readonly ActivitySource _activitySource = new(typeof(ChatService).Assembly.FullName!);
     private readonly ILogger<ChatService> _logger = logFactory.CreateLogger<ChatService>();
 
-    [Experimental("SKEXP0070")]
     public async IAsyncEnumerable<string> ChatAsync(ChatRequest request)
     {
         ChatSettings options = settings.Value;
-        string sysPrompt = options.SystemPrompt;
-        ChatHistory history = BuildChatHistory(request, sysPrompt);
-        
-        _logger.LogTrace("Creating kernel with chat model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
+        List<ChatMessage> messages = BuildChatMessages(request, options.SystemPrompt);
 
-        IChatCompletionService completions = kernel.GetRequiredService<IChatCompletionService>();
-        IReadOnlyList<ChatMessageContent> responses;
+        _logger.LogTrace("Creating chat with model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
+
+        ChatOptions chatOptions = new() { Tools = tools };
+
+        ChatResponse response;
         using (_activitySource.StartActivity(ActivityKind.Client))
         {
-            OllamaPromptExecutionSettings execSettings = new()
-            {
-                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-            };
-            responses = await completions.GetChatMessageContentsAsync(history, execSettings, kernel);
+            response = await chatClient.GetResponseAsync(messages, chatOptions);
         }
 
         int index = 1;
-        foreach (var response in responses)
+        foreach (var message in response.Messages)
         {
-            if (!string.IsNullOrWhiteSpace(response.Content))
+            if (!string.IsNullOrWhiteSpace(message.Text))
             {
-                _logger.LogTrace("Response {index}: {content}", index, response.Content);
-                yield return response.Content;
+                _logger.LogTrace("Response {index}: {content}", index, message.Text);
+                yield return message.Text;
             }
             index++;
         }
     }
 
-    private ChatHistory BuildChatHistory(ChatRequest request, string sysPrompt)
+    private List<ChatMessage> BuildChatMessages(ChatRequest request, string sysPrompt)
     {
-        ChatHistory history = new(sysPrompt);
         using Activity? activity = _activitySource.StartActivity(ActivityKind.Server);
-        
+        List<ChatMessage> messages = [new(ChatRole.System, sysPrompt)];
+
         int index = 1;
         foreach (var entry in request.Messages)
         {
-            activity?.AddEvent(new ActivityEvent($"{entry.Role}-{index++} Assistant: {entry.Message}"));
+            activity?.AddEvent(new ActivityEvent($"{entry.Role}-{index++}: {entry.Message}"));
             _logger.LogTrace("{Role}: {Message}", entry.Role, entry.Message);
             if (entry.Role == Role.Assistant)
             {
-                history.AddAssistantMessage(entry.Message);
+                messages.Add(new ChatMessage(ChatRole.Assistant, entry.Message));
             }
             else
             {
-                history.AddUserMessage(entry.Message);
+                messages.Add(new ChatMessage(ChatRole.User, entry.Message));
             }
         }
 
-        return history;
+        return messages;
     }
 }

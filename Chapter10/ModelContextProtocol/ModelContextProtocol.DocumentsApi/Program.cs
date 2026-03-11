@@ -1,6 +1,5 @@
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
-using Microsoft.KernelMemory;
-using Microsoft.KernelMemory.AI.Ollama;
 using ModelContextProtocol.DocumentsApi;
 using ModelContextProtocol.DocumentsApi.Requests;
 using ModelContextProtocol.DocumentsApi.Services;
@@ -13,23 +12,20 @@ builder.Services.AddOpenApi();
 builder.Services.Configure<OllamaSearchOptions>(
     builder.Configuration.GetSection("OllamaOptions"));
 
-builder.Services.AddSingleton<IKernelMemory>(m =>
+builder.Services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(sp =>
 {
-    IOptions<OllamaSearchOptions> snapshot = m.GetRequiredService<IOptions<OllamaSearchOptions>>();
+    IOptions<OllamaSearchOptions> snapshot = sp.GetRequiredService<IOptions<OllamaSearchOptions>>();
     OllamaSearchOptions options = snapshot.Value;
-
-    OllamaConfig config = new()
-    {
-        Endpoint = options.Endpoint,
-        TextModel = new OllamaModelConfig(options.ChatModelId),
-        EmbeddingModel = new OllamaModelConfig(options.EmbeddingModelId)
-    };
-
-    return new KernelMemoryBuilder()
-        .WithOllamaTextGeneration(config)
-        .WithOllamaTextEmbeddingGeneration(config)
-        .Build<MemoryServerless>();
+    return new OllamaEmbeddingGenerator(new Uri(options.Endpoint), options.EmbeddingModelId);
 });
+builder.Services.AddSingleton<IChatClient>(sp =>
+{
+    IOptions<OllamaSearchOptions> snapshot = sp.GetRequiredService<IOptions<OllamaSearchOptions>>();
+    OllamaSearchOptions options = snapshot.Value;
+    return new OllamaChatClient(new Uri(options.Endpoint), options.ChatModelId);
+});
+builder.Services.AddSingleton<List<DocumentChunk>>();
+builder.Services.AddSingleton<DocumentMemory>();
 builder.Services.AddHostedService<DocumentIndexingService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 
