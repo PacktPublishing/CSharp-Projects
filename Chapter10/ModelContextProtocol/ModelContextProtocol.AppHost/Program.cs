@@ -15,6 +15,7 @@ builder.AddProject<Projects.ModelContextProtocol_TestClient>("mcpclient")
 var chat = builder.AddProject<Projects.ModelContextProtocol_ChatApi>("chatapi")
     .WithExternalHttpEndpoints()
     .WithEnvironment("Chat:mcpServerEndpoint", sse.GetEndpoint("http"))
+    .WithEnvironment("OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT", "true")
     .WaitFor(sse);
 
 builder.AddProject<Projects.ModelContextProtocol_Web>("webfrontend")

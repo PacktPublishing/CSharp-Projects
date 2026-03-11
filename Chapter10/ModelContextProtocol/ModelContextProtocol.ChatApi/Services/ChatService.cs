@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using ModelContextProtocol.Domain.Requests;
@@ -6,7 +7,7 @@ using ModelContextProtocol.Protocol;
 
 namespace ModelContextProtocol.ChatApi.Services;
 
-public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory, IChatClient chatClient, IList<AITool> tools) : IChatService
+public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory, AIAgent agent) : IChatService
 {
     private readonly ActivitySource _activitySource = new(typeof(ChatService).Assembly.FullName!);
     private readonly ILogger<ChatService> _logger = logFactory.CreateLogger<ChatService>();
@@ -14,34 +15,38 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
     public async IAsyncEnumerable<string> ChatAsync(ChatRequest request)
     {
         ChatSettings options = settings.Value;
-        List<ChatMessage> messages = BuildChatMessages(request, options.SystemPrompt);
+        List<ChatMessage> messages = BuildChatMessages(request);
 
-        _logger.LogTrace("Creating chat with model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
+        _logger.LogTrace("Running agent with model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
 
-        ChatOptions chatOptions = new() { Tools = tools };
-
-        ChatResponse response;
-        using (_activitySource.StartActivity(ActivityKind.Client))
+        AgentResponse response;
+        using (Activity? activity = _activitySource.StartActivity("ChatAsync", ActivityKind.Client))
         {
-            response = await chatClient.GetResponseAsync(messages, chatOptions);
+            activity?.SetTag("gen_ai.request.model", options.ChatModelId);
+            activity?.SetTag("chat.message_count", messages.Count);
+
+            AgentSession session = await agent.CreateSessionAsync();
+            response = await agent.RunAsync(messages, session);
+
+            if (response.Usage is { } usage)
+            {
+                activity?.SetTag("gen_ai.usage.input_tokens", usage.InputTokenCount);
+                activity?.SetTag("gen_ai.usage.output_tokens", usage.OutputTokenCount);
+                activity?.SetTag("gen_ai.usage.total_tokens", usage.TotalTokenCount);
+            }
         }
 
-        int index = 1;
-        foreach (var message in response.Messages)
+        if (!string.IsNullOrWhiteSpace(response.Text))
         {
-            if (!string.IsNullOrWhiteSpace(message.Text))
-            {
-                _logger.LogTrace("Response {index}: {content}", index, message.Text);
-                yield return message.Text;
-            }
-            index++;
+            _logger.LogTrace("Response: {content}", response.Text);
+            yield return response.Text;
         }
     }
 
-    private List<ChatMessage> BuildChatMessages(ChatRequest request, string sysPrompt)
+    private List<ChatMessage> BuildChatMessages(ChatRequest request)
     {
-        using Activity? activity = _activitySource.StartActivity(ActivityKind.Server);
-        List<ChatMessage> messages = [new(ChatRole.System, sysPrompt)];
+        using Activity? activity = _activitySource.StartActivity("BuildChatMessages", ActivityKind.Server);
+        List<ChatMessage> messages = [];
 
         int index = 1;
         foreach (var entry in request.Messages)

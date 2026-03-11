@@ -1,3 +1,4 @@
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using ModelContextProtocol.ChatApi;
@@ -14,11 +15,6 @@ builder.Services.Configure<ChatSettings>(builder.Configuration.GetSection("Chat"
 
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IChatService, ChatService>();
-builder.Services.AddSingleton<IChatClient>(sp =>
-{
-    var options = sp.GetRequiredService<IOptions<ChatSettings>>().Value;
-    return new OllamaChatClient(new Uri(options.ChatEndpoint), options.ChatModelId);
-});
 builder.Services.AddSingleton<IMcpClient>(sp =>
 {
     IClientTransport clientTransport = sp.GetRequiredService<IClientTransport>();
@@ -40,6 +36,19 @@ builder.Services.AddSingleton<IList<AITool>>(sp =>
     IMcpClient client = sp.GetRequiredService<IMcpClient>();
     IList<McpClientTool> tools = client.ListToolsAsync().Result;
     return tools.Cast<AITool>().ToList();
+});
+builder.Services.AddSingleton<AIAgent>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<ChatSettings>>().Value;
+    var tools = sp.GetRequiredService<IList<AITool>>();
+    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+
+    IChatClient chatClient = new OllamaChatClient(new Uri(options.ChatEndpoint), options.ChatModelId);
+
+    return chatClient.AsAIAgent(
+        instructions: options.SystemPrompt,
+        tools: tools,
+        loggerFactory: loggerFactory);
 });
 
 WebApplication app = builder.Build();
