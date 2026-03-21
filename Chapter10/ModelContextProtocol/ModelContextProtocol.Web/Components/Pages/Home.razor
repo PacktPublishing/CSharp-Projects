@@ -21,22 +21,22 @@
         @if (message.Role == Role.User)
         {
             <div class="d-flex justify-end mb-4">
-                <div style="max-width: 75%;">
+                <div class="chat-bubble-wrapper">
                     <MudText Typo="Typo.caption" Align="Align.Right" Class="mb-1">User</MudText>
-                    <MudPaper Class="pa-3" Style="background-color: #1565C0; color: #FFFFFF; border-radius: 12px 12px 0 12px;">
+                    <div class="chat-bubble chat-bubble-user">
                         <MudText Style="color: inherit;">@message.Message</MudText>
-                    </MudPaper>
+                    </div>
                 </div>
             </div>
         }
         else
         {
             <div class="d-flex justify-start mb-4">
-                <div style="max-width: 75%;">
+                <div class="chat-bubble-wrapper">
                     <MudText Typo="Typo.caption" Class="mb-1">AI Agent</MudText>
-                    <MudPaper Class="pa-3" Outlined="true" Style="background-color: #F5F5F5; color: #212121; border-radius: 12px 12px 12px 0;">
+                    <div class="chat-bubble chat-bubble-assistant">
                         <MudText Style="color: inherit;">@message.Message</MudText>
-                    </MudPaper>
+                    </div>
                 </div>
             </div>
         }
