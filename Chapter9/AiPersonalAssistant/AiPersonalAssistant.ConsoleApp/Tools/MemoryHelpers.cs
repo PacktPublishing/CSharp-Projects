@@ -1,4 +1,4 @@
-﻿namespace AiPersonalAssistant.ConsoleApp.Plugins;
+﻿namespace AiPersonalAssistant.ConsoleApp.Tools;
 
 public class MemoryHelpers
 {

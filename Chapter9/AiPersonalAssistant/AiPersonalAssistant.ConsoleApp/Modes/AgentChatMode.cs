@@ -21,7 +21,7 @@ public class AgentChatMode(IAnsiConsole console) : AlfredChatHandler(console)
 
     public virtual List<AITool> GetTools()
     {
-        return [AIFunctionFactory.Create(TimeAndDatePlugin.GetCurrentTimeAndDate)];
+        return [AIFunctionFactory.Create(TimeAndDateTool.GetCurrentTimeAndDate)];
     }
 
     public override async Task ChatAsync(string message)

@@ -1,4 +1,9 @@
-namespace AiPersonalAssistant.ConsoleApp.Plugins;
+namespace AiPersonalAssistant.ConsoleApp.Tools;
+
+/// <summary>
+/// Represents a single result returned by <see cref="DocumentMemory.SearchAsync"/>.
+/// </summary>
+public sealed record SearchResult(string Text, string SourceName, float Score);
 
 /// <summary>
 /// A lightweight in-memory document store that supports semantic search.
@@ -17,7 +22,7 @@ public sealed class DocumentMemory(
     /// <param name="query">Natural-language search query.</param>
     /// <param name="limit">Maximum number of results to return.</param>
     /// <param name="minRelevance">Minimum cosine-similarity score (0–1) to include a result.</param>
-    public async Task<IReadOnlyList<(string Text, string SourceName, float Score)>> SearchAsync(
+    public async Task<IReadOnlyList<SearchResult>> SearchAsync(
         string query, int limit = 5, float minRelevance = 0.1f)
     {
         // 1. Generate an embedding for the search query
@@ -38,7 +43,7 @@ public sealed class DocumentMemory(
         return scored
             .OrderByDescending(pair => pair.Score)
             .Take(limit)
-            .Select(pair => (pair.Chunk.Text, pair.Chunk.SourceName, pair.Score))
+            .Select(pair => new SearchResult(pair.Chunk.Text, pair.Chunk.SourceName, pair.Score))
             .ToList();
     }
 }

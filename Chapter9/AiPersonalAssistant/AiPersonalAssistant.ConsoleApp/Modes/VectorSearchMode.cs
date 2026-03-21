@@ -7,7 +7,6 @@ public class VectorSearchMode(IAnsiConsole console) : AlfredChatHandler(console)
     public override async Task InitializeAsync(AlfredOptions options)
     {
         _memory = await MemoryHelpers.LoadMemory(options, Console);
-
         await base.InitializeAsync(options);
     }
 

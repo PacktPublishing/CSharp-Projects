@@ -1,9 +1,8 @@
 ﻿global using AiPersonalAssistant.ConsoleApp;
-global using AiPersonalAssistant.ConsoleApp.Plugins;
+global using AiPersonalAssistant.ConsoleApp.Tools;
 global using AiPersonalAssistant.ConsoleApp.Modes;
 
 global using Spectre.Console;
-global using Spectre.Console.Json;
 
 global using System.Text;
 global using System.ComponentModel;

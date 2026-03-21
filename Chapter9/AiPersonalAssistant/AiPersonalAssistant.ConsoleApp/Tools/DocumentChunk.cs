@@ -1,4 +1,4 @@
-namespace AiPersonalAssistant.ConsoleApp.Plugins;
+namespace AiPersonalAssistant.ConsoleApp.Tools;
 
 /// <summary>
 /// Represents a single chunk of text from a source document,
