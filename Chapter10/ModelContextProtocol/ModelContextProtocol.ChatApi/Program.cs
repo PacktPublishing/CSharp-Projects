@@ -43,7 +43,9 @@ builder.Services.AddSingleton<AIAgent>(sp =>
     var tools = sp.GetRequiredService<IList<AITool>>();
     var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
 
-    IChatClient chatClient = new OllamaChatClient(new Uri(options.ChatEndpoint), options.ChatModelId);
+    IChatClient chatClient = new ChatClientBuilder(new OllamaChatClient(new Uri(options.ChatEndpoint), options.ChatModelId))
+        .UseOpenTelemetry(loggerFactory, configure: c => c.EnableSensitiveData = true)
+        .Build();
 
     return chatClient.AsAIAgent(
         instructions: options.SystemPrompt,
