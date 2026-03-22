@@ -2,8 +2,8 @@
 
 public enum ApplicationMode
 {
-    KernelMemorySearch,
-    KernelMemoryChat,
-    SemanticKernel,
+    VectorSearch,
+    RagChat,
+    AgentChat,
     Combined
 }

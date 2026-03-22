@@ -11,29 +11,34 @@
     <div class="my-4">
         <MudText Typo="Typo.h1">Aspire AI Chat</MudText>
         <MudText Typo="Typo.h6">
-            This app uses Semantic Kernel, Model Context Protocol, and Kernel Memory communicating 
+            This app uses Microsoft.Extensions.AI, Model Context Protocol, and document embedding searches communicating 
             over several different services, all coordinated using .NET Aspire.
         </MudText>
     </div>
     
     @foreach (var message in _messages)
     {
-        @if (message.Role == Role.User) {
-            <MudChat ChatPosition="ChatBubblePosition.End" Color="Color.Primary" Variant="Variant.Filled">
-                <MudChatHeader>User</MudChatHeader>
-                <MudChatBubble>
-                    @message.Message
-                </MudChatBubble>
-            </MudChat>
+        @if (message.Role == Role.User)
+        {
+            <div class="d-flex justify-end mb-4">
+                <div class="chat-bubble-wrapper">
+                    <MudText Typo="Typo.caption" Align="Align.Right" Class="mb-1">User</MudText>
+                    <div class="chat-bubble chat-bubble-user">
+                        <MudText Style="color: inherit;">@message.Message</MudText>
+                    </div>
+                </div>
+            </div>
         }
         else
         {
-            <MudChat ChatPosition="ChatBubblePosition.Start" Color="Color.Secondary" Variant="Variant.Filled">
-                <MudChatHeader>AI Agent</MudChatHeader>
-                <MudChatBubble>
-                    @message.Message
-                </MudChatBubble>
-            </MudChat>
+            <div class="d-flex justify-start mb-4">
+                <div class="chat-bubble-wrapper">
+                    <MudText Typo="Typo.caption" Class="mb-1">AI Agent</MudText>
+                    <div class="chat-bubble chat-bubble-assistant">
+                        <MudText Style="color: inherit;">@message.Message</MudText>
+                    </div>
+                </div>
+            </div>
         }
     }
     
@@ -57,6 +62,29 @@
         </MudButton>
     </div>
 </MudContainer>
+
+<style>
+    .chat-bubble-wrapper {
+        max-width: 75%;
+    }
+
+    .chat-bubble {
+        padding: 12px 16px;
+    }
+
+    .chat-bubble-user {
+        background-color: #1565C0;
+        color: #FFFFFF;
+        border-radius: 12px 12px 0 12px;
+    }
+
+    .chat-bubble-assistant {
+        background-color: #F5F5F5;
+        color: #212121;
+        border: 1px solid #BDBDBD;
+        border-radius: 12px 12px 12px 0;
+    }
+</style>
 
 @code {
     private readonly List<ApiChatMessage> _messages =

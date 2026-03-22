@@ -5,7 +5,7 @@ var docs = builder.AddProject<Projects.ModelContextProtocol_DocumentsApi>("docum
 
 var sse = builder.AddProject<Projects.ModelContextProtocol_SseServer>("mcpserver-sse")
     .WithExternalHttpEndpoints()
-    .WithEnvironment("McpServer:KernelMemoryEndpoint", docs.GetEndpoint("http"))
+    .WithEnvironment("McpServer:DocumentsApiEndpoint", docs.GetEndpoint("http"))
     .WaitFor(docs);
 
 builder.AddProject<Projects.ModelContextProtocol_TestClient>("mcpclient")
@@ -15,6 +15,7 @@ builder.AddProject<Projects.ModelContextProtocol_TestClient>("mcpclient")
 var chat = builder.AddProject<Projects.ModelContextProtocol_ChatApi>("chatapi")
     .WithExternalHttpEndpoints()
     .WithEnvironment("Chat:mcpServerEndpoint", sse.GetEndpoint("http"))
+    .WithEnvironment("OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT", "true")
     .WaitFor(sse);
 
 builder.AddProject<Projects.ModelContextProtocol_Web>("webfrontend")

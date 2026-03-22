@@ -20,9 +20,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
-    <PackageReference Include="Microsoft.KernelMemory.Abstractions" Version="0.98.250508.3" />
-    <PackageReference Include="Microsoft.KernelMemory.AI.Ollama" Version="0.98.250508.3" />
-    <PackageReference Include="Microsoft.KernelMemory.Core" Version="0.98.250508.3" />
+    <PackageReference Include="Microsoft.Extensions.AI.Ollama" Version="9.4.3-preview.1.25230.7" />
+    <PackageReference Include="System.Numerics.Tensors" Version="10.0.0-preview.3.25171.5" />
   </ItemGroup>
 
   <ItemGroup>

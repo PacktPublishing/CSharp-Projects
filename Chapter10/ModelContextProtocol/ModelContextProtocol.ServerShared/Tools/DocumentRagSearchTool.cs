@@ -20,7 +20,7 @@ public class DocumentRagSearchTool(IOptionsSnapshot<McpServerSettings> options)
         activity?.SetTag("question", question);
         
         using HttpClient client = new();
-        client.BaseAddress = new Uri(options.Value.KernelMemoryEndpoint);
+        client.BaseAddress = new Uri(options.Value.DocumentsApiEndpoint);
 
         JsonContent content = JsonContent.Create(new SearchRequest
         {

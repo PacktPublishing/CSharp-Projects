@@ -26,7 +26,14 @@ public static class Extensions
         builder.Services.ConfigureHttpClientDefaults(http =>
         {
             // Turn on resilience by default
-            http.AddStandardResilienceHandler();
+            http.AddStandardResilienceHandler(options =>
+            {
+                // Local LLM calls can exceed default short timeouts on lower-end hardware.
+                options.AttemptTimeout.Timeout = TimeSpan.FromMinutes(10);
+                options.TotalRequestTimeout.Timeout = TimeSpan.FromMinutes(10);
+                // Must be at least 2x AttemptTimeout for circuit breaker effectiveness.
+                options.CircuitBreaker.SamplingDuration = TimeSpan.FromMinutes(20);
+            });
 
             // Turn on service discovery by default
             http.AddServiceDiscovery();
@@ -54,16 +61,16 @@ public static class Extensions
             {
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddMeter("Microsoft.SemanticKernel*")
-                    .AddMeter("Microsoft.KernelMemory*")
+                    .AddMeter("Experimental.Microsoft.Extensions.AI")
+                    .AddMeter("Microsoft.Extensions.AI*")
                     .AddMeter("ModelContextProtocol*")
                     .AddRuntimeInstrumentation();
             })
             .WithTracing(tracing =>
             {
                 tracing.AddSource(builder.Environment.ApplicationName)
-                    .AddSource("Microsoft.SemanticKernel*")
-                    .AddSource("Microsoft.KernelMemory*")
+                    .AddSource("Experimental.Microsoft.Extensions.AI")
+                    .AddSource("Microsoft.Extensions.AI*")
                     .AddSource("ModelContextProtocol*")
                     .AddAspNetCoreInstrumentation()
                     // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)

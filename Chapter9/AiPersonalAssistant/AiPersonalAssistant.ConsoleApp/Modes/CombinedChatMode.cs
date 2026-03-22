@@ -1,24 +1,65 @@
 ﻿namespace AiPersonalAssistant.ConsoleApp.Modes;
 
-public class CombinedChatMode(IAnsiConsole console) : SemanticKernelChatMode(console)
+public class CombinedChatMode(IAnsiConsole console) : AlfredChatHandler(console)
 {
-    private IKernelMemory? _memory;
+    private AIAgent? _agent;
+    private AgentSession? _session;
+    private DocumentMemory? _memory;
 
-    [Experimental("SKEXP0070")]
     public override async Task InitializeAsync(AlfredOptions options)
     {
         _memory = await MemoryHelpers.LoadMemory(options, Console);
 
+        var chatClient = new OllamaChatClient(
+            new Uri(options.Endpoint), options.ChatModelId);
+
+        _agent = chatClient.AsAIAgent(
+            instructions: options.SystemPrompt,
+            tools: GetTools());
+
+        _session = await _agent.CreateSessionAsync();
+
         await base.InitializeAsync(options);
     }
 
-    public override void LoadPlugins(Kernel kernel)
+    private List<AITool> GetTools()
     {
-        base.LoadPlugins(kernel);
+        return
+        [
+            AIFunctionFactory.Create(TimeAndDateTool.GetCurrentTimeAndDate),
+            AIFunctionFactory.Create(SearchDocuments,
+                name: "Search",
+                description: "Searches documents and history for answers to a question")
+        ];
+    }
 
-        if (_memory is null) throw new InvalidOperationException("Memory not set");
+    public override async Task ChatAsync(string message)
+    {
+        AgentResponse response = await _agent!.RunAsync(message, _session!);
 
-        ReadOnlyKernelMemoryPlugin plugin = new(_memory, Console);
-        kernel.ImportPluginFromObject(plugin);
+        AddAssistantMessage(response.Text ?? "I have no response to that.");
+    }
+
+    private async Task<string> SearchDocuments(string question)
+    {
+        Console.MarkupLineInterpolated($"[cyan]RAG Search[/]: {question}");
+
+        var results = await _memory!.SearchAsync(question);
+
+        if (!results.Any())
+        {
+            Console.MarkupLine("[grey]No relevant documents found.[/]");
+            return "No relevant documents found.";
+        }
+
+        StringBuilder sb = new();
+        foreach (SearchResult result in results)
+        {
+            Console.MarkupLineInterpolated($"[grey]Source:[/] {result.SourceName} ({result.Score:P2} Relevance)");
+            sb.AppendLine($"Snippet found in {result.SourceName}:");
+            sb.AppendLine(result.Text);
+        }
+
+        return sb.ToString();
     }
 }

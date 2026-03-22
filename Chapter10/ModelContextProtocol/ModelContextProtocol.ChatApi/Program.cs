@@ -1,8 +1,6 @@
-#pragma warning disable SKEXP0070
-#pragma warning disable SKEXP0001
-
+using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
-using Microsoft.SemanticKernel;
 using ModelContextProtocol.ChatApi;
 using ModelContextProtocol.ChatApi.Services;
 using ModelContextProtocol.Client;
@@ -17,23 +15,38 @@ builder.Services.Configure<ChatSettings>(builder.Configuration.GetSection("Chat"
 
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IChatService, ChatService>();
-builder.Services.AddSingleton<IKernelBuilder>(sp =>
+builder.Services.AddSingleton<AIAgent>(sp =>
 {
-    var options = sp.GetRequiredService<IOptions<ChatSettings>>().Value;
-    IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
-        .AddOllamaChatCompletion(options.ChatModelId, new Uri(options.ChatEndpoint));
-    
-    ILoggerFactory logFactory = sp.GetRequiredService<ILoggerFactory>();
-    kernelBuilder.Services.AddSingleton(logFactory);
+    ChatSettings options = sp.GetRequiredService<IOptions<ChatSettings>>().Value;
+    ILoggerFactory? loggerFactory = sp.GetRequiredService<ILoggerFactory>();
 
-    return kernelBuilder;
+    Uri endpoint = new(options.ChatEndpoint);
+    string modelId = options.ChatModelId;
+    OllamaChatClient innerClient = new(endpoint, modelId);
+
+    var chatClient = new ChatClientBuilder(innerClient)
+        .UseOpenTelemetry(loggerFactory, configure: c => c.EnableSensitiveData = true)
+        .Build();
+
+    var tools = sp.GetRequiredService<IList<AITool>>();
+    return chatClient.AsAIAgent(
+        instructions: options.SystemPrompt,
+        tools: tools,
+        loggerFactory: loggerFactory);
 });
+
+builder.Services.AddSingleton<IList<AITool>>(sp =>
+{
+    IMcpClient client = sp.GetRequiredService<IMcpClient>();
+    IList<McpClientTool> tools = client.ListToolsAsync().Result;
+    return tools.Cast<AITool>().ToList();
+});
+
 builder.Services.AddSingleton<IMcpClient>(sp =>
 {
     IClientTransport clientTransport = sp.GetRequiredService<IClientTransport>();
     return McpClientFactory.CreateAsync(clientTransport).GetAwaiter().GetResult();
 });
-
 builder.Services.AddSingleton<IClientTransport>(sp =>
 {
     var options = sp.GetRequiredService<IOptions<ChatSettings>>().Value;
@@ -43,20 +56,6 @@ builder.Services.AddSingleton<IClientTransport>(sp =>
         Endpoint = new Uri(options.McpServerEndpoint),
         UseStreamableHttp = true
     });
-});
-builder.Services.AddSingleton<Kernel>(sp =>
-{
-    IKernelBuilder kernelBuilder = sp.GetRequiredService<IKernelBuilder>();
-    Kernel kernel = kernelBuilder.Build();
-    
-    IMcpClient client = sp.GetRequiredService<IMcpClient>();
-    IList<McpClientTool> tools = client.ListToolsAsync().Result;
-    foreach (var tool in tools)
-    {
-        kernel.Plugins.AddFromFunctions(tool.Name, tool.Description, [tool.AsKernelFunction()]);
-    }
-    
-    return kernel;
 });
 
 WebApplication app = builder.Build();

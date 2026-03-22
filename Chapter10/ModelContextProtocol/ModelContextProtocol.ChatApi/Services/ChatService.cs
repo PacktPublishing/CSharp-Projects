@@ -1,71 +1,66 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.Ollama;
 using ModelContextProtocol.Domain.Requests;
 using ModelContextProtocol.Protocol;
 
 namespace ModelContextProtocol.ChatApi.Services;
 
-public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory, Kernel kernel) : IChatService
+public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory logFactory, AIAgent agent) : IChatService
 {
     private readonly ActivitySource _activitySource = new(typeof(ChatService).Assembly.FullName!);
     private readonly ILogger<ChatService> _logger = logFactory.CreateLogger<ChatService>();
 
-    [Experimental("SKEXP0070")]
     public async IAsyncEnumerable<string> ChatAsync(ChatRequest request)
     {
         ChatSettings options = settings.Value;
-        string sysPrompt = options.SystemPrompt;
-        ChatHistory history = BuildChatHistory(request, sysPrompt);
-        
-        _logger.LogTrace("Creating kernel with chat model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
+        List<ChatMessage> messages = BuildChatMessages(request);
 
-        IChatCompletionService completions = kernel.GetRequiredService<IChatCompletionService>();
-        IReadOnlyList<ChatMessageContent> responses;
-        using (_activitySource.StartActivity(ActivityKind.Client))
+        _logger.LogTrace("Running agent with model {id} at {endpoint}", options.ChatModelId, options.ChatEndpoint);
+
+        AgentResponse response;
+        using (Activity? activity = _activitySource.StartActivity("ChatAsync", ActivityKind.Client))
         {
-            OllamaPromptExecutionSettings execSettings = new()
+            activity?.SetTag("gen_ai.request.model", options.ChatModelId);
+            activity?.SetTag("chat.message_count", messages.Count);
+
+            AgentSession session = await agent.CreateSessionAsync();
+            response = await agent.RunAsync(messages, session);
+
+            if (response.Usage is { } usage)
             {
-                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-            };
-            responses = await completions.GetChatMessageContentsAsync(history, execSettings, kernel);
+                activity?.SetTag("gen_ai.usage.input_tokens", usage.InputTokenCount);
+                activity?.SetTag("gen_ai.usage.output_tokens", usage.OutputTokenCount);
+                activity?.SetTag("gen_ai.usage.total_tokens", usage.TotalTokenCount);
+            }
         }
 
-        int index = 1;
-        foreach (var response in responses)
+        if (!string.IsNullOrWhiteSpace(response.Text))
         {
-            if (!string.IsNullOrWhiteSpace(response.Content))
-            {
-                _logger.LogTrace("Response {index}: {content}", index, response.Content);
-                yield return response.Content;
-            }
-            index++;
+            _logger.LogTrace("Response: {content}", response.Text);
+            yield return response.Text;
         }
     }
 
-    private ChatHistory BuildChatHistory(ChatRequest request, string sysPrompt)
+    private List<ChatMessage> BuildChatMessages(ChatRequest request)
     {
-        ChatHistory history = new(sysPrompt);
-        using Activity? activity = _activitySource.StartActivity(ActivityKind.Server);
-        
+        using Activity? activity = _activitySource.StartActivity("BuildChatMessages", ActivityKind.Server);
+        List<ChatMessage> messages = [];
+
         int index = 1;
         foreach (var entry in request.Messages)
         {
-            activity?.AddEvent(new ActivityEvent($"{entry.Role}-{index++} Assistant: {entry.Message}"));
+            activity?.AddEvent(new ActivityEvent($"{entry.Role}-{index++}: {entry.Message}"));
             _logger.LogTrace("{Role}: {Message}", entry.Role, entry.Message);
-            if (entry.Role == Role.Assistant)
-            {
-                history.AddAssistantMessage(entry.Message);
-            }
-            else
-            {
-                history.AddUserMessage(entry.Message);
-            }
+
+            ChatRole role = entry.Role == Role.Assistant 
+               ? ChatRole.Assistant 
+               : ChatRole.User;
+               
+            messages.Add(new ChatMessage(role, entry.Message));
         }
 
-        return history;
+        return messages;
     }
 }
