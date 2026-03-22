@@ -15,12 +15,38 @@ builder.Services.Configure<ChatSettings>(builder.Configuration.GetSection("Chat"
 
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddSingleton<AIAgent>(sp =>
+{
+    ChatSettings options = sp.GetRequiredService<IOptions<ChatSettings>>().Value;
+    ILoggerFactory? loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+
+    Uri endpoint = new(options.ChatEndpoint);
+    string modelId = options.ChatModelId;
+    OllamaChatClient innerClient = new(endpoint, modelId);
+
+    var chatClient = new ChatClientBuilder(innerClient)
+        .UseOpenTelemetry(loggerFactory, configure: c => c.EnableSensitiveData = true)
+        .Build();
+
+    var tools = sp.GetRequiredService<IList<AITool>>();
+    return chatClient.AsAIAgent(
+        instructions: options.SystemPrompt,
+        tools: tools,
+        loggerFactory: loggerFactory);
+});
+
+builder.Services.AddSingleton<IList<AITool>>(sp =>
+{
+    IMcpClient client = sp.GetRequiredService<IMcpClient>();
+    IList<McpClientTool> tools = client.ListToolsAsync().Result;
+    return tools.Cast<AITool>().ToList();
+});
+
 builder.Services.AddSingleton<IMcpClient>(sp =>
 {
     IClientTransport clientTransport = sp.GetRequiredService<IClientTransport>();
     return McpClientFactory.CreateAsync(clientTransport).GetAwaiter().GetResult();
 });
-
 builder.Services.AddSingleton<IClientTransport>(sp =>
 {
     var options = sp.GetRequiredService<IOptions<ChatSettings>>().Value;
@@ -30,27 +56,6 @@ builder.Services.AddSingleton<IClientTransport>(sp =>
         Endpoint = new Uri(options.McpServerEndpoint),
         UseStreamableHttp = true
     });
-});
-builder.Services.AddSingleton<IList<AITool>>(sp =>
-{
-    IMcpClient client = sp.GetRequiredService<IMcpClient>();
-    IList<McpClientTool> tools = client.ListToolsAsync().Result;
-    return tools.Cast<AITool>().ToList();
-});
-builder.Services.AddSingleton<AIAgent>(sp =>
-{
-    var options = sp.GetRequiredService<IOptions<ChatSettings>>().Value;
-    var tools = sp.GetRequiredService<IList<AITool>>();
-    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-
-    IChatClient chatClient = new ChatClientBuilder(new OllamaChatClient(new Uri(options.ChatEndpoint), options.ChatModelId))
-        .UseOpenTelemetry(loggerFactory, configure: c => c.EnableSensitiveData = true)
-        .Build();
-
-    return chatClient.AsAIAgent(
-        instructions: options.SystemPrompt,
-        tools: tools,
-        loggerFactory: loggerFactory);
 });
 
 WebApplication app = builder.Build();

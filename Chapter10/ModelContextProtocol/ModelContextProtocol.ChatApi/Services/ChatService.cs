@@ -53,14 +53,12 @@ public class ChatService(IOptionsSnapshot<ChatSettings> settings, ILoggerFactory
         {
             activity?.AddEvent(new ActivityEvent($"{entry.Role}-{index++}: {entry.Message}"));
             _logger.LogTrace("{Role}: {Message}", entry.Role, entry.Message);
-            if (entry.Role == Role.Assistant)
-            {
-                messages.Add(new ChatMessage(ChatRole.Assistant, entry.Message));
-            }
-            else
-            {
-                messages.Add(new ChatMessage(ChatRole.User, entry.Message));
-            }
+
+            ChatRole role = entry.Role == Role.Assistant 
+               ? ChatRole.Assistant 
+               : ChatRole.User;
+               
+            messages.Add(new ChatMessage(role, entry.Message));
         }
 
         return messages;
